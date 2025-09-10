@@ -2,7 +2,7 @@
 @use "../styles/mixins.scss" as *;
 
 body.has-fixed-header {
-  transition: padding-top 0.3s ease;
+  transition: padding-top 0.5s ease;
 }
 
 
@@ -125,14 +125,14 @@ body.has-fixed-header {
   .menu_normal {
     min-height: 84px;
     display: block;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.5s ease, transform 0.5s ease;
 
 
     &.hide {
       opacity: 0;
       transform: translateY(-100%);
       pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
   }
 
@@ -150,14 +150,14 @@ body.has-fixed-header {
     opacity: 0;
     transform: translateY(-100%);
     pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.5s ease, transform 0.5s ease;
 
 
     &.show {
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
     .header__bottom {
