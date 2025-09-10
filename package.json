@@ -1,5 +1,5 @@
 {
-  "name": "glavmeh",
+  "name": "bip-it",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Amidalla/glavmeh.git"
+    "url": "git+https://github.com/Amidalla/bip-it.git"
   },
   "author": "Aleksandra Gavrasova",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Amidalla/glavmeh/issues"
+    "url": "https://github.com/Amidalla/bip-it/issues"
   },
-  "homepage": "https://github.com/Amidalla/glavmeh#readme",
+  "homepage": "https://github.com/Amidalla/bip-it#readme",
   "description": "",
   "devDependencies": {
     "copy-webpack-plugin": "^13.0.1",

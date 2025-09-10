@@ -30,7 +30,7 @@ export function SlidersInit() {
     });
 
     const partnersSlider = new Swiper(".slider-partners", {
-        autoplay: false,
+        autoplay: true,
         slidesPerView: 8, // Меняем на 'auto'
         loop: true,
         speed: 1000,
