@@ -168,6 +168,7 @@ body.has-fixed-header {
       max-width: 1780px;
       margin: 0 auto;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
     }
   }
 
@@ -320,35 +321,40 @@ body.has-fixed-header {
 }
 
 .main-slider {
-   min-height: 716px;
   position: relative;
 
 
   .swiper-slide {
       background: none;
       position: relative;
+      background: url("../images/animation-slide_bg.jpg") no-repeat;
+      background-size: cover;
 
 
-      img {
+
+
+    img {
         width: 100%;
         height: auto;
-        object-fit: cover;
-        max-height: 804px;
       }
   }
-    &__grid {}
+
+  .swiper-slide.main-animation {
+    text-align: right;
+
+       img {
+         max-width: 1167px;
+       }
+
+    .main-slider__content {
+      text-align: left;
+    }
+  }
+
+  &__grid {}
 
     &__slider {
 
-      &:hover  .swiper-button-prev:not(.swiper-button-disabled) {
-        opacity: 1;
-        transform: rotate(180deg) scale(1);
-      }
-
-      &:hover  .swiper-button-next:not(.swiper-button-disabled) {
-        opacity: 1;
-        transform: scale(1);
-      }
 
       .swiper-pagination.swiper-pagination-clickable {
         bottom: 38px;
@@ -364,55 +370,94 @@ body.has-fixed-header {
         }
       }
 
-      .swiper-button-next {
-        width: 47.5px;
-        height: 95px;
-        opacity: 0;
-        transition: all 0.3s ease;
-        &::after {
-          display: none;
+      .hover-container-right {
+        width: 62px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 1;
+
+        &:hover {
+          .swiper-button-next {
+            opacity: 1;
+            visibility: visible;
+          }
+          .swiper-button-next.swiper-button-disabled {
+            opacity: 0.35;
+          }
         }
-        &.swiper-button-disabled {
+
+        .swiper-button-next {
+          width: 47.5px;
+          height: 95px;
           opacity: 0;
           visibility: hidden;
-          transform: scale(0.8);
-          pointer-events: none;
-        }
-        &:not(.swiper-button-disabled):hover {
-          opacity: 1;
-          transform: scale(1);
+          transition: all 0.5s ease;
+          z-index: 2;
+
+
+          &::after {
+            display: none;
+          }
+
+          svg {
+            width: 100%;
+            height: 100%;
+            transition: all 0.5s ease;
+          }
         }
       }
-      .swiper-button-prev {
-        width: 47.5px;
-        height: 95px;
-        transform: rotate(180deg);
-        opacity: 0;
-        transition: all 0.3s ease;
-        &::after {
-          display: none;
+
+      .hover-container-left {
+        width: 62px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+
+        &:hover {
+          .swiper-button-prev {
+            opacity: 1;
+            visibility: visible;
+          }
+          .swiper-button-prev.swiper-button-disabled {
+            opacity: 0.35;
+          }
         }
-        &.swiper-button-disabled {
+
+        .swiper-button-prev {
+          width: 47.5px;
+          height: 95px;
           opacity: 0;
           visibility: hidden;
-          transform: scale(0.8);
-          pointer-events: none;
-        }
-        &:not(.swiper-button-disabled):hover {
-          opacity: 1;
-          transform: rotate(180deg) scale(1);
+          transition: all 0.5s ease;
+          z-index: 2;
+
+
+          &::after {
+            display: none;
+          }
+
+          svg {
+            width: 100%;
+            height: 100%;
+            transition: all 0.5s ease;
+          }
         }
       }
+
     }
 
     &__content {
       position: absolute;
       left: 0;
       top: 0;
-      background: linear-gradient(270deg, rgba(29, 50, 87, 0) 55.21%, rgba(63, 109, 189, 0.47) 91.48%);
+      /*background: linear-gradient(270deg, rgba(29, 50, 87, 0) 55.21%, rgba(63, 109, 189, 0.47) 91.48%);*/
       height: 100%;
       width: 100%;
-      height: 803px;
+      height: 860px;
       padding-top: 224px;
     }
 
@@ -483,6 +528,7 @@ body.has-fixed-header {
       margin-left: 18px;
       color: c.$orange;
       cursor: pointer;
+      transition: all 0.3s ease;
 
       &:hover {
         color: c.$dark-grey;
@@ -933,6 +979,7 @@ body.has-fixed-header {
         margin-left: 18px;
         color: #F07000;
         cursor: pointer;
+        transition: all 0.3s ease;
       }
     }
 
@@ -1084,7 +1131,6 @@ body.has-fixed-header {
 
 
 .main-form {
-
   background:
           url('../images/main-form_bg.png') no-repeat right,
           linear-gradient(90deg, #121932 0%, #354C98 100%);
@@ -1096,56 +1142,57 @@ body.has-fixed-header {
     display: flex;
     column-gap: 50px;
   }
+
   &__inner {}
 
-    &__info {
-      max-width: 868px;
-      min-width: 842px;
+  &__info {
+    max-width: 868px;
+    min-width: 842px;
 
-      h3 {
-        letter-spacing: 1px;
-        color: c.$white;
-        max-width: 807px;
-        margin-bottom: 10px;
-      }
-
-      p {
-        font-size: 32px;
-        font-weight: 400;
-        line-height: 121%;
-        letter-spacing: 1px;
-        margin-bottom: 24px;
-        color: c.$white;
-      }
+    h3 {
+      letter-spacing: 1px;
+      color: c.$white;
+      max-width: 807px;
+      margin-bottom: 10px;
     }
 
-    &__contacts {
-      div {
-        margin-bottom: 3px;
+    p {
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 121%;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+      color: c.$white;
+    }
+  }
 
-        span {
-          font-size: 18px;
-          font-weight: 400;
-          line-height: 150%;
-          letter-spacing: 1px;
+  &__contacts {
+    div {
+      margin-bottom: 3px;
+
+      span {
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 150%;
+        letter-spacing: 1px;
+        color: c.$white;
+      }
+
+      a {
+        color: rgba(255, 134, 28, 1);
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+
+        &:hover {
           color: c.$white;
         }
-        a {
-          color: rgba(255, 134, 28, 1);
-          cursor: pointer;
-          font-weight: 600;
-
-          &:hover {
-            color: c.$white;
-          }
-        }
       }
     }
+  }
 
-    &__video {}
+  &__video {}
 }
-
-
 
 .video-block {}
 
@@ -1179,6 +1226,69 @@ body.has-fixed-header {
 
     &::placeholder {
       color: #fff;
+    }
+  }
+
+
+  input[type="tel"][name="tel"] {
+
+    width: 211.57px;
+    height: 47px;
+    background: rgba(255, 255, 255, 0.25);
+    padding-left: 20px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 150%;
+    border-radius: 10px;
+
+
+    &::placeholder {
+      color: c.$white;
+      transition: color 0.3s ease;
+    }
+
+    &::-webkit-input-placeholder {
+      color: c.$white;
+      transition: color 0.3s ease;
+    }
+
+    &::-moz-placeholder {
+      color: c.$white;
+      transition: color 0.3s ease;
+    }
+
+    &:-ms-input-placeholder {
+      color: c.$white;
+      transition: color 0.3s ease;
+    }
+
+    &:-moz-placeholder {
+      color: c.$white;
+      transition: color 0.3s ease;
+    }
+
+
+    &.phone-mask-active {
+      &::placeholder {
+        color: transparent;
+      }
+
+      &::-webkit-input-placeholder {
+        color: transparent;
+      }
+
+      &::-moz-placeholder {
+        color: transparent;
+      }
+
+      &:-ms-input-placeholder {
+        color: transparent;
+      }
+
+      &:-moz-placeholder {
+        color: transparent;
+      }
     }
   }
 
@@ -1228,6 +1338,7 @@ body.has-fixed-header {
     height: 0;
     width: 0;
   }
+
   .checkbox-label.checked::before {
     background: #fff;
   }
@@ -1235,6 +1346,7 @@ body.has-fixed-header {
   .checkbox-label.checked::after {
     display: block;
   }
+
   textarea {
     width: 655px;
     height: 64px;
@@ -1307,7 +1419,6 @@ body.has-fixed-header {
   }
 }
 
-
 .footer {
   background: #181F37;
   padding-top: 83px;
@@ -1342,6 +1453,7 @@ body.has-fixed-header {
 
       a {
         color: inherit;
+        transition: all 0.3s ease;
 
         &:hover {
           color: c.$orange;
@@ -1396,6 +1508,7 @@ body.has-fixed-header {
       letter-spacing: 1px;
       display: inline-block;
       margin-bottom: 10px;
+      transition: all 0.3s ease;
 
       &:hover {
         color: c.$orange;
@@ -1407,6 +1520,7 @@ body.has-fixed-header {
           font-weight: 400;
           line-height: 150%;
           letter-spacing: 1px;
+          transition: all 0.3s ease;
 
           &:hover {
             color: c.$orange;
@@ -1430,6 +1544,7 @@ body.has-fixed-header {
 
           a {
             color: inherit;
+            transition: all 0.3s ease;
 
             &:hover {
               color: c.$orange;
@@ -1450,4 +1565,49 @@ body.has-fixed-header {
 
 .privacy-policy {}
 
+.banner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 
+.banner__lines {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.banner__lines svg {
+  width: 100%;
+  height: 100%;
+}
+
+.banner__lines .line {
+  stroke: c.$orange;
+  stroke-width: 3;
+  fill: none;
+  opacity: 1;
+}
+
+.pulsing-ball {
+  filter: drop-shadow(0 0 12px rgba(240, 112, 0, 0.9));
+  transform-origin: center;
+}
+
+.pulsing-ball {
+  z-index: 4;
+}
+
+.comet-tail {
+  filter: blur(2px);
+  transition: all 0.1s ease-out;
+}
+
+.final-explosion {
+  filter: blur(5px);
+  stroke: white;
+  stroke-width: 1;
+  stroke-opacity: 0.5;
+}
