@@ -206,65 +206,113 @@ class QuantityCounter {
         }
 }
 
+function initSearch() {
+        const searchContainers = document.querySelectorAll('.search');
 
-window.addEventListener('DOMContentLoaded', () => {
-        const bannerAnimation = new BannerAnimation();
-});
+        searchContainers.forEach(search => {
+                const searchToggle = search.querySelector('.search__toggle');
+                const searchContainer = search.querySelector('.search__form-container');
+                const searchInput = search.querySelector('.search__form input[type="search"]');
+                const searchClose = search.querySelector('.search__close');
 
-window.addEventListener('load', () => {
-        const bannerAnimation = new BannerAnimation();
-});
+                if (!searchToggle || !searchContainer || !searchInput || !searchClose) {
+                        return;
+                }
 
-window.addEventListener('DOMContentLoaded', () => {
-        const lazyLoadInstance = new LazyLoad({});
-        SlidersInit();
-        InitModals();
-        initPhoneMasksWithPlaceholder();
-        initMasks();
+                searchToggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
 
+                        if (searchContainer.classList.contains('active')) {
+                                searchContainer.classList.remove('active');
+                        } else {
+                                document.querySelectorAll('.search__form-container.active').forEach(activeContainer => {
+                                        if (activeContainer !== searchContainer) {
+                                                activeContainer.classList.remove('active');
+                                        }
+                                });
+
+                                searchContainer.classList.add('active');
+                                setTimeout(() => {
+                                        searchInput.focus();
+                                }, 300);
+                        }
+                });
+
+                searchClose.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        searchContainer.classList.remove('active');
+                });
+
+                document.addEventListener('click', function(e) {
+                        if (!e.target.closest('.search') && searchContainer.classList.contains('active')) {
+                                searchContainer.classList.remove('active');
+                        }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape' && searchContainer.classList.contains('active')) {
+                                searchContainer.classList.remove('active');
+                        }
+                });
+
+                searchContainer.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                });
+        });
+}
+
+function initFixedHeader() {
         const menuNormal = document.querySelector('.menu_normal');
         const menuFixed = document.querySelector('.menu_fixed');
         const scrollOffset = 100;
+
+        if (!menuNormal || !menuFixed) return;
+
         let isFixed = false;
         let ticking = false;
 
-        if (menuNormal && menuFixed) {
-                function checkScroll() {
-                        const currentScrollY = window.scrollY;
-                        if (currentScrollY > scrollOffset && !isFixed) {
-                                menuNormal.classList.add('hide');
-                                menuFixed.classList.add('show');
-                                document.body.classList.add('has-fixed-header');
-                                isFixed = true;
-                        }
-                        else if (currentScrollY <= scrollOffset && isFixed) {
-                                menuFixed.classList.remove('show');
-                                menuNormal.classList.remove('hide');
-                                document.body.classList.remove('has-fixed-header');
-                                isFixed = false;
-                        }
+        function checkScroll() {
+                const currentScrollY = window.scrollY;
+                if (currentScrollY > scrollOffset && !isFixed) {
+                        menuNormal.classList.add('hide');
+                        menuFixed.classList.add('show');
+                        document.body.classList.add('has-fixed-header');
+                        isFixed = true;
                 }
-
-                checkScroll();
-                window.addEventListener('scroll', () => {
-                        if (!ticking) {
-                                window.requestAnimationFrame(() => {
-                                        checkScroll();
-                                        ticking = false;
-                                });
-                                ticking = true;
-                        }
-                });
+                else if (currentScrollY <= scrollOffset && isFixed) {
+                        menuFixed.classList.remove('show');
+                        menuNormal.classList.remove('hide');
+                        document.body.classList.remove('has-fixed-header');
+                        isFixed = false;
+                }
         }
 
+        checkScroll();
+
+        window.addEventListener('scroll', () => {
+                if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                                checkScroll();
+                                ticking = false;
+                        });
+                        ticking = true;
+                }
+        });
+}
+
+function initTabs() {
         const tabsContainer = document.querySelector('.bestsellers__tabs');
         if (tabsContainer) {
                 new Tabs(tabsContainer);
         }
+}
 
+function initQuantityCounters() {
         const counters = document.querySelectorAll('.quantity-counter');
         counters.forEach(container => new QuantityCounter(container));
+}
 
+function initCheckboxes() {
         const checkboxes = document.querySelectorAll('.checkbox-label input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
@@ -275,5 +323,24 @@ window.addEventListener('DOMContentLoaded', () => {
                                 label.classList.remove('checked');
                         }
                 });
+
+                if (checkbox.checked) {
+                        checkbox.parentElement.classList.add('checked');
+                }
         });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+        const bannerAnimation = new BannerAnimation();
+        const lazyLoadInstance = new LazyLoad({});
+
+        SlidersInit();
+        InitModals();
+        initPhoneMasksWithPlaceholder();
+        initMasks();
+        initSearch();
+        initFixedHeader();
+        initTabs();
+        initQuantityCounters();
+        initCheckboxes();
 });

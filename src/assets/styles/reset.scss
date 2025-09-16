@@ -43,6 +43,18 @@ h1 {
 h2 {
   font-size: 48px;
   font-weight: 400;
+
+  @media(max-width: 1640px) {
+    font-size: 38px;
+  }
+
+  @media(max-width: 1300px) {
+    font-size: 30px;
+  }
+
+  @media(max-width: 760px) {
+    font-size: 28px;
+  }
 }
 
 h3 {
@@ -63,6 +75,27 @@ h5 {
 .container {
   max-width: 1780px;
   margin: 0 auto;
+
+  @media(max-width: 1840px) {
+    max-width: 1580px;
+    margin: 0 auto;
+  }
+
+  @media(max-width: 1640px) {
+    max-width: 1268px;
+    margin: 0 auto;
+  }
+
+  @media(max-width: 1300px) {
+    max-width: 100%;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  @media(max-width: 760px) {
+    padding-left: 15px;
+    padding-right:15px;
+  }
+
 }
 
 .flex {

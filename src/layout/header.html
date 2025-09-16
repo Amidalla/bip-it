@@ -3,8 +3,7 @@
             <div class="header__top flex">
                         <div class="header__inner flex">
                               <div class="header__phone flex">
-                                    <include src="assets/svg/phone.html"></include>
-                                    <a href="tel:+78123098289">+7 (812) 309-82-89</a>
+                                    <a href="tel:+78123098289"><include src="assets/svg/phone.html"></include><span>+7 (812) 309-82-89</span></a>
                               </div>
                               <div class="header__mail flex">
                                     <include src="assets/svg/mail.html"></include>
@@ -12,6 +11,9 @@
                               </div>
                         </div>
                         <div class="header__inner flex">
+                              <div class="header__burger">
+                                    <include src="assets/svg/burger.html"></include>
+                              </div>
                               <div class="header__basket">
                                     <span class="quantity flex flex-center">0</span>
                                     <include src="assets/svg/white_basket.html"></include>
@@ -35,7 +37,7 @@
                               <li class="header__item">
                                     <button class="catalog-btn flex flex-center">
                                                 <span class="flex flex-center">
-                                                     <include src="assets/svg/catalog-btn.html"></include>
+                                                      <include src="assets/svg/catalog-btn.html"></include>
                                                       Каталог
                                                 </span>
                                     </button>
@@ -55,12 +57,20 @@
                         </ul>
                   </nav>
                   <div class="search">
-                        <form class="search__form">
-                              <input type="search" placeholder="Поиск" name="q">
-                        </form>
-                        <include src="assets/svg/search.html"></include>
+                        <button class="search__toggle" type="button" aria-label="Открыть поиск">
+                              <include src="assets/svg/search-form-mobile.html"></include>
+                        </button>
+                        <div class="search__form-container">
+                              <form class="search__form">
+                                    <input type="search" placeholder="Поиск" name="q" class="search__input">
+                                    <button type="button" class="search__close" aria-label="Закрыть поиск">
+                                          <include src="assets/svg/cross.html"></include>
+                                    </button>
+                              </form>
+                              <include src="assets/svg/search.html"></include>
+                        </div>
                   </div>
-                  <button class="feedback-btn"><span>Обратная связь</span></button>
+                  <a href="#feedback" class="feedback-btn"><span>Обратная связь</span></a>
             </div>
       </div>
       <div class="menu_fixed">
@@ -73,7 +83,7 @@
                               <li class="header__item">
                                     <button class="catalog-btn flex flex-center">
                                                 <span class="flex flex-center">
-                                                       <include src="assets/svg/catalog-btn.html"></include>
+                                                    <include src="assets/svg/catalog-btn.html"></include>
                                                       Каталог
                                                 </span>
                                     </button>
@@ -93,12 +103,20 @@
                         </ul>
                   </nav>
                   <div class="search">
-                        <form class="search__form">
-                              <input type="search" placeholder="Поиск" name="q">
-                        </form>
-                        <include src="assets/svg/search.html"></include>
+                        <button class="search__toggle" type="button" aria-label="Открыть поиск">
+                              <include src="assets/svg/search-form-mobile.html"></include>
+                        </button>
+                        <div class="search__form-container">
+                              <form class="search__form">
+                                    <input type="search" placeholder="Поиск" name="q" class="search__input">
+                                    <button type="button" class="search__close" aria-label="Закрыть поиск">
+                                          <include src="assets/svg/cross.html"></include>
+                                    </button>
+                              </form>
+                              <include src="assets/svg/search.html"></include>
+                        </div>
                   </div>
-                  <button class="feedback-btn"><span>Обратная связь</span></button>
+                  <a href="#feedback" class="feedback-btn"><span>Обратная связь</span></a>
             </div>
       </div>
 </header>

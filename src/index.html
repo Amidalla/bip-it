@@ -17,7 +17,11 @@
                     <div class="swiper-wrapper">
                         <div class="swiper-slide main-animation">
                             <div class="banner">
-                                <img class="lazy banner__image" data-src="assets/images/house.png" alt="Слайд 1">
+                                <picture>
+                                    <source media="(max-width: 760px)" data-srcset="assets/images/new-house-mobile.png">
+                                    <source media="(max-width: 875px)" data-srcset="assets/images/house-tablet.png">
+                                    <img class="lazy banner__image" data-src="assets/images/house.png" alt="Слайд 1">
+                                </picture>
                                 <div class="banner__lines">
                                     <include src="assets/svg/line.html"></include>
                                 </div>
@@ -34,7 +38,6 @@
                             </div>
                         </div>
                         <div class="swiper-slide">
-                            <img class="lazy" data-src="assets/images/main-slider2.jpg" alt="Слайд 2">
                             <div class="main-slider__content">
                                 <div class="container">
                                     <p class="main-slider__title"><span>Заземление,</span> молниезащита</p>
@@ -47,7 +50,6 @@
                             </div>
                         </div>
                         <div class="swiper-slide">
-                            <img class="lazy" data-src="assets/images/main-slider2.jpg" alt="Слайд 3">
                             <div class="main-slider__content">
                                 <div class="container">
                                     <p class="main-slider__title"><span>Заземление,</span> молниезащита</p>
@@ -97,78 +99,78 @@
                                 <div class="swiper slider-bestsellers">
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
-                                           <div class="slide-container flex">
-                                               <div class="product-card flex">
-                                                   <div class="product-card__img">
-                                                       <img class="lazy" data-src="assets/images/product_img1.jpg" aly="">
-                                                   </div>
-                                                   <div class="product-card__info">
-                                                       <div class="product-card__title">Комплект громоотвода Zarnica | Длина конька до 10м</div>
-                                                       <div class="specs-table">
-                                                           <div class="specs-row">
-                                                               <span class="specs-label">Модель</span>
-                                                               <span class="specs-dots"></span>
-                                                               <span class="specs-value">bp-630-321</span>
-                                                           </div>
-                                                           <div class="specs-row">
-                                                               <span class="specs-label">Бренд</span>
-                                                               <span class="specs-dots"></span>
-                                                               <span class="specs-value">БИП</span>
-                                                           </div>
-                                                           <div class="specs-row">
-                                                               <span class="specs-label">Наличие</span>
-                                                               <span class="specs-dots"></span>
-                                                               <span class="specs-value">есть на складе</span>
-                                                           </div>
-                                                           <div class="specs-row">
-                                                               <span class="specs-label">Вес</span>
-                                                               <span class="specs-dots"></span>
-                                                               <span class="specs-value">20 кг</span>
-                                                           </div>
-                                                           <div class="specs-row">
-                                                               <span class="specs-label">Размер(Д x Ш x В)</span>
-                                                               <span class="specs-dots"></span>
-                                                               <span class="specs-value">50 x 50 x 100 см</span>
-                                                           </div>
-                                                       </div>
-                                                       <div class="product-card__labels">
-                                                           <div class="product-card__item">
-                                                               20
-                                                           </div>
-                                                           <div class="product-card__item">
-                                                               Cu
-                                                           </div>
-                                                       </div>
-                                                       <div class="counter">
-                                                           <div class="quantity-counter">
-                                                               <button class="counter-btn counter-minus" type="button" aria-label="Уменьшить количество">
-                                                                   <include src="assets/svg/minus.html"></include>
-                                                               </button>
+                                            <div class="slide-container flex">
+                                                <div class="product-card flex">
+                                                    <div class="product-card__img">
+                                                        <img class="lazy" data-src="assets/images/product_img1.jpg" aly="">
+                                                    </div>
+                                                    <div class="product-card__info">
+                                                        <div class="product-card__title">Комплект громоотвода Zarnica | Длина конька до 10м</div>
+                                                        <div class="specs-table">
+                                                            <div class="specs-row">
+                                                                <span class="specs-label">Модель</span>
+                                                                <span class="specs-dots"></span>
+                                                                <span class="specs-value">bp-630-321</span>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <span class="specs-label">Бренд</span>
+                                                                <span class="specs-dots"></span>
+                                                                <span class="specs-value">БИП</span>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <span class="specs-label">Наличие</span>
+                                                                <span class="specs-dots"></span>
+                                                                <span class="specs-value">есть на складе</span>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <span class="specs-label">Вес</span>
+                                                                <span class="specs-dots"></span>
+                                                                <span class="specs-value">20 кг</span>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <span class="specs-label">Размер(Д x Ш x В)</span>
+                                                                <span class="specs-dots"></span>
+                                                                <span class="specs-value">50 x 50 x 100 см</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="product-card__labels">
+                                                            <div class="product-card__item">
+                                                                20
+                                                            </div>
+                                                            <div class="product-card__item">
+                                                                Cu
+                                                            </div>
+                                                        </div>
+                                                        <div class="counter">
+                                                            <div class="quantity-counter">
+                                                                <button class="counter-btn counter-minus" type="button" aria-label="Уменьшить количество">
+                                                                    <include src="assets/svg/minus.html"></include>
+                                                                </button>
 
-                                                               <input class="counter-input" type="number" value="1" min="1" max="99" aria-label="Количество товара">
+                                                                <input class="counter-input" type="number" value="1" min="1" max="99" aria-label="Количество товара">
 
-                                                               <button class="counter-btn counter-plus" type="button" aria-label="Увеличить количество">
-                                                                   <include src="assets/svg/plus.html"></include>
-                                                               </button>
-                                                           </div>
-                                                           <div class="counter__prise">
-                                                               3 500 руб.
-                                                           </div>
-                                                       </div>
-                                                       <div class="purchase">
-                                                           <button class="purchase__btn">
-                                                               <span>В корзину</span>
-                                                               <include src="assets/svg/orange-basket.html"></include>
-                                                               <include src="assets/svg/white-basket-if-btn.html"></include>
-                                                           </button>
-                                                           <a href="#">
-                                                               <span>Купить на маркетплейсе</span>
-                                                               <include src="assets/svg/lightning2.html"></include>
-                                                           </a>
-                                                       </div>
-                                                   </div>
-                                               </div>
-                                           </div>
+                                                                <button class="counter-btn counter-plus" type="button" aria-label="Увеличить количество">
+                                                                    <include src="assets/svg/plus.html"></include>
+                                                                </button>
+                                                            </div>
+                                                            <div class="counter__prise">
+                                                                3 500 руб.
+                                                            </div>
+                                                        </div>
+                                                        <div class="purchase">
+                                                            <button class="purchase__btn">
+                                                                <span>В корзину</span>
+                                                                <include src="assets/svg/orange-basket.html"></include>
+                                                                <include src="assets/svg/white-basket-if-btn.html"></include>
+                                                            </button>
+                                                            <a href="#">
+                                                                <span>Купить на маркетплейсе</span>
+                                                                <include src="assets/svg/lightning2.html"></include>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="swiper-slide">
                                             <div class="slide-container flex">
@@ -401,6 +403,64 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="bestsellers__mobile">
+                                <div class="mobile-product">
+                                    <div class="mobile-product__img">
+                                         <img class="lazy" data-src="assets/images/mobile-bests-img.jpg">
+                                    </div>
+                                    <div class="mobile-product__title">ZANDZ ДОМ Комплект "Заземление в частном доме" (для монтажа отбойным молотком; без насадки на отбойный молоток (SDS max); 6 метров)</div>
+                                    <div class="mobile-product__price">
+                                        <span>135 500 руб.</span>
+                                        <span class="discount">25 300 руб.</span>
+                                    </div>
+                                        <button class="purchase__btn">
+                                            <span>В корзину</span>
+                                            <include src="assets/svg/orange-basket.html"></include>
+                                        </button>
+                                </div>
+                                <div class="mobile-product">
+                                    <div class="mobile-product__img">
+                                        <img class="lazy" data-src="assets/images/mobile-bests-img.jpg">
+                                    </div>
+                                    <div class="mobile-product__title">ZANDZ ДОМ Комплект "Заземление в частном доме" (для монтажа отбойным молотком; без насадки на отбойный молоток (SDS max); 6 метров)</div>
+                                    <div class="mobile-product__price">
+                                        <span>135 500 руб.</span>
+                                        <span class="discount">25 300 руб.</span>
+                                    </div>
+                                    <button class="purchase__btn">
+                                        <span>В корзину</span>
+                                        <include src="assets/svg/orange-basket.html"></include>
+                                    </button>
+                                </div>
+                                <div class="mobile-product">
+                                    <div class="mobile-product__img">
+                                        <img class="lazy" data-src="assets/images/mobile-bests-img.jpg">
+                                    </div>
+                                    <div class="mobile-product__title">ZANDZ ДОМ Комплект "Заземление в частном доме" (для монтажа отбойным молотком; без насадки на отбойный молоток (SDS max); 6 метров)</div>
+                                    <div class="mobile-product__price">
+                                        <span>135 500 руб.</span>
+                                        <span class="discount">25 300 руб.</span>
+                                    </div>
+                                    <button class="purchase__btn">
+                                        <span>В корзину</span>
+                                        <include src="assets/svg/orange-basket.html"></include>
+                                    </button>
+                                </div>
+                                <div class="mobile-product">
+                                    <div class="mobile-product__img">
+                                        <img class="lazy" data-src="assets/images/mobile-bests-img.jpg">
+                                    </div>
+                                    <div class="mobile-product__title">ZANDZ ДОМ Комплект "Заземление в частном доме" (для монтажа отбойным молотком; без насадки на отбойный молоток (SDS max); 6 метров)</div>
+                                    <div class="mobile-product__price">
+                                        <span>135 500 руб.</span>
+                                        <span class="discount">25 300 руб.</span>
+                                    </div>
+                                    <button class="purchase__btn">
+                                        <span>В корзину</span>
+                                        <include src="assets/svg/orange-basket.html"></include>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -411,7 +471,7 @@
                     </div>
                     <div class="tab__pane" id="tools">
                         <div class="products-grid">
-                           Какой-то контент
+                            Какой-то контент
                         </div>
                     </div>
                 </div>
@@ -518,7 +578,7 @@
         </div>
     </section>
     <section class="main-news">
-        <div class="container" style="max-width: 1597px">
+        <div class="container">
             <div class="main-news__title flex">
                 <h2>Новости</h2>
                 <a class="all-product-link">
@@ -554,6 +614,22 @@
                             "link": "#"
                             }
                         </include>
+                        <include src="layout/template/card/news-card.html">
+                            {
+                            "image": "assets/images/main-news1.png",
+                            "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                            "date": "27.08.25",
+                            "link": "#"
+                            }
+                        </include>
+                        <include src="layout/template/card/news-card.html">
+                            {
+                            "image": "assets/images/main-news2.png",
+                            "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                            "date": "27.08.25",
+                            "link": "#"
+                            }
+                        </include>
                     </div>
 
                     <div class="main-news__slider-controls">
@@ -569,7 +645,7 @@
             </div>
         </div>
     </section>
-    <section class="main-form">
+    <section class="main-form" id="feedback">
         <div class="container">
             <div class="main-form__inner">
                 <div class="main-form__info">
@@ -621,7 +697,7 @@
 </main>
 
 <include src="layout/footer.html"></include>
-
+<include src="layout/modals.html"></include>
 
 </body>
 </html>
