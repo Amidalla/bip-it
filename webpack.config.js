@@ -52,7 +52,7 @@ module.exports = (env, argv) => {
                                         },
                                         {
                                             tag: 'source',
-                                            attribute: 'src',
+                                            attribute: 'data-srcset',
                                             type: 'src',
                                         },
                                         {

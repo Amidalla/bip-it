@@ -1,0 +1,49 @@
+<section class="main-form" id="feedback">
+    <div class="container">
+        <div class="main-form__inner">
+            <div class="main-form__info">
+                <h3>Планируете закупить большой объем?</h3>
+                <p>Необходима скидка и отсрочка платежа? Отправьте сообщение через форму обратной связи</p>
+                <div class="main-form__contacts">
+                    <div>
+                        <span>Свяжитесь с нами по телефону</span> <a href="tel:+78123098289">+7 (812) 309-82-89</a>
+                    </div>
+                    <div>
+                        <span>или напишите нам на</span> <a href="mailto:sales@bip-it.ru">sales@bip-it.ru</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-form__inner">
+            <form class="form-main">
+                <fieldset>
+                    <label>
+                        <input type="text" name="name" placeholder="Имя"  required>
+                    </label>
+                    <label>
+                        <input type="tel" name="tel" placeholder="Телефон" data-phone-input required>
+                    </label>
+                    <label>
+                        <input type="email" name="email" placeholder="mail" required>
+                    </label>
+                </fieldset>
+                <fieldset>
+                    <label>
+                        <textarea name="textarea" placeholder="Ваш вопрос" required></textarea>
+                    </label>
+                </fieldset>
+                <fieldset>
+                    <button>
+                            <span>
+                             <include src="assets/svg/lightning3.html"></include>
+                                Отправить</span>
+                    </button>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="checkbox" required>
+                        <span>Нажимая на кнопку, вы соглашаетесь на обработку персональных данных и политику конфиденциальности</span>
+                    </label>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</section>

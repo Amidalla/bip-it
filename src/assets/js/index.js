@@ -330,11 +330,89 @@ function initCheckboxes() {
         });
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-        const bannerAnimation = new BannerAnimation();
-        const lazyLoadInstance = new LazyLoad({});
+function initPriceSlider() {
+        const minSlider = document.getElementById('min-slider');
+        const maxSlider = document.getElementById('max-slider');
+        const minInput = document.getElementById('min-price');
+        const maxInput = document.getElementById('max-price');
+        const track = document.querySelector('.slider-track');
 
+        if (!minSlider || !maxSlider || !minInput || !maxInput || !track) return;
+
+        function updateTrack() {
+                const minVal = parseInt(minSlider.value);
+                const maxVal = parseInt(maxSlider.value);
+                const minPercent = (minVal / 2700) * 100;
+                const maxPercent = (maxVal / 2700) * 100;
+
+
+                track.style.background = `linear-gradient(to right, 
+            #FF7031 0%, 
+            #FF7031 ${minPercent}%, 
+            #F6F9FD ${minPercent}%, 
+            #F6F9FD ${maxPercent}%, 
+            #FF7031 ${maxPercent}%, 
+            #FF7031 100%)`;
+        }
+
+        function updateMinInput() {
+                minInput.value = minSlider.value;
+                if (parseInt(minSlider.value) > parseInt(maxSlider.value)) {
+                        maxSlider.value = minSlider.value;
+                        maxInput.value = minSlider.value;
+                }
+                updateTrack();
+        }
+
+        function updateMaxInput() {
+                maxInput.value = maxSlider.value;
+                if (parseInt(maxSlider.value) < parseInt(minSlider.value)) {
+                        minSlider.value = maxSlider.value;
+                        minInput.value = maxSlider.value;
+                }
+                updateTrack();
+        }
+
+        function updateMinSlider() {
+                minSlider.value = Math.min(minInput.value, maxInput.value);
+                updateTrack();
+        }
+
+        function updateMaxSlider() {
+                maxSlider.value = Math.max(minInput.value, maxInput.value);
+                updateTrack();
+        }
+
+        minSlider.addEventListener('input', updateMinInput);
+        maxSlider.addEventListener('input', updateMaxInput);
+        minInput.addEventListener('input', updateMinSlider);
+        maxInput.addEventListener('input', updateMaxSlider);
+
+
+        updateTrack();
+}
+
+function adjustInputWidth(input) {
+        const tempSpan = document.createElement('span');
+        tempSpan.style.position = 'absolute';
+        tempSpan.style.visibility = 'hidden';
+        tempSpan.style.whiteSpace = 'pre';
+        tempSpan.style.font = window.getComputedStyle(input).font;
+        tempSpan.style.padding = '8px 0';
+
+        tempSpan.textContent = input.value || input.placeholder || '0';
+        document.body.appendChild(tempSpan);
+
+        input.style.width = (tempSpan.offsetWidth + 10) + 'px';
+
+        document.body.removeChild(tempSpan);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
         SlidersInit();
+        const lazyLoadInstance = new LazyLoad({});
+        const bannerAnimation = new BannerAnimation();
+
         InitModals();
         initPhoneMasksWithPlaceholder();
         initMasks();
@@ -343,4 +421,5 @@ window.addEventListener('DOMContentLoaded', () => {
         initTabs();
         initQuantityCounters();
         initCheckboxes();
+        initPriceSlider();
 });
