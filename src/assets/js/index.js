@@ -552,6 +552,12 @@ function adjustInputWidth(input) {
 }
 
 function initAll() {
+
+        document.querySelectorAll('.price-filter, .filter-variants__item').forEach(item => {
+                item.classList.add('collapsed');
+        });
+
+
         SlidersInit();
         const lazyLoadInstance = new LazyLoad({});
         const bannerAnimation = new BannerAnimation();
