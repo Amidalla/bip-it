@@ -443,15 +443,29 @@ function initPriceFilterToggle() {
 
         priceFilters.forEach(priceFilter => {
                 const legend = priceFilter.querySelector('.price-filter__legend');
+                const content = priceFilter.querySelector('.price-filter__content');
 
-                if (!legend) return;
+                if (!legend || !content) return;
 
+
+                content.style.cssText = 'opacity: 0; max-height: 0; overflow: hidden; transition: none;';
                 priceFilter.classList.add('collapsed');
 
                 legend.addEventListener('click', function() {
                         closeOtherFilters(priceFilter);
+
+
+                        if (!content.style.transition) {
+                                content.style.transition = 'all 0.3s ease';
+                        }
+
                         priceFilter.classList.toggle('collapsed');
                 });
+
+
+                setTimeout(() => {
+                        content.style.transition = 'all 0.3s ease';
+                }, 300);
         });
 }
 
