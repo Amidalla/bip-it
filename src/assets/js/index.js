@@ -268,11 +268,22 @@ function initFixedHeader() {
 
         if (!menuNormal || !menuFixed) return;
 
+        menuFixed.classList.remove('show');
+        menuNormal.classList.remove('hide');
+        document.body.classList.remove('has-fixed-header');
+
         let isFixed = false;
         let ticking = false;
+        let initialized = false;
 
         function checkScroll() {
                 const currentScrollY = window.scrollY;
+
+                if (!initialized && currentScrollY > 0) {
+                        initialized = true;
+                        return;
+                }
+
                 if (currentScrollY > scrollOffset && !isFixed) {
                         menuNormal.classList.add('hide');
                         menuFixed.classList.add('show');
@@ -285,9 +296,13 @@ function initFixedHeader() {
                         document.body.classList.remove('has-fixed-header');
                         isFixed = false;
                 }
+
+                initialized = true;
         }
 
-        checkScroll();
+        setTimeout(() => {
+                checkScroll();
+        }, 300);
 
         window.addEventListener('scroll', () => {
                 if (!ticking) {
@@ -297,6 +312,10 @@ function initFixedHeader() {
                         });
                         ticking = true;
                 }
+        });
+
+        window.addEventListener('resize', () => {
+                checkScroll();
         });
 }
 
@@ -331,65 +350,189 @@ function initCheckboxes() {
 }
 
 function initPriceSlider() {
-        const minSlider = document.getElementById('min-slider');
-        const maxSlider = document.getElementById('max-slider');
-        const minInput = document.getElementById('min-price');
-        const maxInput = document.getElementById('max-price');
-        const track = document.querySelector('.slider-track');
+        const sliderContainers = document.querySelectorAll('.price-sliders');
 
-        if (!minSlider || !maxSlider || !minInput || !maxInput || !track) return;
+        sliderContainers.forEach((container, index) => {
+                const minSlider = container.querySelector('.min-slider');
+                const maxSlider = container.querySelector('.max-slider');
 
-        function updateTrack() {
-                const minVal = parseInt(minSlider.value);
-                const maxVal = parseInt(maxSlider.value);
-                const minPercent = (minVal / 2700) * 100;
-                const maxPercent = (maxVal / 2700) * 100;
+                const filterForm = container.closest('.filter-form');
+                const minInput = filterForm.querySelector('.min-price');
+                const maxInput = filterForm.querySelector('.max-price');
+                const track = container.querySelector('.slider-track');
+
+                if (!minSlider || !maxSlider || !minInput || !maxInput || !track) return;
 
 
-                track.style.background = `linear-gradient(to right, 
-            #FF7031 0%, 
-            #FF7031 ${minPercent}%, 
-            #F6F9FD ${minPercent}%, 
-            #F6F9FD ${maxPercent}%, 
-            #FF7031 ${maxPercent}%, 
-            #FF7031 100%)`;
-        }
+                const uniqueId = Date.now() + index;
+                minSlider.id = `min-slider-${uniqueId}`;
+                maxSlider.id = `max-slider-${uniqueId}`;
 
-        function updateMinInput() {
-                minInput.value = minSlider.value;
-                if (parseInt(minSlider.value) > parseInt(maxSlider.value)) {
-                        maxSlider.value = minSlider.value;
-                        maxInput.value = minSlider.value;
+                function updateTrack() {
+                        const minVal = parseInt(minSlider.value);
+                        const maxVal = parseInt(maxSlider.value);
+                        const minPercent = (minVal / 2700) * 100;
+                        const maxPercent = (maxVal / 2700) * 100;
+
+                        track.style.background = `linear-gradient(to right, 
+                #FF7031 0%, 
+                #FF7031 ${minPercent}%, 
+                #F6F9FD ${minPercent}%, 
+                #F6F9FD ${maxPercent}%, 
+                #FF7031 ${maxPercent}%, 
+                #FF7031 100%)`;
                 }
-                updateTrack();
-        }
 
-        function updateMaxInput() {
-                maxInput.value = maxSlider.value;
-                if (parseInt(maxSlider.value) < parseInt(minSlider.value)) {
-                        minSlider.value = maxSlider.value;
-                        minInput.value = maxSlider.value;
+                function updateMinInput() {
+                        minInput.value = minSlider.value;
+                        if (parseInt(minSlider.value) > parseInt(maxSlider.value)) {
+                                maxSlider.value = minSlider.value;
+                                maxInput.value = minSlider.value;
+                        }
+                        updateTrack();
                 }
+
+                function updateMaxInput() {
+                        maxInput.value = maxSlider.value;
+                        if (parseInt(maxSlider.value) < parseInt(minSlider.value)) {
+                                minSlider.value = maxSlider.value;
+                                minInput.value = maxSlider.value;
+                        }
+                        updateTrack();
+                }
+
+                function updateMinSlider() {
+                        minSlider.value = Math.min(minInput.value, maxInput.value);
+                        updateTrack();
+                }
+
+                function updateMaxSlider() {
+                        maxSlider.value = Math.max(minInput.value, maxInput.value);
+                        updateTrack();
+                }
+
+                minSlider.addEventListener('input', updateMinInput);
+                maxSlider.addEventListener('input', updateMaxInput);
+                minInput.addEventListener('input', updateMinSlider);
+                maxInput.addEventListener('input', updateMaxSlider);
+
+
+                minSlider.addEventListener('touchstart', function(e) {
+                        e.stopPropagation();
+                });
+
+                maxSlider.addEventListener('touchstart', function(e) {
+                        e.stopPropagation();
+                });
+
+                minSlider.addEventListener('touchmove', function(e) {
+                        e.stopPropagation();
+                });
+
+                maxSlider.addEventListener('touchmove', function(e) {
+                        e.stopPropagation();
+                });
+
+
                 updateTrack();
+        });
+}
+
+function initPriceFilterToggle() {
+        const priceFilters = document.querySelectorAll('.price-filter');
+
+        priceFilters.forEach(priceFilter => {
+                const legend = priceFilter.querySelector('.price-filter__legend');
+
+                if (!legend) return;
+
+                priceFilter.classList.add('collapsed');
+
+                legend.addEventListener('click', function() {
+                        closeOtherFilters(priceFilter);
+                        priceFilter.classList.toggle('collapsed');
+                });
+        });
+}
+
+function initFilterVariants() {
+        const filterContainers = document.querySelectorAll('.filter-variants');
+
+        filterContainers.forEach(container => {
+                const filterItems = container.querySelectorAll('.filter-variants__item');
+
+                filterItems.forEach(item => {
+                        const header = item.querySelector('.filter-variants__header');
+
+                        if (!header) return;
+
+                        item.classList.add('collapsed');
+
+                        header.addEventListener('click', function() {
+                                closeOtherFilters(item);
+                                item.classList.toggle('collapsed');
+                        });
+                });
+        });
+}
+
+function closeOtherFilters(currentFilter) {
+        const parentContainer = currentFilter.closest('.filter-form') || document;
+        const allFilters = parentContainer.querySelectorAll('.price-filter, .filter-variants__item');
+
+        allFilters.forEach(filter => {
+                if (filter !== currentFilter && !filter.classList.contains('collapsed')) {
+                        filter.classList.add('collapsed');
+                }
+        });
+}
+
+function initMobileFilter() {
+        const filterButtons = document.querySelectorAll('.filter-mobile__btn');
+        const modalFilter = document.querySelector('.modal-filter');
+        const closeButtons = document.querySelectorAll('.modal-filter__close');
+
+        if (!filterButtons.length || !modalFilter) return;
+
+        function openFilterModal() {
+                modalFilter.classList.add('active');
+                document.body.classList.add('no-scroll');
+                document.addEventListener('touchmove', preventScroll, { passive: false });
         }
 
-        function updateMinSlider() {
-                minSlider.value = Math.min(minInput.value, maxInput.value);
-                updateTrack();
+        function closeFilterModal() {
+                modalFilter.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+                document.removeEventListener('touchmove', preventScroll);
         }
 
-        function updateMaxSlider() {
-                maxSlider.value = Math.max(minInput.value, maxInput.value);
-                updateTrack();
+        function preventScroll(e) {
+                if (modalFilter.classList.contains('active')) {
+                        e.preventDefault();
+                }
         }
 
-        minSlider.addEventListener('input', updateMinInput);
-        maxSlider.addEventListener('input', updateMaxInput);
-        minInput.addEventListener('input', updateMinSlider);
-        maxInput.addEventListener('input', updateMaxSlider);
+        filterButtons.forEach(button => {
+                button.addEventListener('click', openFilterModal);
+        });
 
+        closeButtons.forEach(button => {
+                if (button) {
+                        button.addEventListener('click', closeFilterModal);
+                }
+        });
 
-        updateTrack();
+        document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalFilter.classList.contains('active')) {
+                        closeFilterModal();
+                }
+        });
+
+        modalFilter.addEventListener('click', function(e) {
+                if (e.target === this) {
+                        closeFilterModal();
+                }
+        });
 }
 
 function adjustInputWidth(input) {
@@ -408,11 +551,10 @@ function adjustInputWidth(input) {
         document.body.removeChild(tempSpan);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+function initAll() {
         SlidersInit();
         const lazyLoadInstance = new LazyLoad({});
         const bannerAnimation = new BannerAnimation();
-
         InitModals();
         initPhoneMasksWithPlaceholder();
         initMasks();
@@ -421,5 +563,18 @@ window.addEventListener('DOMContentLoaded', () => {
         initTabs();
         initQuantityCounters();
         initCheckboxes();
+        initPriceFilterToggle();
+        initFilterVariants();
         initPriceSlider();
-});
+        initMobileFilter();
+}
+
+if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAll);
+} else {
+        initAll();
+}
+
+if (module.hot) {
+        module.hot.accept();
+}

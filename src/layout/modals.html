@@ -147,3 +147,171 @@
         <include src="assets/svg/cross.html"></include>
     </div>
 </div>
+<div class="modal-filter">
+    <div class="modal-filter__inner">
+    <aside class="filter">
+        <div class="filter__labels">
+            <div>
+                14
+            </div>
+            <div class="active">
+                16
+            </div>
+            <div>
+                20
+            </div>
+        </div>
+        <form class="filter-form" method="GET">
+            <div class="filter__bg">
+                <fieldset class="price-filter">
+                    <legend class="price-filter__legend">Цена</legend>
+                    <div class="price-filter__content">
+                        <div class="price-inputs">
+                            <div class="price-input-group">
+                                <label for="min-price-modal" class="price-label">От</label>
+                                <div class="price-input-wrapper">
+                                    <input type="number" id="min-price-modal" name="min_price" value="100" min="0" max="2700" class="price-input min-price">
+                                    <span class="price-currency">руб</span>
+                                </div>
+                            </div>
+
+                            <div class="price-input-group">
+                                <label for="max-price-modal" class="price-label">До</label>
+                                <div class="price-input-wrapper">
+                                    <input type="number" id="max-price-modal" name="max_price" value="2700" min="0" max="2700" class="price-input max-price">
+                                    <span class="price-currency">руб</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="price-sliders">
+                            <div class="slider-track"></div>
+                            <input type="range" id="min-slider-2" min="0" max="2700" value="100" class="slider min-slider">
+                            <input type="range" id="max-slider-2" min="0" max="2700" value="2700" class="slider max-slider">
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="filter-variants">
+                    <div class="filter-variants__item collapsed">
+                        <div class="filter-variants__header">
+                            <span class="filter-variants__toggle">Бренд</span>
+                        </div>
+                        <div class="filter-variants__content">
+                            <div class="filter-variants__option">
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>GALMAR <span>(10)</span></span>
+                                    </label>
+                                </div>
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>ZANDZ <span>(10)</span></span>
+                                    </label>
+                                </div>
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>Название бренда <span>(10)</span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-variants__item collapsed">
+                        <div class="filter-variants__header">
+                            <span class="filter-variants__toggle">Материал стержня</span>
+                        </div>
+                        <div class="filter-variants__content">
+                            <div class="filter-variants__option">
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>Cталь омедненная <span>(10)</span></span>
+                                    </label>
+                                </div>
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>Сталь оцинкованная <span>(10)</span></span>
+                                    </label>
+                                </div>
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>Сталь нержавеющая <span>(10)</span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-variants__item collapsed">
+                        <div class="filter-variants__header">
+                            <span class="filter-variants__toggle">Тип стержня</span>
+                        </div>
+                        <div class="filter-variants__content">
+                            <div class="filter-variants__option">
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>Резьбовой <span>(10)</span></span>
+                                    </label>
+                                </div>
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>Безмуфтовый <span>(10)</span></span>
+                                    </label>
+                                </div>
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>С заострением <span>(10)</span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-variants__item collapsed">
+                        <div class="filter-variants__header">
+                            <span class="filter-variants__toggle">Длина стержня (мм)</span>
+                        </div>
+                        <div class="filter-variants__content">
+                            <div class="filter-variants__option">
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>14 <span>(10)</span></span>
+                                    </label>
+                                </div>
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>16 <span>(10)</span></span>
+                                    </label>
+                                </div>
+                                <div class="filter-variants__inner">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="a[]" value="10">
+                                        <span>20 <span>(10)</span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="modal-filter__btn">
+                    <button class="clear-btn">
+                        <span>Показать товары</span>
+                        <include src="assets/svg/all-news-icon.html"></include>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </aside>
+    </div>
+    <div class="modal-filter__close">
+        <include src="assets/svg/cross.html"></include>
+    </div>
+</div>
