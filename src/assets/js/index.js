@@ -93,28 +93,93 @@ function initMasks() {
 class Tabs {
         constructor(container) {
                 this.container = container;
-                this.buttons = container.querySelectorAll('.tab__btn');
-                this.panes = container.querySelectorAll('.tab__pane');
                 this.init();
         }
 
         init() {
-                this.buttons.forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                                this.switchTab(e.target);
-                        });
-                });
+
+                if (this.container.querySelector('.tab__item')) {
+
+                        this.initAccordion();
+                } else {
+
+                        this.initDesktopTabs();
+                }
         }
 
-        switchTab(button) {
-                const tabId = button.dataset.tab;
-                this.buttons.forEach(btn => btn.classList.remove('active'));
-                this.panes.forEach(pane => pane.classList.remove('active'));
-                button.classList.add('active');
-                const activePane = this.container.querySelector(`#${tabId}`);
-                if (activePane) {
-                        activePane.classList.add('active');
+        initDesktopTabs() {
+                const buttons = this.container.querySelectorAll('.tabs__header .tab__btn');
+                const panes = this.container.querySelectorAll('.tabs__content .tab__pane');
+
+                buttons.forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                                e.preventDefault();
+
+
+                                buttons.forEach(b => b.classList.remove('active'));
+                                panes.forEach(p => {
+                                        p.classList.remove('active');
+                                        p.style.display = 'none';
+                                });
+
+
+                                btn.classList.add('active');
+                                const tabId = btn.dataset.tab;
+                                const targetPane = this.container.querySelector(`#${tabId}`);
+                                if (targetPane) {
+                                        targetPane.classList.add('active');
+                                        targetPane.style.display = 'block';
+                                }
+                        });
+                });
+
+
+                const hasActive = Array.from(buttons).some(btn => btn.classList.contains('active'));
+                if (!hasActive && buttons.length > 0) {
+                        buttons[0].click();
                 }
+        }
+
+        initAccordion() {
+                const tabItems = this.container.querySelectorAll('.tab__item');
+
+                tabItems.forEach(item => {
+                        const btn = item.querySelector('.tab__btn');
+                        const pane = item.querySelector('.tab__pane');
+
+                        if (!btn || !pane) return;
+
+
+                        pane.style.display = 'none';
+
+                        btn.addEventListener('click', (e) => {
+                                e.preventDefault();
+
+                                const isActive = btn.classList.contains('active');
+
+                                if (isActive) {
+
+                                        btn.classList.remove('active');
+                                        pane.style.display = 'none';
+                                } else {
+
+                                        tabItems.forEach(otherItem => {
+                                                const otherBtn = otherItem.querySelector('.tab__btn');
+                                                const otherPane = otherItem.querySelector('.tab__pane');
+                                                if (otherBtn && otherPane) {
+                                                        otherBtn.classList.remove('active');
+                                                        otherPane.style.display = 'none';
+                                                }
+                                        });
+
+
+                                        btn.classList.add('active');
+                                        pane.style.display = 'block';
+                                }
+                        });
+                });
+
+
         }
 }
 
@@ -320,10 +385,13 @@ function initFixedHeader() {
 }
 
 function initTabs() {
-        const tabsContainer = document.querySelector('.bestsellers__tabs');
-        if (tabsContainer) {
-                new Tabs(tabsContainer);
-        }
+        const tabsContainers = document.querySelectorAll('.bestsellers__tabs, .product__tabs');
+        tabsContainers.forEach(container => {
+
+                if (container.offsetParent !== null) {
+                        new Tabs(container);
+                }
+        });
 }
 
 function initQuantityCounters() {
@@ -362,7 +430,6 @@ function initPriceSlider() {
                 const track = container.querySelector('.slider-track');
 
                 if (!minSlider || !maxSlider || !minInput || !maxInput || !track) return;
-
 
                 const uniqueId = Date.now() + index;
                 minSlider.id = `min-slider-${uniqueId}`;
@@ -416,7 +483,6 @@ function initPriceSlider() {
                 minInput.addEventListener('input', updateMinSlider);
                 maxInput.addEventListener('input', updateMaxSlider);
 
-
                 minSlider.addEventListener('touchstart', function(e) {
                         e.stopPropagation();
                 });
@@ -433,7 +499,6 @@ function initPriceSlider() {
                         e.stopPropagation();
                 });
 
-
                 updateTrack();
         });
 }
@@ -447,13 +512,11 @@ function initPriceFilterToggle() {
 
                 if (!legend || !content) return;
 
-
                 content.style.cssText = 'opacity: 0; max-height: 0; overflow: hidden; transition: none;';
                 priceFilter.classList.add('collapsed');
 
                 legend.addEventListener('click', function() {
                         closeOtherFilters(priceFilter);
-
 
                         if (!content.style.transition) {
                                 content.style.transition = 'all 0.3s ease';
@@ -461,7 +524,6 @@ function initPriceFilterToggle() {
 
                         priceFilter.classList.toggle('collapsed');
                 });
-
 
                 setTimeout(() => {
                         content.style.transition = 'all 0.3s ease';
@@ -566,11 +628,9 @@ function adjustInputWidth(input) {
 }
 
 function initAll() {
-
         document.querySelectorAll('.price-filter, .filter-variants__item').forEach(item => {
                 item.classList.add('collapsed');
         });
-
 
         SlidersInit();
         const lazyLoadInstance = new LazyLoad({});

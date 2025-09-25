@@ -11,7 +11,7 @@ export function SlidersInit() {
         navigation: {
             nextEl: '.slider-main .swiper-button-next',
             prevEl: '.slider-main .swiper-button-prev'
-        },
+        }
     });
 
     const bestsellersSlider = new Swiper(".slider-bestsellers", {
@@ -26,21 +26,19 @@ export function SlidersInit() {
         navigation: {
             nextEl: '.slider-bestsellers .swiper-button-next',
             prevEl: '.slider-bestsellers .swiper-button-prev'
-        }, breakpoints: {
+        },
+        breakpoints: {
             0: {
                 slidesPerView: 1.2,
-                spaceBetween: 30,
-
+                spaceBetween: 30
             },
             1000: {
                 slidesPerView: 1.5,
-                spaceBetween: 30,
-
+                spaceBetween: 30
             },
             1366: {
                 slidesPerView: 2,
-                spaceBetween: 30,
-
+                spaceBetween: 30
             }
         }
     });
@@ -55,14 +53,14 @@ export function SlidersInit() {
         initialSlide: 0,
         breakpoints: {
             0: {
-                slidesPerView: 5,
+                slidesPerView: 5
             },
             1365: {
-                slidesPerView: 6,
+                slidesPerView: 6
             },
             1640: {
-                slidesPerView: 8,
-            },
+                slidesPerView: 8
+            }
         }
     });
 
@@ -78,34 +76,60 @@ export function SlidersInit() {
         navigation: {
             nextEl: '.slider-main-news .swiper-button-next',
             prevEl: '.slider-main-news .swiper-button-prev'
-        }, breakpoints: {
+        },
+        breakpoints: {
             0: {
                 slidesPerView: 2,
                 spaceBetween: 15,
                 pagination: false,
-                navigation: false,
-
+                navigation: false
             },
             500: {
                 slidesPerView: 2.5,
-                spaceBetween: 32,
-
+                spaceBetween: 32
             },
             1301: {
                 slidesPerView: 3,
-                spaceBetween: 32,
+                spaceBetween: 32
+            }
+        }
+    });
 
+    const productSlider = new Swiper(".slider-product", {
+        autoplay: false,
+        speed: 1000,
+        pagination: {
+            el: ".slider-product .swiper-pagination",
+            clickable: true
+        }
+    });
+
+    const similarSlider = new Swiper(".slider-similar", {
+        autoplay: false,
+        slidesPerView: 2,
+        spaceBetween: 30,
+        speed: 1000,
+        pagination: {
+            el: ".slider-similar .swiper-pagination",
+            clickable: true
+        },
+        navigation: {
+            nextEl: '.slider-similar .swiper-button-next',
+            prevEl: '.slider-similar .swiper-button-prev'
+        },
+        breakpoints: {
+            0: {
+                slidesPerView: 1.2,
+                spaceBetween: 30
+            },
+            1000: {
+                slidesPerView: 1.5,
+                spaceBetween: 30
+            },
+            1366: {
+                slidesPerView: 2,
+                spaceBetween: 30
             }
         }
     });
 }
-
-
-
-
-
-
-
-
-
-
