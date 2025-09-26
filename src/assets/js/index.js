@@ -6,6 +6,7 @@ import 'swiper/swiper-bundle.css';
 import { Pagination, Navigation, Autoplay, Thumbs } from 'swiper/modules';
 import { SlidersInit } from "./sliders";
 import { InitModals } from "./modals";
+import { InitVideo } from "./video";
 import { BannerAnimation } from "./animation.js"
 import IMask from 'imask';
 
@@ -636,6 +637,7 @@ function initAll() {
         const lazyLoadInstance = new LazyLoad({});
         const bannerAnimation = new BannerAnimation();
         InitModals();
+        InitVideo();
         initPhoneMasksWithPlaceholder();
         initMasks();
         initSearch();
