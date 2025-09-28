@@ -1,6 +1,7 @@
 export function InitModals() {
     const catalogModal = document.querySelector(".modal-catalog");
     const catalogBtns = document.querySelectorAll(".catalog-btn");
+    const catalogCloseBtn = document.querySelector(".catalog-close");
     const mobileMenu = document.querySelector(".mobile-menu");
     const burgerBtn = document.querySelector(".header__burger");
     const closeMobileMenuBtn = document.querySelector(".mobile-menu__close");
@@ -120,6 +121,14 @@ export function InitModals() {
     });
 
 
+    if (catalogCloseBtn) {
+        catalogCloseBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            closeModal(catalogModal);
+        });
+    }
+
+
     if (burgerBtn) {
         burgerBtn.addEventListener('click', (event) => {
             event.preventDefault();
@@ -140,6 +149,7 @@ export function InitModals() {
         if (catalogModal?.classList.contains('opened')) {
             let isClickInsideModal = catalogModal.contains(event.target);
             let isCatalogBtn = false;
+            let isCatalogClose = catalogCloseBtn?.contains(event.target);
 
             catalogBtns.forEach(btn => {
                 if (btn.contains(event.target)) {
@@ -147,7 +157,7 @@ export function InitModals() {
                 }
             });
 
-            if (!isClickInsideModal && !isCatalogBtn) {
+            if (!isClickInsideModal && !isCatalogBtn && !isCatalogClose) {
                 closeModal(catalogModal);
             }
         }
@@ -192,6 +202,7 @@ export function InitModals() {
         mobileMenu: !!mobileMenu,
         burgerBtn: !!burgerBtn,
         catalogBtns: catalogBtns.length,
+        catalogCloseBtn: !!catalogCloseBtn,
         catalogImage: !!catalogImage
     });
 }

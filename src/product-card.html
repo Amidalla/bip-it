@@ -37,77 +37,130 @@
     <section class="product">
         <div class="container">
             <div class="product__content">
-                <div class="product__inner">
-                <div class="product__slider">
-                    <div class="swiper slider-product">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <picture>
-                                    <source media="(max-width: 500px)" data-srcset="assets/images/product-slide_mobile.png">
-                                    <source media="(max-width: 768px)" data-srcset="assets/images/product-slide_tablet.png">
-                                    <img class="lazy" data-src="assets/images/product-slide.png" alt="">
-                                </picture>
+                <div class="product__wrapper">
+                    <div class="product__inner">
+                    <div class="product__slider">
+                        <div class="swiper slider-product">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <picture>
+                                        <source media="(max-width: 500px)" data-srcset="assets/images/product-slide_mobile.png">
+                                        <source media="(max-width: 768px)" data-srcset="assets/images/product-slide_tablet.png">
+                                        <img class="lazy" data-src="assets/images/product-slide.png" alt="">
+                                    </picture>
+                                </div>
+                                <div class="swiper-slide">
+                                    <picture>
+                                        <source media="(max-width: 500px)" data-srcset="assets/images/product-slide_mobile.png">
+                                        <source media="(max-width: 768px)" data-srcset="assets/images/product-slide_tablet.png">
+                                        <img class="lazy" data-src="assets/images/product-slide.png" alt="">
+                                    </picture>
+                                </div>
+                                <div class="swiper-slide">
+                                    <picture>
+                                        <source media="(max-width: 500px)" data-srcset="assets/images/product-slide_mobile.png">
+                                        <source media="(max-width: 768px)" data-srcset="assets/images/product-slide_tablet.png">
+                                        <img class="lazy" data-src="assets/images/product-slide.png" alt="">
+                                    </picture>
+                                </div>
                             </div>
-                            <div class="swiper-slide">
-                                <picture>
-                                    <source media="(max-width: 500px)" data-srcset="assets/images/product-slide_mobile.png">
-                                    <source media="(max-width: 768px)" data-srcset="assets/images/product-slide_tablet.png">
-                                    <img class="lazy" data-src="assets/images/product-slide.png" alt="">
-                                </picture>
+                            <div class="swiper-pagination"></div>
+                        </div>
+                    </div>
+                    <div class="product__text">
+                        <div class="product__name">bp-100-001 Стержень заземления омедненный резьбовой (D=14мм; L=1200 мм)</div>
+                        <div class="specs-table">
+                            <div class="specs-row">
+                                <span class="specs-label">Модель</span>
+                                <span class="specs-dots"></span>
+                                <span class="specs-value">bp-630-321</span>
                             </div>
-                            <div class="swiper-slide">
-                                <picture>
-                                    <source media="(max-width: 500px)" data-srcset="assets/images/product-slide_mobile.png">
-                                    <source media="(max-width: 768px)" data-srcset="assets/images/product-slide_tablet.png">
-                                    <img class="lazy" data-src="assets/images/product-slide.png" alt="">
-                                </picture>
+                            <div class="specs-row">
+                                <span class="specs-label">Бренд</span>
+                                <span class="specs-dots"></span>
+                                <span class="specs-value">БИП</span>
+                            </div>
+                            <div class="specs-row">
+                                <span class="specs-label">Наличие</span>
+                                <span class="specs-dots"></span>
+                                <span class="specs-value">есть на складе</span>
+                            </div>
+                            <div class="specs-row">
+                                <span class="specs-label">Вес</span>
+                                <span class="specs-dots"></span>
+                                <span class="specs-value">20 кг</span>
+                            </div>
+                            <div class="specs-row">
+                                <span class="specs-label">Размер(Д x Ш x В)</span>
+                                <span class="specs-dots"></span>
+                                <span class="specs-value">50 x 50 x 100 см</span>
                             </div>
                         </div>
-                        <div class="swiper-pagination"></div>
-                    </div>
-                </div>
-                <div class="product__text">
-                    <div class="product__name">bp-100-001 Стержень заземления омедненный резьбовой (D=14мм; L=1200 мм)</div>
-                    <div class="specs-table">
-                        <div class="specs-row">
-                            <span class="specs-label">Модель</span>
-                            <span class="specs-dots"></span>
-                            <span class="specs-value">bp-630-321</span>
+                        <div class="product__labels">
+                            <div class="product__item">
+                                20
+                            </div>
                         </div>
-                        <div class="specs-row">
-                            <span class="specs-label">Бренд</span>
-                            <span class="specs-dots"></span>
-                            <span class="specs-value">БИП</span>
-                        </div>
-                        <div class="specs-row">
-                            <span class="specs-label">Наличие</span>
-                            <span class="specs-dots"></span>
-                            <span class="specs-value">есть на складе</span>
-                        </div>
-                        <div class="specs-row">
-                            <span class="specs-label">Вес</span>
-                            <span class="specs-dots"></span>
-                            <span class="specs-value">20 кг</span>
-                        </div>
-                        <div class="specs-row">
-                            <span class="specs-label">Размер(Д x Ш x В)</span>
-                            <span class="specs-dots"></span>
-                            <span class="specs-value">50 x 50 x 100 см</span>
+                        <div class="product__description">
+                            <div class="product__title">Краткое описание</div>
+                            <p>Стержень GALMAR GL-10012 из тянутой стали, гальванически покрытый чистой медью (99,9%),
+                                молекулярно и прочно сцепленной со сталью. Стальной стержень отличается высоким сопротивлением
+                                растяжению 600 Н/мм², предоставляющем возможность забивания его на большую глубину с помощью отбойного молотка.</p>
+                            <button class="details">Подробнее</button>
                         </div>
                     </div>
-                    <div class="product__labels">
-                        <div class="product__item">
-                            20
+                    </div>
+                    <div class="product__tabs tabs-desktop">
+                        <div class="tabs__header">
+                            <button class="tab__btn" data-tab="description">Описание</button>
+                            <button class="tab__btn active" data-tab="characteristics">Характеристики</button>
+                            <button class="tab__btn" data-tab="delivery">Доставка</button>
+                            <button class="tab__btn" data-tab="payment">Оплата</button>
+                            <button class="tab__btn" data-tab="guarantee">Гарантийные обязательства</button>
+                        </div>
+                        <div class="tabs__content">
+                            <div class="tab__pane" id="description">
+                                <div class="tabs__container">Какой-то контент</div>
+                            </div>
+                            <div class="tab__pane active" id="characteristics">
+                                <div class="tabs__container">
+                                    <div class="tabs__table">
+                                        <table class="characteristics-table">
+                                            <tr>
+                                                <td>Диаметр резьбы (мм)</td>
+                                                <td>16</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Длина стержня (мм)</td>
+                                                <td>1500</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Материал стержня</td>
+                                                <td>Cталь омедненная</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Диаметр стержня (мм)</td>
+                                                <td>14</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Вес (кг)</td>
+                                                <td>1,9</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab__pane" id="delivery">
+                                <div class="tabs__container">Какой-то контент</div>
+                            </div>
+                            <div class="tab__pane" id="payment">
+                                <div class="tabs__container">Какой-то контент</div>
+                            </div>
+                            <div class="tab__pane" id="guarantee">
+                                <div class="tabs__container">Какой-то контент</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="product__description">
-                        <div class="product__title">Краткое описание</div>
-                        <p>Стержень GALMAR GL-10012 из тянутой стали, гальванически покрытый чистой медью (99,9%),
-                            молекулярно и прочно сцепленной со сталью. Стальной стержень отличается высоким сопротивлением
-                            растяжению 600 Н/мм², предоставляющем возможность забивания его на большую глубину с помощью отбойного молотка.</p>
-                        <button class="details">Подробнее</button>
-                    </div>
-                </div>
                 </div>
                 <div class="product__info">
                     <div class="counter__prise">
@@ -209,57 +262,6 @@
                             молекулярно и прочно сцепленной со сталью. Стальной стержень отличается высоким сопротивлением
                             растяжению 600 Н/мм², предоставляющем возможность забивания его на большую глубину с помощью отбойного молотка.</p>
                         <button class="details">Подробнее</button>
-                    </div>
-                </div>
-            </div>
-            <div class="product__tabs tabs-desktop">
-                <div class="tabs__header">
-                    <button class="tab__btn" data-tab="description">Описание</button>
-                    <button class="tab__btn active" data-tab="characteristics">Характеристики</button>
-                    <button class="tab__btn" data-tab="delivery">Доставка</button>
-                    <button class="tab__btn" data-tab="payment">Оплата</button>
-                    <button class="tab__btn" data-tab="guarantee">Гарантийные обязательства</button>
-                </div>
-                <div class="tabs__content">
-                    <div class="tab__pane" id="description">
-                        <div class="tabs__container">Какой-то контент</div>
-                    </div>
-                    <div class="tab__pane active" id="characteristics">
-                        <div class="tabs__container">
-                            <div class="tabs__table">
-                                <table class="characteristics-table">
-                                    <tr>
-                                        <td>Диаметр резьбы (мм)</td>
-                                        <td>16</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Длина стержня (мм)</td>
-                                        <td>1500</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Материал стержня</td>
-                                        <td>Cталь омедненная</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Диаметр стержня (мм)</td>
-                                        <td>14</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Вес (кг)</td>
-                                        <td>1,9</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab__pane" id="delivery">
-                        <div class="tabs__container">Какой-то контент</div>
-                    </div>
-                    <div class="tab__pane" id="payment">
-                        <div class="tabs__container">Какой-то контент</div>
-                    </div>
-                    <div class="tab__pane" id="guarantee">
-                        <div class="tabs__container">Какой-то контент</div>
                     </div>
                 </div>
             </div>
@@ -719,7 +721,6 @@
             </div>
         </div>
     </section>
-    <include src="layout/advantages-block.html"></include>
     <include src="layout/main-form.html"></include>
 </main>
 

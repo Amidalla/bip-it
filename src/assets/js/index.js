@@ -7,6 +7,8 @@ import { Pagination, Navigation, Autoplay, Thumbs } from 'swiper/modules';
 import { SlidersInit } from "./sliders";
 import { InitModals } from "./modals";
 import { InitVideo } from "./video";
+import { InitPrint } from "./print";
+import { InitSticky } from "./stucky";
 import { BannerAnimation } from "./animation.js"
 import IMask from 'imask';
 
@@ -98,12 +100,9 @@ class Tabs {
         }
 
         init() {
-
                 if (this.container.querySelector('.tab__item')) {
-
                         this.initAccordion();
                 } else {
-
                         this.initDesktopTabs();
                 }
         }
@@ -116,13 +115,11 @@ class Tabs {
                         btn.addEventListener('click', (e) => {
                                 e.preventDefault();
 
-
                                 buttons.forEach(b => b.classList.remove('active'));
                                 panes.forEach(p => {
                                         p.classList.remove('active');
                                         p.style.display = 'none';
                                 });
-
 
                                 btn.classList.add('active');
                                 const tabId = btn.dataset.tab;
@@ -133,7 +130,6 @@ class Tabs {
                                 }
                         });
                 });
-
 
                 const hasActive = Array.from(buttons).some(btn => btn.classList.contains('active'));
                 if (!hasActive && buttons.length > 0) {
@@ -150,7 +146,7 @@ class Tabs {
 
                         if (!btn || !pane) return;
 
-
+                        // Скрываем все панели при инициализации
                         pane.style.display = 'none';
 
                         btn.addEventListener('click', (e) => {
@@ -159,27 +155,16 @@ class Tabs {
                                 const isActive = btn.classList.contains('active');
 
                                 if (isActive) {
-
+                                        // Закрываем текущий таб при клике на него
                                         btn.classList.remove('active');
                                         pane.style.display = 'none';
                                 } else {
-
-                                        tabItems.forEach(otherItem => {
-                                                const otherBtn = otherItem.querySelector('.tab__btn');
-                                                const otherPane = otherItem.querySelector('.tab__pane');
-                                                if (otherBtn && otherPane) {
-                                                        otherBtn.classList.remove('active');
-                                                        otherPane.style.display = 'none';
-                                                }
-                                        });
-
-
+                                        // Открываем текущий таб, НЕ закрывая другие
                                         btn.classList.add('active');
                                         pane.style.display = 'block';
                                 }
                         });
                 });
-
 
         }
 }
@@ -513,12 +498,13 @@ function initPriceFilterToggle() {
 
                 if (!legend || !content) return;
 
-                content.style.cssText = 'opacity: 0; max-height: 0; overflow: hidden; transition: none;';
-                priceFilter.classList.add('collapsed');
+                // Проверяем, не был ли уже инициализирован
+                if (!priceFilter.classList.contains('collapsed')) {
+                        content.style.cssText = 'opacity: 0; max-height: 0; overflow: hidden; transition: none;';
+                        priceFilter.classList.add('collapsed');
+                }
 
                 legend.addEventListener('click', function() {
-                        closeOtherFilters(priceFilter);
-
                         if (!content.style.transition) {
                                 content.style.transition = 'all 0.3s ease';
                         }
@@ -531,7 +517,6 @@ function initPriceFilterToggle() {
                 }, 300);
         });
 }
-
 function initFilterVariants() {
         const filterContainers = document.querySelectorAll('.filter-variants');
 
@@ -546,21 +531,10 @@ function initFilterVariants() {
                         item.classList.add('collapsed');
 
                         header.addEventListener('click', function() {
-                                closeOtherFilters(item);
+
                                 item.classList.toggle('collapsed');
                         });
                 });
-        });
-}
-
-function closeOtherFilters(currentFilter) {
-        const parentContainer = currentFilter.closest('.filter-form') || document;
-        const allFilters = parentContainer.querySelectorAll('.price-filter, .filter-variants__item');
-
-        allFilters.forEach(filter => {
-                if (filter !== currentFilter && !filter.classList.contains('collapsed')) {
-                        filter.classList.add('collapsed');
-                }
         });
 }
 
@@ -640,6 +614,8 @@ function initAll() {
         InitVideo();
         initPhoneMasksWithPlaceholder();
         initMasks();
+        InitPrint();
+        InitSticky();
         initSearch();
         initFixedHeader();
         initTabs();
