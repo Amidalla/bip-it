@@ -3364,13 +3364,13 @@ body.no-scroll {
 
   .header__phone {
     a:hover {
-      color: #496187;
+      color: c.$dark-grey;
     }
   }
 
   .header__mail {
     a {
-      color: #496187;
+      color: c.$dark-grey;
 
       &:hover {
         color: c.$orange
@@ -3380,7 +3380,7 @@ body.no-scroll {
 
   .header__user {
     a {
-      color: #496187;
+      color: c.$dark-grey;
 
       &:hover {
         color: c.$orange
@@ -3932,6 +3932,8 @@ body.no-scroll {
       }
 
       .product-card__wrapper {
+
+
         &:first-child {
           flex: 0 0 69%;
 
@@ -4540,6 +4542,14 @@ body.no-scroll {
     padding-top: 0;
     padding-bottom: 20px;
   }
+  
+  &__wrapper {
+    @media (max-width: 1300px) {
+      .product__tabs.tabs-desktop {
+        display: none;
+      }
+    }
+  }
 
   &__inner {
     display: flex;
@@ -4554,6 +4564,12 @@ body.no-scroll {
     @media (max-width: 1640px) {
       max-width: 910px;
     }
+
+    @media (max-width: 768px) {
+      .tab__btn {
+        font-size: 15px;
+      }
+    }
   }
   .tabs__content {
     border-radius: 20px;
@@ -4567,6 +4583,8 @@ body.no-scroll {
     justify-content: space-between;
     gap: 30px;
     align-items: flex-start;
+
+    
 
 
     @media(max-width: 1300px) {
@@ -4689,6 +4707,7 @@ body.no-scroll {
 
     @media (max-width: 1300px) {
       min-width: 100%;
+      position: static;
     }
 
     .counter__prise {
@@ -6481,4 +6500,16 @@ body.no-scroll {
     display: block;
   }
 
+}
+
+.tabs-tablet {
+  display: none;
+
+  @media (max-width: 1300px) {
+    display: block;
+  }
+
+  @media (max-width: 650px) {
+    display: none;
+  }
 }

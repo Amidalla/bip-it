@@ -371,7 +371,7 @@ function initFixedHeader() {
 }
 
 function initTabs() {
-        const tabsContainers = document.querySelectorAll('.bestsellers__tabs, .product__tabs');
+        const tabsContainers = document.querySelectorAll('.bestsellers__tabs, .product__tabs, .tabs-desktop');
         tabsContainers.forEach(container => {
 
                 if (container.offsetParent !== null) {
