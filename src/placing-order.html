@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ru">
+
+<include src="layout/head.html"></include>
+
+<body class="main-color">
+
+<include src="layout/header2.html"></include>
+
+<main class="inside-page">
+    <section class="page-name page-name_not-bg page-name_shopping-cart">
+        <div class="breadcrumb">
+            <div class="container">
+                <nav class="breadcrumb__inner">
+                    <ul class="breadcrumb__list">
+                        <li class="breadcrumb__item">
+                            <a href="#" class="breadcrumb__link">Главная</a>
+                        </li>
+                        <li class="breadcrumb__item active">
+                            <a href="#" class="breadcrumb__link">Оформление заказа</a>
+                        </li>
+                    </ul>
+                    <a class="back-link">Назад</a>
+                </nav>
+            </div>
+            <div class="container">
+                <h1>Оформление заказа</h1>
+            </div>
+        </div>
+    </section>
+    <section class="placing-order">
+        <div class="container">
+            <div class="placing-order__left">
+                <div class="placing-order__link">
+                    <a href="#">Вернуться в корзину</a>
+                </div>
+                <div class="placing-order__products">
+                    <div class="placing-order__title">
+                        <span>Товары в заказе</span>
+                        <span>2 товара(ов) - 40 кгОбъем - м³</span>
+                    </div>
+                    <div class="placing-order__inner">
+                        <div class="placing-order__item">
+                            <img class="lazy" data-src="assets/images/placing-order-item1.jpg">
+                        </div>
+                        <div class="placing-order__item">
+                            <img class="lazy" data-src="assets/images/placing-order-item1.jpg">
+                        </div>
+                    </div>
+                </div>
+                <div class="placing-order__tabs tabs-desktop">
+                        <div class="tabs__header">
+                            <button class="tab__btn" data-tab="legal-entity">Юридическое лицо</button>
+                            <button class="tab__btn active" data-tab="individual">Физическое лицо</button>
+                        </div>
+                        <div class="tabs__content">
+                            <div class="tab__pane" id="legal-entity">
+                                <div class="tabs__container">
+                                    <p>Для оформления закза заполните форму. * поля обязательны к заполнению</p>
+                                    <form class="placing-order__form">
+                                        <fieldset>
+                                            <label>
+                                                <input type="text" name="name" placeholder="Название компании*"  required>
+                                            </label>
+                                            <label>
+                                                <input type="text" id="inn-input" name="inn" maxlength="10" data-mask="inn-legal" placeholder="ИНН*"  required>
+                                                <span class="inn-error" style="display: none; color: red; font-size: 12px;"></span>
+                                            </label>
+                                            <label>
+                                                <input type="text" name="kpp" placeholder="КПП">
+                                            </label>
+                                            <label>
+                                                <input type="text" name="legal-address" placeholder="Юридический адрес">
+                                            </label>
+                                            <label>
+                                                <input type="text" name="contact-person" placeholder="Контактное лицо">
+                                            </label>
+                                            <label>
+                                                <input type="email" name="email" placeholder="E-mail*" required>
+                                            </label>
+                                            <label>
+                                                <input type="tel" name="representative-phone" data-phone-input placeholder="Контактный телефон представителя">
+                                            </label>
+                                            <label>
+                                                <input type="text" name="postal-code" placeholder="Почтовый индекс">
+                                            </label>
+                                            <label>
+                                                <input type="text" name="location" placeholder="Местоположение(город, регион)">
+                                            </label>
+                                        </fieldset>
+                                        <fieldset>
+                                            <label>
+                                                <textarea name="textarea" placeholder="Комментарий (не обязательно к заполнению)"></textarea>
+                                            </label>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="placing-order__buttons">
+                                                <button>
+                                                    Уже есть аккаунт
+                                                </button>
+                                                <button>
+                                                    <span>Подтвердить</span>
+                                                </button>
+                                            </div>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="checkbox" required>
+                                                <span>Нажимая на кнопку, вы соглашаетесь на <a href="#">обработку персональных данных</a> и <a href="#">политику конфиденциальности</a></span>
+                                            </label>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tab__pane active" id="individual">
+                                <div class="tabs__container">
+                                    <p>Для оформления закза заполните форму. * поля обязательны к заполнению</p>
+                                    <form class="placing-order__form">
+                                        <fieldset>
+                                            <label>
+                                                <input type="text" name="name" placeholder="ФИО*"  required>
+                                            </label>
+                                            <label>
+                                                <input type="email" name="email" placeholder="E-mail*" required>
+                                            </label>
+                                            <label>
+                                                <input type="tel" name="tel" placeholder="Телефон" data-phone-input required>
+                                            </label>
+                                        </fieldset>
+                                        <fieldset>
+                                            <label>
+                                                <textarea name="textarea" placeholder="Комментарий (не обязательно к заполнению)"></textarea>
+                                            </label>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="placing-order__buttons">
+                                                <button>
+                                                    Уже есть аккаунт
+                                                </button>
+                                                <button>
+                                                    <span>Подтвердить</span>
+                                                </button>
+                                            </div>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="checkbox" required>
+                                                <span>Нажимая на кнопку, вы соглашаетесь на <a href="#">обработку персональных данных</a> и <a href="#">политику конфиденциальности</a></span>
+                                            </label>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="placing-order__tabs tabs_mobile">
+                    <div class="tabs__header">
+                        <div class="tab__item">
+                            <button class="tab__btn" data-tab="legal-entity-mobile">
+                                <span>Юридическое лицо</span>
+                                <include src="assets/svg/orange-minus.html"></include>
+                                <include src="assets/svg/orange-plus.html"></include>
+                            </button>
+                            <div class="tab__pane" id="legal-entity-mobile">
+                                <div class="tabs__container">
+                                    <p>Для оформления закза заполните форму. * поля обязательны к заполнению</p>
+                                    <form class="placing-order__form">
+                                        <fieldset>
+                                            <label>
+                                                <input type="text" name="name" placeholder="Название компании*"  required>
+                                            </label>
+                                            <label>
+                                                <input type="text" id="inn-input" name="inn" maxlength="10" data-mask="inn-legal" placeholder="ИНН*"  required>
+                                                <span class="inn-error" style="display: none; color: red; font-size: 12px;"></span>
+                                            </label>
+                                            <label>
+                                                <input type="text" name="kpp" placeholder="КПП">
+                                            </label>
+                                            <label>
+                                                <input type="text" name="legal-address" placeholder="Юридический адрес">
+                                            </label>
+                                            <label>
+                                                <input type="text" name="contact-person" placeholder="Контактное лицо">
+                                            </label>
+                                            <label>
+                                                <input type="email" name="email" placeholder="E-mail*" required>
+                                            </label>
+                                            <label>
+                                                <input type="tel" name="representative-phone" data-phone-input placeholder="Контактный телефон представителя">
+                                            </label>
+                                            <label>
+                                                <input type="text" name="postal-code" placeholder="Почтовый индекс">
+                                            </label>
+                                            <label>
+                                                <input type="text" name="location" placeholder="Местоположение(город, регион)">
+                                            </label>
+                                        </fieldset>
+                                        <fieldset>
+                                            <label>
+                                                <textarea name="textarea" placeholder="Комментарий (не обязательно к заполнению)"></textarea>
+                                            </label>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="placing-order__buttons">
+                                                <button>
+                                                    Уже есть аккаунт
+                                                </button>
+                                                <button>
+                                                    <span>Подтвердить</span>
+                                                </button>
+                                            </div>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="checkbox" required>
+                                                <span>Нажимая на кнопку, вы соглашаетесь на <a href="#">обработку персональных данных</a> и <a href="#">политику конфиденциальности</a></span>
+                                            </label>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab__item">
+                            <button class="tab__btn" data-tab="individual-mobile">
+                                <span>Физическое лицо</span>
+                                <include src="assets/svg/orange-minus.html"></include>
+                                <include src="assets/svg/orange-plus.html"></include>
+                            </button>
+                            <div class="tab__pane" id="individual-mobile">
+                                <div class="tabs__container">
+                                    <p>Для оформления закза заполните форму. * поля обязательны к заполнению</p>
+                                    <form class="placing-order__form">
+                                        <fieldset>
+                                            <label>
+                                                <input type="text" name="name" placeholder="ФИО*"  required>
+                                            </label>
+                                            <label>
+                                                <input type="email" name="email" placeholder="E-mail*" required>
+                                            </label>
+                                            <label>
+                                                <input type="tel" name="tel" placeholder="Телефон" data-phone-input required>
+                                            </label>
+                                        </fieldset>
+                                        <fieldset>
+                                            <label>
+                                                <textarea name="textarea" placeholder="Комментарий (не обязательно к заполнению)"></textarea>
+                                            </label>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="placing-order__buttons">
+                                                <button>
+                                                    Уже есть аккаунт
+                                                </button>
+                                                <button>
+                                                    <span>Подтвердить</span>
+                                                </button>
+                                            </div>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="checkbox" required>
+                                                <span>Нажимая на кнопку, вы соглашаетесь на <a href="#">обработку персональных данных</a> и <a href="#">политику конфиденциальности</a></span>
+                                            </label>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="placing-order__right">
+                <div class="placing-order__wrapper">
+                    <button class="checkout-button" disabled>
+                        <include src="assets/svg/gray-lightning.html"></include>
+                        <span>Отправить</span>
+                    </button>
+                    <div class="placing-order__name">
+                        <span>Ваш заказ</span>
+                        <span>2 товара(ов) - 40 кг</span>
+                    </div>
+                    <div class="placing-order__quantity">
+                        <span>Товаров (2)</span>
+                        <span>49 154 руб.</span>
+                    </div>
+                    <div class="placing-order__discount">
+                        <span>Скидка</span>
+                        <span>- 1000 руб.</span>
+                    </div>
+                    <div class="placing-order__result">
+                        <span>Итого</span>
+                        <span>-48 154 руб.</span>
+                    </div>
+                    <div class="placing-order__conditions">
+                        Условия <a href="#">оплаты</a> и <a href="#">доставки</a>
+                    </div>
+                </div>
+                <button class="print-btn">
+                    <include src="assets/svg/print.html"></include>
+                    <span>Распечатать</span>
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<include src="layout/footer.html"></include>
+<include src="layout/modals.html"></include>
+
+</body>
+</html>

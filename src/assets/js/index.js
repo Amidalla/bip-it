@@ -15,7 +15,12 @@ import IMask from 'imask';
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs]);
 
 function initPhoneMasksWithPlaceholder() {
-        const phoneInputs = document.querySelectorAll('input[type="tel"][name="tel"]');
+
+        const phoneInputs = document.querySelectorAll(`
+        input[type="tel"][name="tel"],
+        input[type="tel"][name="representative-phone"],
+        input[type="tel"][data-phone-input]
+    `);
 
         phoneInputs.forEach(input => {
                 let mask = null;
@@ -82,6 +87,13 @@ function initMasks() {
                                         mask: '000'
                                 });
                                 break;
+                        case 'inn-legal':
+                                IMask(input, {
+                                        mask: '0000000000',
+                                        lazy: true,
+                                        placeholderChar: ' '
+                                });
+                                break;
                         default:
                                 if (input.dataset.maskPattern) {
                                         IMask(input, {
@@ -91,6 +103,143 @@ function initMasks() {
                                 break;
                 }
         });
+
+
+        const phoneInputs = document.querySelectorAll('input[data-phone-input]');
+        phoneInputs.forEach(input => {
+                if (!input.hasAttribute('data-mask')) {
+                        IMask(input, {
+                                mask: '+{7} (000) 000-00-00'
+                        });
+                }
+        });
+}
+
+function validateINN(inn) {
+        if (!inn || inn.length !== 10) return false;
+
+        if (!/^\d+$/.test(inn)) return false;
+
+        const coefficients = [2, 4, 10, 3, 5, 9, 4, 6, 8];
+        let sum = 0;
+
+        for (let i = 0; i < 9; i++) {
+                sum += parseInt(inn[i]) * coefficients[i];
+        }
+
+        const controlDigit = (sum % 11) % 10;
+        return controlDigit === parseInt(inn[9]);
+}
+
+function getINNError(inn) {
+        if (!inn) return 'Введите ИНН юридического лица';
+
+        const length = inn.length;
+
+        if (length < 10) return 'ИНН должен содержать 10 цифр';
+        if (length > 10) return 'ИНН юридического лица содержит 10 цифр';
+
+        if (!/^\d+$/.test(inn)) return 'ИНН должен содержать только цифры';
+
+        return 'Неверный ИНН. Проверьте контрольную сумму';
+}
+
+function isINNValid(inn) {
+        const cleaned = inn.replace(/\D/g, '');
+        return cleaned.length === 10 && validateINN(cleaned);
+}
+
+function initINNValidation() {
+        const innInputs = document.querySelectorAll('input[data-mask="inn-legal"]');
+
+        innInputs.forEach(input => {
+                const errorElement = findErrorElement(input);
+
+                console.log('INN input found:', input);
+                console.log('Error element:', errorElement);
+
+                input.addEventListener('input', function(e) {
+                        this.value = this.value.replace(/\D/g, '');
+
+                        if (this.value.length > 10) {
+                                this.value = this.value.slice(0, 10);
+                        }
+
+                        validateINNField(input, errorElement);
+                });
+
+                input.addEventListener('blur', function() {
+                        validateINNField(input, errorElement);
+                });
+
+                input.addEventListener('focus', function() {
+                        if (errorElement) {
+                                errorElement.style.display = 'none';
+                        }
+                        input.classList.remove('invalid');
+                });
+
+                input.addEventListener('keydown', function(e) {
+                        if ([46, 8, 9, 27, 13].includes(e.keyCode) ||
+                            (e.keyCode === 65 && e.ctrlKey === true) ||
+                            (e.keyCode === 67 && e.ctrlKey === true) ||
+                            (e.keyCode === 86 && e.ctrlKey === true) ||
+                            (e.keyCode === 88 && e.ctrlKey === true) ||
+                            (e.keyCode >= 35 && e.keyCode <= 39)) {
+                                return;
+                        }
+
+                        if ((e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105)) {
+                                e.preventDefault();
+                        }
+                });
+        });
+}
+
+function findErrorElement(input) {
+        const label = input.closest('label');
+        if (label) {
+                const errorElement = label.querySelector('.inn-error');
+                if (errorElement) return errorElement;
+        }
+
+        const nextElement = input.nextElementSibling;
+        if (nextElement && nextElement.classList.contains('inn-error')) {
+                return nextElement;
+        }
+
+        return null;
+}
+
+function validateINNField(input, errorElement) {
+        const value = input.value.replace(/\D/g, '');
+
+        console.log('Validating INN:', value);
+
+        if (!value) {
+                if (errorElement) {
+                        errorElement.style.display = 'none';
+                }
+                input.classList.remove('invalid', 'valid');
+                return false;
+        }
+
+        if (value.length === 10 && validateINN(value)) {
+                input.classList.remove('invalid');
+                input.classList.add('valid');
+                if (errorElement) {
+                        errorElement.style.display = 'none';
+                }
+                return true;
+        } else {
+                input.classList.remove('valid');
+                input.classList.add('invalid');
+                if (errorElement) {
+                        errorElement.textContent = getINNError(value);
+                        errorElement.style.display = 'block';
+                }
+                return false;
+        }
 }
 
 class Tabs {
@@ -146,7 +295,6 @@ class Tabs {
 
                         if (!btn || !pane) return;
 
-                        // Скрываем все панели при инициализации
                         pane.style.display = 'none';
 
                         btn.addEventListener('click', (e) => {
@@ -155,17 +303,14 @@ class Tabs {
                                 const isActive = btn.classList.contains('active');
 
                                 if (isActive) {
-                                        // Закрываем текущий таб при клике на него
                                         btn.classList.remove('active');
                                         pane.style.display = 'none';
                                 } else {
-                                        // Открываем текущий таб, НЕ закрывая другие
                                         btn.classList.add('active');
                                         pane.style.display = 'block';
                                 }
                         });
                 });
-
         }
 }
 
@@ -371,9 +516,8 @@ function initFixedHeader() {
 }
 
 function initTabs() {
-        const tabsContainers = document.querySelectorAll('.bestsellers__tabs, .product__tabs, .tabs-desktop');
+        const tabsContainers = document.querySelectorAll('.bestsellers__tabs, .product__tabs, .tabs-desktop, .placing-order__tabs');
         tabsContainers.forEach(container => {
-
                 if (container.offsetParent !== null) {
                         new Tabs(container);
                 }
@@ -498,7 +642,6 @@ function initPriceFilterToggle() {
 
                 if (!legend || !content) return;
 
-                // Проверяем, не был ли уже инициализирован
                 if (!priceFilter.classList.contains('collapsed')) {
                         content.style.cssText = 'opacity: 0; max-height: 0; overflow: hidden; transition: none;';
                         priceFilter.classList.add('collapsed');
@@ -517,6 +660,7 @@ function initPriceFilterToggle() {
                 }, 300);
         });
 }
+
 function initFilterVariants() {
         const filterContainers = document.querySelectorAll('.filter-variants');
 
@@ -531,7 +675,6 @@ function initFilterVariants() {
                         item.classList.add('collapsed');
 
                         header.addEventListener('click', function() {
-
                                 item.classList.toggle('collapsed');
                         });
                 });
@@ -586,22 +729,6 @@ function initMobileFilter() {
         });
 }
 
-function adjustInputWidth(input) {
-        const tempSpan = document.createElement('span');
-        tempSpan.style.position = 'absolute';
-        tempSpan.style.visibility = 'hidden';
-        tempSpan.style.whiteSpace = 'pre';
-        tempSpan.style.font = window.getComputedStyle(input).font;
-        tempSpan.style.padding = '8px 0';
-
-        tempSpan.textContent = input.value || input.placeholder || '0';
-        document.body.appendChild(tempSpan);
-
-        input.style.width = (tempSpan.offsetWidth + 10) + 'px';
-
-        document.body.removeChild(tempSpan);
-}
-
 function initAll() {
         document.querySelectorAll('.price-filter, .filter-variants__item').forEach(item => {
                 item.classList.add('collapsed');
@@ -614,6 +741,7 @@ function initAll() {
         InitVideo();
         initPhoneMasksWithPlaceholder();
         initMasks();
+        initINNValidation();
         InitPrint();
         InitSticky();
         initSearch();

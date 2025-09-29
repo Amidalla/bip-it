@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ru">
+
+<include src="layout/head.html"></include>
+
+<body class="main-color">
+
+<include src="layout/header2.html"></include>
+
+<main class="inside-page">
+    <section class="page-name page-name_not-bg page-name_shopping-cart">
+        <div class="breadcrumb">
+            <div class="container">
+                <nav class="breadcrumb__inner">
+                    <ul class="breadcrumb__list">
+                        <li class="breadcrumb__item">
+                            <a href="#" class="breadcrumb__link">Главная</a>
+                        </li>
+                        <li class="breadcrumb__item active">
+                            <a href="#" class="breadcrumb__link">Оформление заказа</a>
+                        </li>
+                    </ul>
+                    <a class="back-link">Назад</a>
+                </nav>
+            </div>
+            <div class="container">
+                <h1>Оформление заказа</h1>
+            </div>
+        </div>
+    </section>
+    <section class="placing-order">
+        <div class="container">
+            <div class="placing-order__left">
+                <div class="placing-order__link">
+                    <a href="#">Вернуться в корзину</a>
+                </div>
+                <div class="placing-order__products">
+                    <div class="placing-order__title">
+                        <span>Товары в заказе</span>
+                        <span>2 товара(ов) - 40 кгОбъем - м³</span>
+                    </div>
+                    <div class="placing-order__inner">
+                        <div class="placing-order__item">
+                            <img class="lazy" data-src="assets/images/placing-order-item1.jpg">
+                        </div>
+                        <div class="placing-order__item">
+                            <img class="lazy" data-src="assets/images/placing-order-item1.jpg">
+                        </div>
+                    </div>
+                </div>
+                <div class="placing-order__about user-data">
+                    <div class="user-data__title">Получатель</div>
+                    <div class="user-data__name">Иванов Иван Иванович</div>
+                    <div class="user-data__mail">ivanov@mail.ru</div>
+                    <div class="user-data__phone">+7 (911) 000-00-00</div>
+                    <div class="user-data__comment">
+                        <label>
+                            <textarea name="textarea" placeholder="Комментарий (не обязательно к заполнению)"></textarea>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="placing-order__right">
+                <div class="placing-order__wrapper">
+                    <button class="checkout-button active">
+                        <include src="assets/svg/lightning3.html"></include>
+                        <span>Отправить</span>
+                    </button>
+                    <div class="placing-order__name">
+                        <span>Ваш заказ</span>
+                        <span>2 товара(ов) - 40 кг</span>
+                    </div>
+                    <div class="placing-order__quantity">
+                        <span>Товаров (2)</span>
+                        <span>49 154 руб.</span>
+                    </div>
+                    <div class="placing-order__discount">
+                        <span>Скидка</span>
+                        <span>- 1000 руб.</span>
+                    </div>
+                    <div class="placing-order__result">
+                        <span>Итого</span>
+                        <span>-48 154 руб.</span>
+                    </div>
+                    <div class="placing-order__conditions">
+                        Условия <a href="#">оплаты</a> и <a href="#">доставки</a>
+                    </div>
+                </div>
+                <button class="print-btn">
+                    <include src="assets/svg/print.html"></include>
+                    <span>Распечатать</span>
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<include src="layout/footer.html"></include>
+<include src="layout/modals.html"></include>
+
+</body>
+</html>

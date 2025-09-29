@@ -7,17 +7,30 @@ export function InitModals() {
     const closeMobileMenuBtn = document.querySelector(".mobile-menu__close");
     const catalogImage = catalogModal?.querySelector(".modal-catalog__img");
 
+    const feedbackModal = document.querySelector(".feedback-form");
+    const feedbackBtns = document.querySelectorAll(".feedback-btn");
+    const feedbackCloseBtn = document.querySelector(".feedback-form__close");
+    const overlay = document.querySelector(".overlay");
+
 
     function openModal(modalElement) {
-
         if (modalElement !== catalogModal && catalogModal?.classList.contains('opened')) {
             closeModal(catalogModal);
         }
         if (modalElement !== mobileMenu && mobileMenu?.classList.contains('opened')) {
             closeModal(mobileMenu);
         }
+        if (modalElement !== feedbackModal && feedbackModal?.classList.contains('opened')) {
+            closeModal(feedbackModal);
+        }
 
         modalElement?.classList.add('opened');
+
+
+        if ((modalElement === feedbackModal || modalElement === mobileMenu) && overlay) {
+            overlay.classList.add('opened');
+        }
+
         document.body.style.overflow = 'hidden';
         document.body.classList.add('modal-opened');
 
@@ -28,6 +41,11 @@ export function InitModals() {
 
     function closeModal(modalElement) {
         modalElement?.classList.remove('opened');
+
+        if ((modalElement === feedbackModal || modalElement === mobileMenu) && overlay) {
+            overlay.classList.remove('opened');
+        }
+
         document.body.style.overflow = '';
         document.body.classList.remove('modal-opened');
 
@@ -144,6 +162,35 @@ export function InitModals() {
     }
 
 
+    feedbackBtns.forEach(btn => {
+        btn?.addEventListener('click', (event) => {
+            event.preventDefault();
+            openModal(feedbackModal);
+        });
+    });
+
+    if (feedbackCloseBtn) {
+        feedbackCloseBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            closeModal(feedbackModal);
+        });
+    }
+
+
+    if (overlay) {
+        overlay.addEventListener('click', (event) => {
+            if (event.target === overlay) {
+                if (feedbackModal?.classList.contains('opened')) {
+                    closeModal(feedbackModal);
+                }
+                if (mobileMenu?.classList.contains('opened')) {
+                    closeModal(mobileMenu);
+                }
+            }
+        });
+    }
+
+
     document.addEventListener('click', (event) => {
 
         if (catalogModal?.classList.contains('opened')) {
@@ -171,6 +218,23 @@ export function InitModals() {
                 closeModal(mobileMenu);
             }
         }
+
+
+        if (feedbackModal?.classList.contains('opened')) {
+            let isClickInsideFeedback = feedbackModal.contains(event.target);
+            let isFeedbackBtn = false;
+            let isFeedbackClose = feedbackCloseBtn?.contains(event.target);
+
+            feedbackBtns.forEach(btn => {
+                if (btn.contains(event.target)) {
+                    isFeedbackBtn = true;
+                }
+            });
+
+            if (!isClickInsideFeedback && !isFeedbackBtn && !isFeedbackClose) {
+                closeModal(feedbackModal);
+            }
+        }
     });
 
 
@@ -181,6 +245,9 @@ export function InitModals() {
             }
             if (mobileMenu?.classList.contains('opened')) {
                 closeModal(mobileMenu);
+            }
+            if (feedbackModal?.classList.contains('opened')) {
+                closeModal(feedbackModal);
             }
         }
     });
@@ -203,6 +270,10 @@ export function InitModals() {
         burgerBtn: !!burgerBtn,
         catalogBtns: catalogBtns.length,
         catalogCloseBtn: !!catalogCloseBtn,
-        catalogImage: !!catalogImage
+        catalogImage: !!catalogImage,
+        feedbackModal: !!feedbackModal,
+        feedbackBtns: feedbackBtns.length,
+        feedbackCloseBtn: !!feedbackCloseBtn,
+        overlay: !!overlay
     });
 }

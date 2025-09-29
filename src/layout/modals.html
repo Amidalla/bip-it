@@ -327,3 +327,47 @@
         <include src="assets/svg/cross.html"></include>
     </div>
 </div>
+<div class="modal-form feedback-form">
+    <div class="modal-form__inner">
+        <div class="modal-form__title">Отправить запрос</div>
+        <form class="form-modal">
+            <fieldset>
+                <label>
+                    <input type="text" name="name" placeholder="Имя*"  required>
+                </label>
+                <label>
+                    <input type="email" name="email" placeholder="mail*" required>
+                </label>
+            </fieldset>
+            <fieldset>
+                <label>
+                    <input type="tel" name="tel" placeholder="Телефон*" data-phone-input required>
+                </label>
+            </fieldset>
+            <fieldset>
+                <label>
+                    <textarea name="textarea" placeholder="Ваш вопрос*" required></textarea>
+                </label>
+            </fieldset>
+            <fieldset>
+                <button>
+                    <include src="assets/svg/lightning3.html"></include>
+                    <span>Отправить</span>
+                </button>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="checkbox" required>
+                    <span>Нажимая на кнопку, вы соглашаетесь на обработку персональных данных и политику конфиденциальности</span>
+                </label>
+                <span class="modal-form__info">*Поля обязательны к заполнению</span>
+            </fieldset>
+        </form>
+        <div class="modal-form__link">
+            <a href="tel:+78123098289"><include src="assets/svg/phone.html"></include><span>+7 (812) 309-82-89</span></a>
+            <a href="mailto:sales@bip-it.ru"><include src="assets/svg/mail.html"></include><span>sales@bip-it.ru</span></a>
+        </div>
+        <div class="feedback-form__close">
+            <img class="lazy" data-src="assets/images/form-close.svg" alt="">
+        </div>
+    </div>
+</div>
+<div class="overlay"></div>
