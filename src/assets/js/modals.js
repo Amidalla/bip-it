@@ -10,6 +10,11 @@ export function InitModals() {
     const feedbackModal = document.querySelector(".feedback-form");
     const feedbackBtns = document.querySelectorAll(".feedback-btn");
     const feedbackCloseBtn = document.querySelector(".feedback-form__close");
+
+    const placedModal = document.querySelector(".modal-placed");
+    const placedBtns = document.querySelectorAll(".checkout-button.active");
+    const placedCloseBtn = document.querySelector(".modal-placed__close");
+
     const overlay = document.querySelector(".overlay");
 
 
@@ -23,11 +28,14 @@ export function InitModals() {
         if (modalElement !== feedbackModal && feedbackModal?.classList.contains('opened')) {
             closeModal(feedbackModal);
         }
+        if (modalElement !== placedModal && placedModal?.classList.contains('opened')) {
+            closeModal(placedModal);
+        }
 
         modalElement?.classList.add('opened');
 
 
-        if ((modalElement === feedbackModal || modalElement === mobileMenu) && overlay) {
+        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal) && overlay) {
             overlay.classList.add('opened');
         }
 
@@ -42,7 +50,7 @@ export function InitModals() {
     function closeModal(modalElement) {
         modalElement?.classList.remove('opened');
 
-        if ((modalElement === feedbackModal || modalElement === mobileMenu) && overlay) {
+        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal) && overlay) {
             overlay.classList.remove('opened');
         }
 
@@ -177,6 +185,21 @@ export function InitModals() {
     }
 
 
+    placedBtns.forEach(btn => {
+        btn?.addEventListener('click', (event) => {
+            event.preventDefault();
+            openModal(placedModal);
+        });
+    });
+
+    if (placedCloseBtn) {
+        placedCloseBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            closeModal(placedModal);
+        });
+    }
+
+
     if (overlay) {
         overlay.addEventListener('click', (event) => {
             if (event.target === overlay) {
@@ -185,6 +208,9 @@ export function InitModals() {
                 }
                 if (mobileMenu?.classList.contains('opened')) {
                     closeModal(mobileMenu);
+                }
+                if (placedModal?.classList.contains('opened')) {
+                    closeModal(placedModal);
                 }
             }
         });
@@ -235,6 +261,23 @@ export function InitModals() {
                 closeModal(feedbackModal);
             }
         }
+
+
+        if (placedModal?.classList.contains('opened')) {
+            let isClickInsidePlaced = placedModal.contains(event.target);
+            let isPlacedBtn = false;
+            let isPlacedClose = placedCloseBtn?.contains(event.target);
+
+            placedBtns.forEach(btn => {
+                if (btn.contains(event.target)) {
+                    isPlacedBtn = true;
+                }
+            });
+
+            if (!isClickInsidePlaced && !isPlacedBtn && !isPlacedClose) {
+                closeModal(placedModal);
+            }
+        }
     });
 
 
@@ -248,6 +291,9 @@ export function InitModals() {
             }
             if (feedbackModal?.classList.contains('opened')) {
                 closeModal(feedbackModal);
+            }
+            if (placedModal?.classList.contains('opened')) {
+                closeModal(placedModal);
             }
         }
     });
@@ -274,6 +320,9 @@ export function InitModals() {
         feedbackModal: !!feedbackModal,
         feedbackBtns: feedbackBtns.length,
         feedbackCloseBtn: !!feedbackCloseBtn,
+        placedModal: !!placedModal,
+        placedBtns: placedBtns.length,
+        placedCloseBtn: !!placedCloseBtn,
         overlay: !!overlay
     });
 }
