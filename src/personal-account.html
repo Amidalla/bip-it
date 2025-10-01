@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ru">
+
+<include src="layout/head.html"></include>
+
+<body class="main-color">
+
+<include src="layout/header2.html"></include>
+
+<main class="inside-page">
+    <section class="page-name page-name_not-bg page-name_personal-account">
+        <div class="breadcrumb">
+            <div class="container">
+                <nav class="breadcrumb__inner">
+                    <ul class="breadcrumb__list">
+                        <li class="breadcrumb__item">
+                            <a href="#" class="breadcrumb__link">Главная</a>
+                        </li>
+                        <li class="breadcrumb__item active">
+                            <a href="#" class="breadcrumb__link">Личный кабинет</a>
+                        </li>
+                    </ul>
+                    <a class="back-link">Назад</a>
+                </nav>
+            </div>
+            <div class="container">
+                <h1>Личный кабинет</h1>
+            </div>
+        </div>
+    </section>
+    <section class="personal-account">
+        <div class="container">
+            <div class="personal-account__tabs tabs-desktop">
+                <div class="personal-account__tabs-container">
+                    <div class="personal-account__tabs-sidebar">
+                        <div class="personal-account__tabs-header">
+                            <button class="personal-account__tab-btn active" data-tab="general-information">Общая информация</button>
+                            <button class="personal-account__tab-btn" data-tab="orders">Заказы</button>
+                            <button class="personal-account__tab-btn" data-tab="security-settings">Настройка безопасности</button>
+                        </div>
+                        <button class="personal-account__exit">Выйти</button>
+                    </div>
+                    <div class="personal-account__tabs-content">
+                        <div class="personal-account__tab-pane active" id="general-information">
+                            <div class="personal-account__tab-container">
+                                  <div class="general-information">
+                                      <div class="general-information__inner">Иванов Иван Иванович</div>
+                                      <div class="general-information__inner">ivanov@mail.ru</div>
+                                      <div class="general-information__inner">+7 (911) 000-00-00</div>
+                                      <button class="jump-button"><span>Изменить мои данные</span></button>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="personal-account__tab-pane" id="orders">
+                            <div class="personal-account__tab-container">
+                                <div class="your-orders">
+                                    <div class="your-orders__title">Ваши заказы</div>
+                                    <button class="all-history">Посмотреть историю заказов</button>
+                                    <div class="orders">
+                                        <div class="orders__item">
+                                            <div class="orders__status">Заказ с статусе “Принят, ожидает оплаты”</div>
+                                            <div class="orders__title">Заказ №14 от 28.09.2025, 2 товар(ов) на сумму 48 154 руб.</div>
+                                            <div class="orders__wrapper">
+                                                    <div class="orders__payment">
+                                                        <div class="orders__name">
+                                                            <span>Оплата</span>
+                                                            <span></span>
+                                                        </div>
+                                                        <div class="orders__info">
+                                                            <p>
+                                                                <span class="orders-number">Счет № 14/2 от 28/09/2025</span>
+                                                                <span class="payment-variants">Оплата при получении</span>
+                                                                <span class="payment-status payment-no">Не оплачено</span>
+                                                            </p>
+                                                            <p>
+                                                                <span class="amount-paid">Сумма к оплате по счету: </span>
+                                                                <span class="result-payment">48 154 руб.</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="orders__delivery">
+                                                        <div class="orders__name">
+                                                            <span>ДОСТАВКА</span>
+                                                            <span></span>
+                                                        </div>
+                                                        <div class="orders__info">
+                                                            <p>
+                                                                <span class="delivery-info">Доставка:</span>
+                                                                <span class="delivery-status not-delivered">Не отгружено</span>
+                                                            </p>
+                                                            <p>
+                                                                <span class="build-status">Статус сборки:</span>
+                                                                <span class="build-variants">Ожидает обработки</span>
+                                                            </p>
+                                                            <p>
+                                                                <span class="delivery-service">Служба доставки:</span>
+                                                                <span class="deliver-variants">Самовывоз</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                <div class="orders__btn">
+                                                    <button class="more-ordering"><span>Подробнее о заказе</span></button>
+                                                    <button class="order-repeat">
+                                                        <include src="assets/svg/repeat-order.html"></include>
+                                                        <span>Повторить заказ</span>
+                                                    </button>
+                                                    <button class="cancel-order">Отменить заказ</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="orders__item">
+                                            <div class="orders__title">Заказ №14 от 11.09.2025, 1 товар(ов) на сумму 3 154 руб.</div>
+                                            <div class="orders__wrapper">
+                                                <div class="orders__payment">
+                                                    <div class="orders__name">
+                                                        <span>Оплата</span>
+                                                        <span></span>
+                                                    </div>
+                                                    <div class="orders__info">
+                                                        <p>
+                                                            <span class="orders-number">Счет № 14/2 от 11/09/2025</span>
+                                                            <span class="payment-variants">Оплата при получении</span>
+                                                            <span class="payment-status payment-yes">Оплачено</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="amount-paid">Сумма к оплате по счету: </span>
+                                                            <span class="result-payment"> 3 154 руб.</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="orders__delivery">
+                                                    <div class="orders__name">
+                                                        <span>ДОСТАВКА</span>
+                                                        <span></span>
+                                                    </div>
+                                                    <div class="orders__info">
+                                                        <p>
+                                                            <span class="delivery-info">Доставка:</span>
+                                                            <span class="delivery-status delivered">Доставлено</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="build-status">Статус сборки:</span>
+                                                            <span class="build-variants">Собран</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="delivery-service">Служба доставки:</span>
+                                                            <span class="deliver-variants">Доставка компанией</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="orders__btn">
+                                                    <button class="more-ordering"><span>Подробнее о заказе</span></button>
+                                                    <button class="order-repeat">
+                                                        <include src="assets/svg/repeat-order.html"></include>
+                                                        <span>Повторить заказ</span>
+                                                    </button>
+                                                    <button class="cancel-order">Отменить заказ</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="personal-account__tab-pane" id="security-settings">
+                            <div class="personal-account__tab-container">
+                                <div class="general-information">
+                                    <div class="general-information__inner">Иванов Иван Иванович</div>
+                                    <div class="general-information__inner">ivanov@mail.ru</div>
+                                    <div class="general-information__inner">+7 (911) 000-00-00</div>
+                                </div>
+                                <p class="form-info">Для изменения данных заполните форму. * поля обязательны к заполнению</p>
+                                <form class="personal-account__form">
+                                    <fieldset class="form-fieldset">
+                                        <div class="input-wrapper required">
+                                            <input class="styled-input filled" type="text" name="name" placeholder=" " required>
+                                            <span class="input-label">ФИО*</span>
+                                        </div>
+
+                                        <div class="input-wrapper required">
+                                            <input class="styled-input filled" type="email" name="email" placeholder=" " required>
+                                            <span class="input-label">E-mail*</span>
+                                        </div>
+
+                                        <div class="input-wrapper">
+                                            <input class="styled-input filled" type="tel" name="tel" placeholder=" " data-phone-input required>
+                                            <span class="input-label">Телефон</span>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="form-fieldset">
+                                        <div class="personal-account__buttons">
+                                            <button type="button" class="saved-btn">
+                                                <span>Сохранить</span>
+                                            </button>
+                                            <button type="submit" class="reset-btn">
+                                                <span>Сбросить</span>
+                                            </button>
+                                        </div>
+
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="checkbox" required>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">
+                                                Нажимая на кнопку, вы соглашаетесь на
+                                                <a href="#">обработку персональных данных</a>
+                                                и <a href="#">политику конфиденциальности</a>
+                                             </span>
+                                        </label>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="personal-account__tabs tabs_mobile">
+                <div class="tabs__header">
+                    <div class="tab__item">
+                        <button class="tab__btn" data-tab="general-information-mobile">
+                            <span>Общая информация</span>
+                            <include src="assets/svg/orange-minus.html"></include>
+                            <include src="assets/svg/orange-plus.html"></include>
+                        </button>
+                        <div class="tab__pane" id="general-information-mobile">
+                            <div class="tabs__container">
+                                <div class="general-information">
+                                    <div class="general-information__inner">Иванов Иван Иванович</div>
+                                    <div class="general-information__inner">ivanov@mail.ru</div>
+                                    <div class="general-information__inner">+7 (911) 000-00-00</div>
+                                    <button class="jump-button"><span>Изменить мои данные</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab__item">
+                        <button class="tab__btn" data-tab="orders-mobile">
+                            <span>Заказы</span>
+                            <include src="assets/svg/orange-minus.html"></include>
+                            <include src="assets/svg/orange-plus.html"></include>
+                        </button>
+                        <div class="tab__pane" id="orders-mobile">
+                            <div class="tabs__container">
+                                <div class="your-orders">
+                                    <div class="your-orders__title">Ваши заказы</div>
+                                    <button class="all-history">Посмотреть историю заказов</button>
+                                    <div class="orders">
+                                        <div class="orders__item">
+                                            <div class="orders__status">Заказ с статусе “Принят, ожидает оплаты”</div>
+                                            <div class="orders__title">Заказ №14 от 28.09.2025, 2 товар(ов) на сумму 48 154 руб.</div>
+                                            <div class="orders__wrapper">
+                                                <div class="orders__payment">
+                                                    <div class="orders__name">
+                                                        <span>Оплата</span>
+                                                        <span></span>
+                                                    </div>
+                                                    <div class="orders__info">
+                                                        <p class="payment-no-info">
+                                                            <span class="orders-number">Счет № 14/2 от 28/09/2025</span>
+                                                            <span class="payment-variants">Оплата при получении</span>
+                                                            <span class="payment-status payment-no">Не оплачено</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="amount-paid">Сумма к оплате по счету: </span>
+                                                            <span class="result-payment">48 154 руб.</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="orders__delivery">
+                                                    <div class="orders__name">
+                                                        <span>ДОСТАВКА</span>
+                                                        <span></span>
+                                                    </div>
+                                                    <div class="orders__info">
+                                                        <p>
+                                                            <span class="delivery-info">Доставка:</span>
+                                                            <span class="delivery-status not-delivered">Не отгружено</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="build-status">Статус сборки:</span>
+                                                            <span class="build-variants">Ожидает обработки</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="delivery-service">Служба доставки:</span>
+                                                            <span class="deliver-variants">Самовывоз</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="orders__btn">
+                                                    <button class="more-ordering"><span>Подробнее о заказе</span></button>
+                                                    <button class="order-repeat">
+                                                        <img class="lazy" data-src="assets/images/order-repeat.svg" alt="">
+                                                        <span>Повторить заказ</span>
+                                                    </button>
+                                                    <button class="cancel-order">Отменить заказ</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="orders__item">
+                                            <div class="orders__title">Заказ №14 от 11.09.2025, 1 товар(ов) на сумму 3 154 руб.</div>
+                                            <div class="orders__wrapper">
+                                                <div class="orders__payment">
+                                                    <div class="orders__name">
+                                                        <span>Оплата</span>
+                                                        <span></span>
+                                                    </div>
+                                                    <div class="orders__info">
+                                                        <p>
+                                                            <span class="orders-number">Счет № 14/2 от 11/09/2025</span>
+                                                            <span class="payment-variants">Оплата при получении</span>
+                                                            <span class="payment-status payment-yes">Оплачено</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="amount-paid">Сумма к оплате по счету: </span>
+                                                            <span class="result-payment"> 3 154 руб.</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="orders__delivery">
+                                                    <div class="orders__name">
+                                                        <span>ДОСТАВКА</span>
+                                                        <span></span>
+                                                    </div>
+                                                    <div class="orders__info">
+                                                        <p>
+                                                            <span class="delivery-info">Доставка:</span>
+                                                            <span class="delivery-status delivered">Доставлено</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="build-status">Статус сборки:</span>
+                                                            <span class="build-variants">Собран</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="delivery-service">Служба доставки:</span>
+                                                            <span class="deliver-variants">Доставка компанией</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="orders__btn">
+                                                    <button class="more-ordering"><span>Подробнее о заказе</span></button>
+                                                    <button class="order-repeat">
+                                                        <img class="lazy" data-src="assets/images/order-repeat.svg" alt="'">
+                                                        <span>Повторить заказ</span>
+                                                    </button>
+                                                    <button class="cancel-order">Отменить заказ</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab__item">
+                        <button class="tab__btn" data-tab="security-settings-mobile">
+                            <span>Настройка безопасности</span>
+                            <include src="assets/svg/orange-minus.html"></include>
+                            <include src="assets/svg/orange-plus.html"></include>
+                        </button>
+                        <div class="tab__pane" id="security-settings-mobile">
+                            <div class="tabs__container">
+                                <div class="general-information">
+                                    <div class="general-information__inner">Иванов Иван Иванович</div>
+                                    <div class="general-information__inner">ivanov@mail.ru</div>
+                                    <div class="general-information__inner">+7 (911) 000-00-00</div>
+                                </div>
+                                <p class="form-info">Для изменения данных заполните форму. * поля обязательны к заполнению</p>
+                                <form class="personal-account__form">
+                                    <fieldset class="form-fieldset">
+                                        <div class="input-wrapper required">
+                                            <input class="styled-input filled" type="text" name="name" placeholder=" " required>
+                                            <span class="input-label">ФИО*</span>
+                                        </div>
+
+                                        <div class="input-wrapper required">
+                                            <input class="styled-input filled" type="email" name="email" placeholder=" " required>
+                                            <span class="input-label">E-mail*</span>
+                                        </div>
+
+                                        <div class="input-wrapper">
+                                            <input class="styled-input filled" type="tel" name="tel" placeholder=" " data-phone-input required>
+                                            <span class="input-label">Телефон</span>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="form-fieldset">
+                                        <div class="personal-account__buttons">
+                                            <button type="button" class="saved-btn">
+                                                <span>Сохранить</span>
+                                            </button>
+                                            <button type="submit" class="reset-btn">
+                                                <span>Сбросить</span>
+                                            </button>
+                                        </div>
+
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="checkbox" required>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">
+                                                Нажимая на кнопку, вы соглашаетесь на
+                                                <a href="#">обработку персональных данных</a>
+                                                и <a href="#">политику конфиденциальности</a>
+                                             </span>
+                                        </label>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="personal-account__exit">Выйти</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<include src="layout/footer.html"></include>
+<include src="layout/modals.html"></include>
+
+</body>
+</html>

@@ -9,6 +9,7 @@ import { InitModals } from "./modals";
 import { InitVideo } from "./video";
 import { InitPrint } from "./print";
 import { InitSticky } from "./stucky";
+import { InitTabs } from "./tabs";
 import { BannerAnimation } from "./animation.js"
 import IMask from 'imask';
 
@@ -150,7 +151,7 @@ function isINNValid(inn) {
 }
 
 function initINNValidation() {
-        const innInputs = document.querySelectorAll('input[data-mask="inn-legal"]');
+        const innInputs = document.querySelectorAll('input[data-mask="inn-legal"], #input-inn, #inn-nput');
 
         innInputs.forEach(input => {
                 const errorElement = findErrorElement(input);
@@ -193,6 +194,10 @@ function initINNValidation() {
                                 e.preventDefault();
                         }
                 });
+
+                if (input.value) {
+                        validateINNField(input, errorElement);
+                }
         });
 }
 
@@ -206,6 +211,17 @@ function findErrorElement(input) {
         const nextElement = input.nextElementSibling;
         if (nextElement && nextElement.classList.contains('inn-error')) {
                 return nextElement;
+        }
+
+        const prevElement = input.previousElementSibling;
+        if (prevElement && prevElement.classList.contains('inn-error')) {
+                return prevElement;
+        }
+
+        const parent = input.parentElement;
+        if (parent) {
+                const errorElement = parent.querySelector('.inn-error');
+                if (errorElement) return errorElement;
         }
 
         return null;
@@ -239,78 +255,6 @@ function validateINNField(input, errorElement) {
                         errorElement.style.display = 'block';
                 }
                 return false;
-        }
-}
-
-class Tabs {
-        constructor(container) {
-                this.container = container;
-                this.init();
-        }
-
-        init() {
-                if (this.container.querySelector('.tab__item')) {
-                        this.initAccordion();
-                } else {
-                        this.initDesktopTabs();
-                }
-        }
-
-        initDesktopTabs() {
-                const buttons = this.container.querySelectorAll('.tabs__header .tab__btn');
-                const panes = this.container.querySelectorAll('.tabs__content .tab__pane');
-
-                buttons.forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                                e.preventDefault();
-
-                                buttons.forEach(b => b.classList.remove('active'));
-                                panes.forEach(p => {
-                                        p.classList.remove('active');
-                                        p.style.display = 'none';
-                                });
-
-                                btn.classList.add('active');
-                                const tabId = btn.dataset.tab;
-                                const targetPane = this.container.querySelector(`#${tabId}`);
-                                if (targetPane) {
-                                        targetPane.classList.add('active');
-                                        targetPane.style.display = 'block';
-                                }
-                        });
-                });
-
-                const hasActive = Array.from(buttons).some(btn => btn.classList.contains('active'));
-                if (!hasActive && buttons.length > 0) {
-                        buttons[0].click();
-                }
-        }
-
-        initAccordion() {
-                const tabItems = this.container.querySelectorAll('.tab__item');
-
-                tabItems.forEach(item => {
-                        const btn = item.querySelector('.tab__btn');
-                        const pane = item.querySelector('.tab__pane');
-
-                        if (!btn || !pane) return;
-
-                        pane.style.display = 'none';
-
-                        btn.addEventListener('click', (e) => {
-                                e.preventDefault();
-
-                                const isActive = btn.classList.contains('active');
-
-                                if (isActive) {
-                                        btn.classList.remove('active');
-                                        pane.style.display = 'none';
-                                } else {
-                                        btn.classList.add('active');
-                                        pane.style.display = 'block';
-                                }
-                        });
-                });
         }
 }
 
@@ -512,15 +456,6 @@ function initFixedHeader() {
 
         window.addEventListener('resize', () => {
                 checkScroll();
-        });
-}
-
-function initTabs() {
-        const tabsContainers = document.querySelectorAll('.bestsellers__tabs, .product__tabs, .tabs-desktop, .placing-order__tabs');
-        tabsContainers.forEach(container => {
-                if (container.offsetParent !== null) {
-                        new Tabs(container);
-                }
         });
 }
 
@@ -730,6 +665,9 @@ function initMobileFilter() {
 }
 
 function initAll() {
+        console.log('initAll called');
+        console.log('Personal account tabs found:', document.querySelectorAll('.personal-account__tabs').length);
+
         document.querySelectorAll('.price-filter, .filter-variants__item').forEach(item => {
                 item.classList.add('collapsed');
         });
@@ -746,7 +684,7 @@ function initAll() {
         InitSticky();
         initSearch();
         initFixedHeader();
-        initTabs();
+        InitTabs();
         initQuantityCounters();
         initCheckboxes();
         initPriceFilterToggle();
