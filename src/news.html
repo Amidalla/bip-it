@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ru">
+
+<include src="layout/head.html"></include>
+
+<body class="main-color">
+
+<include src="layout/header2.html"></include>
+
+<main class="inside-page">
+    <section class="page-name page-name_not-bg page-name_news">
+        <div class="breadcrumb">
+            <div class="container">
+                <nav class="breadcrumb__inner">
+                    <ul class="breadcrumb__list">
+                        <li class="breadcrumb__item">
+                            <a href="#" class="breadcrumb__link">Главная</a>
+                        </li>
+                        <li class="breadcrumb__item active">
+                            <a href="#" class="breadcrumb__link">Статьи</a>
+                        </li>
+                    </ul>
+                    <a class="back-link">Назад</a>
+                </nav>
+            </div>
+            <div class="container">
+                <h1>Статьи</h1>
+            </div>
+        </div>
+    </section>
+    <section class="news">
+        <div class="container">
+            <div class="news__content">
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news1.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news2.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news3.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news1.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news2.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news3.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news1.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news2.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news3.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news1.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news2.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+                <include src="layout/template/card/news-card.html">
+                    {
+                    "image": "assets/images/main-news3.png",
+                    "title": "Заголовок новости в 2-3 строки Заголовок новости в 2-3 строки",
+                    "date": "27.08.25",
+                    "link": "#"
+                    }
+                </include>
+            </div>
+            <nav class="pagination">
+                <a href="#" class="pagination__prev"></a>
+                <ul class="pagination__list">
+                    <li class="pagination__item">
+                        <a href="#" class="pagination__link">1</a>
+                    </li>
+                    <li class="pagination__item">
+                        <a href="#" class="pagination__link pagination__link--active">2</a>
+                    </li>
+                    <li class="pagination__item">
+                        <a href="#" class="pagination__link">3</a>
+                    </li>
+                </ul>
+                <a href="#" class="pagination__next"></a>
+            </nav>
+            <button class="more-products">
+                <span>Показать еще статьи</span>
+                <include src="assets/svg/more-icon.html"></include>
+            </button>
+        </div>
+    </section>
+    <include src="layout/main-form.html"></include>
+</main>
+
+<include src="layout/footer.html"></include>
+<include src="layout/modals.html"></include>
+
+</body>
+</html>

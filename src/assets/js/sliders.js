@@ -132,4 +132,13 @@ export function SlidersInit() {
             }
         }
     });
+
+    const newsSlider = new Swiper(".slider-news-detail", {
+        autoplay: true,
+        speed: 1000,
+        navigation: {
+            nextEl: '.news-detail__controls .swiper-button-next',
+            prevEl: '.news-detail__controls .swiper-button-prev'
+        }
+    });
 }
