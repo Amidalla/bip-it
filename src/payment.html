@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+
+<include src="layout/head.html"></include>
+
+<body class="main-color">
+
+<include src="layout/header2.html"></include>
+
+<main class="inside-page">
+    <section class="page-name page_not-bg page_payment">
+        <div class="breadcrumb">
+            <div class="container">
+                <nav class="breadcrumb__inner">
+                    <ul class="breadcrumb__list">
+                        <li class="breadcrumb__item">
+                            <a href="#" class="breadcrumb__link">Главная</a>
+                        </li>
+                        <li class="breadcrumb__item active">
+                            <a href="#" class="breadcrumb__link">Оплата</a>
+                        </li>
+                    </ul>
+                    <a class="back-link">Назад</a>
+                </nav>
+            </div>
+            <div class="container">
+                <h1>Оплата</h1>
+            </div>
+        </div>
+    </section>
+    <section class="payment">
+        <div class="container">
+            <div class="payment__lists">
+                <div class="supply">
+                     <div class="supply__tittle">Виды оплаты</div>
+                    <ul class="supply__list">
+                        <li>безналичный расчет (все цены на сайте указаны с учетом НДС)</li>
+                        <li>другой способ оплаты дополнительно может быть согласован при оформлении заказа</li>
+                    </ul>
+                </div>
+                <div class="supply">
+                    <div class="supply__tittle">Альтернативные варианты оплаты</div>
+                    <ul class="supply__list">
+                        <li>Постоянным заказчикам мы предлагаем воспользоваться беспроцентной рассрочкой</li>
+                        <li>другой способ оплаты дополнительно может быть согласован при оформлении заказа</li>
+                    </ul>
+                </div>
+                <div class="supply">
+                    <div class="supply__tittle">Условия поставки</div>
+                    <ul class="supply__list">
+                        <li>Если заказанное вами оборудование имеется на складах БИП-АЙТИ, оно поставляется в срок от 2-х до 3-х рабочих дней с момента подписания договора и внесения предоплаты.</li>
+                        <li>Если оборудование поставляется под заказ, срок поставки составляет — от 10 до 60 дней.</li>
+                    </ul>
+                    <p class="supply__paragraph">Датой поставки считается дата доставки оборудования в ваш адрес.</p>
+                </div>
+                <div class="supply">
+                    <div class="supply__tittle">Этапы сделки</div>
+                    <ul class="supply__list">
+                        <li>Составление спецификации или выставление счета на оборудование</li>
+                        <li>Согласование условий доставки и оплаты.</li>
+                        <li>Подписание договора</li>
+                        <li>Передача оборудования. Вместе с товаром вы получите комплект первичных документов (накладная и счет-фактура)</li>
+                    </ul>
+                </div>
+                <div class="supply">
+                    <div class="supply__tittle">Стандартные условия</div>
+                    <ul class="supply__list">
+                        <li>Стоимость оборудования определяется спецификацией или счетом на оплату</li>
+                        <li>Авансовый платеж 100%</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="payment__media">
+                <img class="lazy" data-src="assets/images/payment-img.jpg" alt="">
+            </div>
+        </div>
+    </section>
+    <section class="sub-form">
+        <div class="container">
+
+            <div class="sub-form__inner">
+                <div class="sub-form__info">
+                    Для получения более подробной информации обращайтесь к специалистам ООО «БИП-АЙТИ» по телефонам <a href="tel:+78123098289">+7 (812) 309-82-89</a> или эл.почте <a href="mailto:sales@bip-it.ru">sales@bip-it.ru</a>
+                </div>
+                <div class="sub-form__title">Напишите нам</div>
+                <form class="form-sub">
+                    <fieldset>
+                        <label>
+                            <input type="text" name="name" placeholder="Имя" required>
+                        </label>
+                        <label>
+                            <input type="tel" name="tel" placeholder="Телефон" data-phone-input required>
+                        </label>
+                        <label>
+                            <input type="email" name="email" placeholder="mail" required>
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <label>
+                            <textarea name="textarea" placeholder="Ваш вопрос" required></textarea>
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <button>
+                            <include src="assets/svg/all-news-icon.html"></include>
+                            <span>Отправить</span>
+                        </button>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="checkbox" required>
+                            <span>Нажимая на кнопку, вы соглашаетесь на <a href="#">обработку персональных данных</a> и <a href="#">политику конфиденциальности</a></span>
+                        </label>
+                    </fieldset>
+                </form>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<include src="layout/footer.html"></include>
+<include src="layout/modals.html"></include>
+
+</body>
+</html>

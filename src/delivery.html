@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+
+<include src="layout/head.html"></include>
+
+<body class="main-color">
+
+<include src="layout/header2.html"></include>
+
+<main class="inside-page">
+    <section class="page-name page_not-bg page_payment">
+        <div class="breadcrumb">
+            <div class="container">
+                <nav class="breadcrumb__inner">
+                    <ul class="breadcrumb__list">
+                        <li class="breadcrumb__item">
+                            <a href="#" class="breadcrumb__link">Главная</a>
+                        </li>
+                        <li class="breadcrumb__item active">
+                            <a href="#" class="breadcrumb__link">Доставка</a>
+                        </li>
+                    </ul>
+                    <a class="back-link">Назад</a>
+                </nav>
+            </div>
+            <div class="container">
+                <h1>Доставка</h1>
+            </div>
+        </div>
+    </section>
+    <section class="delivery">
+        <div class="container">
+            <div class="delivery__lists">
+                <div class="supply">
+                    <div class="supply__tittle">Самовывоз</div>
+                    <p class="supply__paragraph">Текст на замену. Получение груза на складе в Санкт-Петербурге возможно с 9:00 до 18:00 по будним
+                        дням при условии поступления безналичной оплаты на наш расчетный счет для юридических лиц, и оплата при получении на складе для физических лиц.
+                        Самовывоз осуществляется бесплатно по адресу: <b>Санкт-Петербург, Канонерский остров, дом 3, корпус 1, литера Б</b></p>
+                </div>
+                <div class="supply">
+                    <div class="supply__tittle">Доставка</div>
+                    <p class="supply__paragraph">Местонахождение Вашего товара и примерное время доставки можно узнать на
+                        сайте транспортной компании по номеру транспортной накладной (Вы его берете у нас). Товары,
+                        отправленные данными транспортными компаниями, застрахованы. Вы всегда можете отказаться от нашей доставки
+                        и забрать заказ своей транспортной компанией. Для этого надо прислать нам оригинал доверенности,
+                        что Ваша организация доверяет перевозку груза выбранной Вами транспортной компании.
+                        Для самовывоза заказа из офиса требуется доверенность, либо печать от организации.</p>
+                    <p class="supply__sub-tittle">Требования к доверенности:</p>
+                    <ul class="supply__list">
+                        <li>Обязательно должна быть вписана должность сотрудника.</li>
+                        <li>Доверенность, написанная от руки, не принимается</li>
+                        <li>Не подходят печати организации типа "Для документов"</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="delivery__media">
+                <img class="lazy" data-src="assets/images/delivery-media.jpg" alt="">
+            </div>
+        </div>
+    </section>
+    <section class="design">
+        <div class="container">
+            <div class="design__text">
+                <p class="design__tittle">Автодоставка грузов по всей России. Дольше везут, зато бюджетно!</p>
+                <p class="design__tittle">Лёгкие грузы, короткие сроки.Можно отследить по накладной!</p>
+            </div>
+            <div class="design__img">
+                <img class="lazy" data-src="assets/images/car1.png" alt="">
+                <img class="lazy" data-src="assets/images/car2.png" alt="">
+                <img class="lazy" data-src="assets/images/car3.png" alt="">
+            </div>
+        </div>
+    </section>
+    <section class="sub-form">
+        <div class="container">
+
+            <div class="sub-form__inner">
+                <div class="sub-form__info">
+                    Для получения более подробной информации обращайтесь к специалистам ООО «БИП-АЙТИ» по телефонам <a href="tel:+78123098289">+7 (812) 309-82-89</a> или эл.почте <a href="mailto:sales@bip-it.ru">sales@bip-it.ru</a>
+                </div>
+                <div class="sub-form__title">Напишите нам</div>
+                <form class="form-sub">
+                    <fieldset>
+                        <label>
+                            <input type="text" name="name" placeholder="Имя" required>
+                        </label>
+                        <label>
+                            <input type="tel" name="tel" placeholder="Телефон" data-phone-input required>
+                        </label>
+                        <label>
+                            <input type="email" name="email" placeholder="mail" required>
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <label>
+                            <textarea name="textarea" placeholder="Ваш вопрос" required></textarea>
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <button>
+                            <include src="assets/svg/all-news-icon.html"></include>
+                            <span>Отправить</span>
+                        </button>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="checkbox" required>
+                            <span>Нажимая на кнопку, вы соглашаетесь на <a href="#">обработку персональных данных</a> и <a href="#">политику конфиденциальности</a></span>
+                        </label>
+                    </fieldset>
+                </form>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<include src="layout/footer.html"></include>
+<include src="layout/modals.html"></include>
+
+</body>
+</html>
