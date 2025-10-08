@@ -2516,6 +2516,7 @@ body.no-scroll {
       border-radius: 0;
       flex-direction: column;
       box-shadow: none;
+      height: 100%;
     }
   }
 
@@ -2524,6 +2525,15 @@ body.no-scroll {
      visibility: visible;
      opacity: 1;
      transform: translateY(0);
+     height: calc(95vh - 150px);
+     overflow-y: auto;
+
+
+     @media (max-width: 1000px) {
+       height: calc(95vh - 125px);
+       overflow-y: auto;
+     }
+
      
      @media (max-width: 760px) {
        width: 100%;
@@ -2532,7 +2542,6 @@ body.no-scroll {
        padding-right: 0;
        z-index: 100;
        height: 100vh;
-       overflow-y: auto;
      }
    }
 
@@ -2550,7 +2559,7 @@ body.no-scroll {
     }
 
     @media (max-width: 760px) {
-      flex: 0 0 100%;
+      flex: none !important;
     }
   }
   &__img {
@@ -2561,6 +2570,12 @@ body.no-scroll {
     @media (max-width: 1550px) {
       flex: 0 0  40%;
     }
+
+    @media (max-width: 760px) {
+      flex: none !important;
+    }
+
+
 
 
     img {
@@ -4298,7 +4313,7 @@ body.no-scroll {
     background: c.$white;
 
     .modal-filter__inner {
-      max-height: 90%;
+      max-height: 95vh;
       overflow-y: auto;
       padding-bottom: 80px;
     }
