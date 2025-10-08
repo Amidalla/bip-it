@@ -176,35 +176,35 @@
         </div>
         <form class="filter-form" method="GET">
             <div class="filter__bg">
-                <fieldset class="price-filter">
-                    <legend class="price-filter__legend">Цена</legend>
-                    <div class="price-filter__content">
-                        <div class="price-inputs">
-                            <div class="price-input-group">
-                                <label for="min-price-modal" class="price-label">От</label>
-                                <div class="price-input-wrapper">
-                                    <input type="number" id="min-price-modal" name="min_price" value="100" min="0" max="2700" class="price-input min-price">
-                                    <span class="price-currency">руб</span>
+                <fieldset class="filter-variants">
+                    <div class="price-filter">
+                        <legend class="price-filter__legend">Цена</legend>
+                        <div class="price-filter__content">
+                            <div class="price-inputs">
+                                <div class="price-input-group">
+                                    <label for="min-price-modal" class="price-label">От</label>
+                                    <div class="price-input-wrapper">
+                                        <input type="number" id="min-price-modal" name="min_price" value="100" min="0" max="2700" class="price-input min-price">
+                                        <span class="price-currency">руб</span>
+                                    </div>
+                                </div>
+
+                                <div class="price-input-group">
+                                    <label for="max-price-modal" class="price-label">До</label>
+                                    <div class="price-input-wrapper">
+                                        <input type="number" id="max-price-modal" name="max_price" value="2700" min="0" max="2700" class="price-input max-price">
+                                        <span class="price-currency">руб</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="price-input-group">
-                                <label for="max-price-modal" class="price-label">До</label>
-                                <div class="price-input-wrapper">
-                                    <input type="number" id="max-price-modal" name="max_price" value="2700" min="0" max="2700" class="price-input max-price">
-                                    <span class="price-currency">руб</span>
-                                </div>
+                            <div class="price-sliders">
+                                <div class="slider-track"></div>
+                                <input type="range" id="min-slider-2" min="0" max="2700" value="100" class="slider min-slider">
+                                <input type="range" id="max-slider-2" min="0" max="2700" value="2700" class="slider max-slider">
                             </div>
-                        </div>
-
-                        <div class="price-sliders">
-                            <div class="slider-track"></div>
-                            <input type="range" id="min-slider-2" min="0" max="2700" value="100" class="slider min-slider">
-                            <input type="range" id="max-slider-2" min="0" max="2700" value="2700" class="slider max-slider">
                         </div>
                     </div>
-                </fieldset>
-                <fieldset class="filter-variants">
                     <div class="filter-variants__item collapsed">
                         <div class="filter-variants__header">
                             <span class="filter-variants__toggle">Бренд</span>
