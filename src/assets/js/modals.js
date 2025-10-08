@@ -26,6 +26,10 @@ export function InitModals() {
     const buyMarketplaceBtns = document.querySelectorAll(".buy-marketplace");
     const marketplaceCloseBtn = document.querySelector(".modal-marketplace__close");
 
+    const modalFilter = document.querySelector(".modal-filter");
+    const filterButtons = document.querySelectorAll(".filter-mobile__btn");
+    const filterCloseButtons = document.querySelectorAll(".modal-filter__close");
+
     const overlay = document.querySelector(".overlay");
 
     function initDraggableModal(modal) {
@@ -127,6 +131,9 @@ export function InitModals() {
         if (modalElement !== marketplaceModal && marketplaceModal?.classList.contains('opened')) {
             closeModal(marketplaceModal);
         }
+        if (modalElement !== modalFilter && modalFilter?.classList.contains('active')) {
+            closeModalFilter();
+        }
 
         modalElement?.classList.add('opened');
 
@@ -170,6 +177,28 @@ export function InitModals() {
             closeModal(modalElement);
         } else {
             openModal(modalElement);
+        }
+    }
+
+    function openModalFilter() {
+        if (modalFilter) {
+            modalFilter.classList.add('active');
+            document.body.classList.add('no-scroll');
+            document.addEventListener('touchmove', preventScroll, { passive: false });
+        }
+    }
+
+    function closeModalFilter() {
+        if (modalFilter) {
+            modalFilter.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+            document.removeEventListener('touchmove', preventScroll);
+        }
+    }
+
+    function preventScroll(e) {
+        if (modalFilter?.classList.contains('active')) {
+            e.preventDefault();
         }
     }
 
@@ -238,6 +267,7 @@ export function InitModals() {
         }
     }
 
+    // Инициализация модалки каталога
     catalogBtns.forEach(btn => {
         btn?.addEventListener('click', (event) => {
             event.preventDefault();
@@ -252,6 +282,7 @@ export function InitModals() {
         });
     }
 
+    // Инициализация мобильного меню
     if (burgerBtn) {
         burgerBtn.addEventListener('click', (event) => {
             event.preventDefault();
@@ -266,6 +297,7 @@ export function InitModals() {
         });
     }
 
+    // Инициализация формы обратной связи
     feedbackBtns.forEach(btn => {
         btn?.addEventListener('click', (event) => {
             event.preventDefault();
@@ -280,6 +312,7 @@ export function InitModals() {
         });
     }
 
+    // Инициализация модалки подтверждения заказа
     placedBtns.forEach(btn => {
         btn?.addEventListener('click', (event) => {
             event.preventDefault();
@@ -294,6 +327,7 @@ export function InitModals() {
         });
     }
 
+    // Инициализация модалки вакансий
     vacancyItemBtns.forEach(btn => {
         btn?.addEventListener('click', (event) => {
             event.preventDefault();
@@ -317,6 +351,7 @@ export function InitModals() {
         });
     });
 
+    // Инициализация модалки маркетплейса
     buyMarketplaceBtns.forEach(btn => {
         btn?.addEventListener('click', (event) => {
             event.preventDefault();
@@ -339,6 +374,32 @@ export function InitModals() {
         });
     }
 
+    // Инициализация модалки фильтра
+    if (filterButtons.length && modalFilter) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', openModalFilter);
+        });
+
+        filterCloseButtons.forEach(button => {
+            if (button) {
+                button.addEventListener('click', closeModalFilter);
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalFilter.classList.contains('active')) {
+                closeModalFilter();
+            }
+        });
+
+        modalFilter.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModalFilter();
+            }
+        });
+    }
+
+    // Обработка overlay
     if (overlay) {
         overlay.addEventListener('click', (event) => {
             if (event.target === overlay) {
@@ -360,10 +421,14 @@ export function InitModals() {
                 if (catalogModal?.classList.contains('opened') && shouldShowCatalogOverlay()) {
                     closeModal(catalogModal);
                 }
+                if (modalFilter?.classList.contains('active')) {
+                    closeModalFilter();
+                }
             }
         });
     }
 
+    // Закрытие по клику вне модалки
     document.addEventListener('click', (event) => {
         if (catalogModal?.classList.contains('opened')) {
             let isClickInsideModal = catalogModal.contains(event.target);
@@ -453,8 +518,24 @@ export function InitModals() {
                 closeModal(marketplaceModal);
             }
         }
+
+        if (modalFilter?.classList.contains('active')) {
+            let isClickInsideFilter = modalFilter.contains(event.target);
+            let isFilterBtn = false;
+
+            for (const btn of filterButtons) {
+                if (btn.contains(event.target)) {
+                    isFilterBtn = true;
+                }
+            }
+
+            if (!isClickInsideFilter && !isFilterBtn) {
+                closeModalFilter();
+            }
+        }
     });
 
+    // Закрытие по Escape
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             if (catalogModal?.classList.contains('opened')) {
@@ -475,9 +556,13 @@ export function InitModals() {
             if (marketplaceModal?.classList.contains('opened')) {
                 closeModal(marketplaceModal);
             }
+            if (modalFilter?.classList.contains('active')) {
+                closeModalFilter();
+            }
         }
     });
 
+    // Обработка ресайза
     window.addEventListener('resize', () => {
         if (window.innerWidth > 1300) {
             resetCatalogLists();
@@ -509,6 +594,9 @@ export function InitModals() {
         marketplaceModal: !!marketplaceModal,
         buyMarketplaceBtns: buyMarketplaceBtns.length,
         marketplaceCloseBtn: !!marketplaceCloseBtn,
+        modalFilter: !!modalFilter,
+        filterButtons: filterButtons.length,
+        filterCloseButtons: filterCloseButtons.length,
         overlay: !!overlay
     });
 }

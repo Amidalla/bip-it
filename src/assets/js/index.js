@@ -16,7 +16,6 @@ import IMask from 'imask';
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs]);
 
 function initPhoneMasksWithPlaceholder() {
-
         const phoneInputs = document.querySelectorAll(`
         input[type="tel"][name="tel"],
         input[type="tel"][name="representative-phone"],
@@ -104,7 +103,6 @@ function initMasks() {
                                 break;
                 }
         });
-
 
         const phoneInputs = document.querySelectorAll('input[data-phone-input]');
         phoneInputs.forEach(input => {
@@ -616,54 +614,6 @@ function initFilterVariants() {
         });
 }
 
-function initMobileFilter() {
-        const filterButtons = document.querySelectorAll('.filter-mobile__btn');
-        const modalFilter = document.querySelector('.modal-filter');
-        const closeButtons = document.querySelectorAll('.modal-filter__close');
-
-        if (!filterButtons.length || !modalFilter) return;
-
-        function openFilterModal() {
-                modalFilter.classList.add('active');
-                document.body.classList.add('no-scroll');
-                document.addEventListener('touchmove', preventScroll, { passive: false });
-        }
-
-        function closeFilterModal() {
-                modalFilter.classList.remove('active');
-                document.body.classList.remove('no-scroll');
-                document.removeEventListener('touchmove', preventScroll);
-        }
-
-        function preventScroll(e) {
-                if (modalFilter.classList.contains('active')) {
-                        e.preventDefault();
-                }
-        }
-
-        filterButtons.forEach(button => {
-                button.addEventListener('click', openFilterModal);
-        });
-
-        closeButtons.forEach(button => {
-                if (button) {
-                        button.addEventListener('click', closeFilterModal);
-                }
-        });
-
-        document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modalFilter.classList.contains('active')) {
-                        closeFilterModal();
-                }
-        });
-
-        modalFilter.addEventListener('click', function(e) {
-                if (e.target === this) {
-                        closeFilterModal();
-                }
-        });
-}
-
 function initAll() {
         console.log('initAll called');
         console.log('Personal account tabs found:', document.querySelectorAll('.personal-account__tabs').length);
@@ -690,7 +640,6 @@ function initAll() {
         initPriceFilterToggle();
         initFilterVariants();
         initPriceSlider();
-        initMobileFilter();
 }
 
 if (document.readyState === 'loading') {
