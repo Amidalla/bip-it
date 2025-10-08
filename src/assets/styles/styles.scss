@@ -6481,7 +6481,7 @@ body.no-scroll {
 }
 
 .modal-form {
-  max-width: 523px;
+  width: 523px;
   padding: 67px 27px 33px 27px;
   position: fixed;
   top: 50%;
@@ -6491,6 +6491,10 @@ body.no-scroll {
   opacity: 0;
   visibility: hidden;
   display: none;
+  
+  @media (max-width: 555px) {
+    width: 100%;
+  }
 
   &.opened {
     transition: all 0.25s;
@@ -8691,7 +8695,7 @@ body.no-scroll {
         &::before {
           content: "";
           position: absolute;
-          top: 0;
+          top: 5px;
           left: 0;
           width: 19px;
           height: 21px;
@@ -9022,7 +9026,378 @@ body.no-scroll {
   }
 }
 
+.vacancy {
+    padding-bottom: 85px;
+
+  @media (max-width: 1366px) {
+    padding-bottom: 61px;
+  }
+  @media (max-width: 768px) {
+    padding-bottom: 32px;
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 564px;
+    gap: 30px;
+    align-items: start;
+
+    @media (max-width: 1200px) {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 20px;
+    }
+  }
+
+    &__inner {
+      &:last-child {
+        background: c.$white;
+        padding: 24px;
+      }
+    }
+
+    &__accordion {
+      display: block;
+      margin-top: -19.5px;
 
 
+      .tab__pane {
+        background: none;
+      }
+
+      .tab__btn {
+        background: none;
+        color: #0F1019;
+        font-size: 20px;
+        letter-spacing: 0.02em;
+        padding-top: 19.5px;
+        padding-bottom: 19.5px;
+        border: none;
+        border-bottom: 1px solid #C2C9D5;
+        transition: all 0.3s ease;
+        border-radius: 0;
+
+        svg {
+          transition: all 0.3s ease;
+        }
+
+        &:hover {
+          border: none;
+          color: c.$orange;
+          background: none;
+          border-bottom: 1px solid #C2C9D5;
+        }
+
+        &.active {
+          svg {
+            display: block !important;
+            transform: rotate(-90deg);
+          }
+        }
+      }
+    }
+
+    &__link {
+      @include orange-button();
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 234px;
+      height: 55px;
+
+      @media (max-width: 1366px) {
+        font-size: 16px;
+        width: 215px;
+        height: 39px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 15px;
+        width: 196px;
+        height: 35px;
+      }
+
+      svg {
+        position: relative;
+        z-index: 2;
+      }
+    }
+
+    &__title {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 110%;
+      color: #0F1019;
+      margin-bottom: 16px;
+
+      @media (max-width: 1366px) {
+        font-size: 22px;
+      }
+    }
+
+    &__mail {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 150%;
+      letter-spacing: 0.02em;
+      color: #0F1019;
+      margin-bottom: 20px;
+
+      @media (max-width: 1366px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+
+      a {
+        font-weight: 400;
+        color: #F07000;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    &__phone {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 150%;
+      letter-spacing: 0.02em;
+      color: #0F1019;
+      margin-bottom: 20px;
+
+      @media (max-width: 1366px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+
+      a {
+        font-weight: 400;
+        color: #F07000;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    &__operating {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 150%;
+      letter-spacing: 0.02em;
+      color: #0F1019;
+      margin-bottom: 20px;
+
+      @media (max-width: 1366px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+
+      span {
+        font-weight: 500;
+      }
+    }
+
+    &__address {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 150%;
+      letter-spacing: 0.02em;
+      color: #0F1019;
+      margin-bottom: 20px;
+
+      @media (max-width: 1366px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+
+      span {
+        font-weight: 500;
+      }
+    }
+}
+
+.vacancy-category {
+    &__title {
+      @media (max-width: 1366px) {
+        font-size: 18px;
+      }
+    }
+}
+
+.vacancy-item {
+    &__title {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 150%;
+      letter-spacing: 0.02em;
+      color: #F07000;
+      margin-bottom: 16px;
+
+      @media (max-width: 1366px) {
+        font-size: 18px;
+      }
+    }
+
+    &__link {
+      @include orange-button();
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 234px;
+      height: 55px;
+
+      @media (max-width: 1366px) {
+        font-size: 16px;
+        width: 215px;
+        height: 39px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 15px;
+        width: 196px;
+        height: 35px;
+      }
+
+      svg {
+        position: relative;
+        z-index: 2;
+      }
+    }
+}
+
+.vacancy-form {
+  background: url("../images/modal-form-bg.png") no-repeat center;
+  background-size: cover;
+  border-radius: 20px;
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .input-label {
+    position: absolute;
+    top: 16px;
+    left: 12px;
+    padding: 0 4px;
+    font-size: 16px;
+    color: #7A7F94;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    transform-origin: left top;
+    line-height: 1;
+  }
+
+  .styled-input.filled ~ .input-label {
+    transform: translateY(-22px) scale(0.85);
+    background:url("../images/form-v-bg.png") no-repeat;
+    border-radius: 20px;
+  }
+
+  &__close {
+    position: absolute;
+    position: absolute;
+    cursor: pointer;
+    top: 45px;
+    right: 18px;
+  }
+}
 
 
+.bank-details {
+  padding-bottom: 85px;
+
+  @media (max-width: 1366px) {
+    padding-bottom: 61px;
+  }
+  @media (max-width: 768px) {
+    padding-bottom: 32px;
+  }
+
+  &__inner {
+    background: c.$white;
+    padding: 20px;
+    max-width: 1328px;
+    border-radius: 20px;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+
+    @media (max-width: 500px) {
+      display: flex;
+      flex-direction: column;
+
+      & .bank-details__item:first-child {
+        font-weight: 700;
+      }
+    }
+
+    &:nth-child(odd) .bank-details__item {
+      background: #F6F9FD;
+    }
+
+    &:last-child {
+      background: #F6F9FD;
+      padding: 15px;
+    }
+  }
+
+  &__item {
+    padding: 15px;
+    font-size: 18px;
+    line-height: 150%;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+
+    @media (max-width: 1366px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 15px;
+    }
+  }
+
+  &__mail {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+    a {
+      color: #0F1019;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__phone {
+    display: flex;
+    flex-direction: column;
+
+    a {
+      color: #0F1019;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

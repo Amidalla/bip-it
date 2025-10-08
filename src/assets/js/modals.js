@@ -15,8 +15,12 @@ export function InitModals() {
     const placedBtns = document.querySelectorAll(".checkout-button.active");
     const placedCloseBtn = document.querySelector(".modal-placed__close");
 
-    const overlay = document.querySelector(".overlay");
+    const vacancyModal = document.querySelector(".vacancy-form");
+    const vacancyItemBtns = document.querySelectorAll(".vacancy-item__link");
+    const vacancyLinkBtns = document.querySelectorAll(".vacancy__link");
+    const vacancyCloseBtn = document.querySelector(".vacancy-form__close");
 
+    const overlay = document.querySelector(".overlay");
 
     function openModal(modalElement) {
         if (modalElement !== catalogModal && catalogModal?.classList.contains('opened')) {
@@ -31,11 +35,13 @@ export function InitModals() {
         if (modalElement !== placedModal && placedModal?.classList.contains('opened')) {
             closeModal(placedModal);
         }
+        if (modalElement !== vacancyModal && vacancyModal?.classList.contains('opened')) {
+            closeModal(vacancyModal);
+        }
 
         modalElement?.classList.add('opened');
 
-
-        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal) && overlay) {
+        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal || modalElement === vacancyModal) && overlay) {
             overlay.classList.add('opened');
         }
 
@@ -50,7 +56,7 @@ export function InitModals() {
     function closeModal(modalElement) {
         modalElement?.classList.remove('opened');
 
-        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal) && overlay) {
+        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal || modalElement === vacancyModal) && overlay) {
             overlay.classList.remove('opened');
         }
 
@@ -69,7 +75,6 @@ export function InitModals() {
             openModal(modalElement);
         }
     }
-
 
     function initCatalogLists() {
         const openedBtn = catalogModal?.querySelector('.list-opened-btn');
@@ -103,7 +108,6 @@ export function InitModals() {
             }
         }
 
-
         openedBtn?.removeEventListener('click', handleOpenClick);
         closeBtn?.removeEventListener('click', handleCloseClick);
 
@@ -118,7 +122,6 @@ export function InitModals() {
             e.stopPropagation();
             hideSecondList();
         }
-
 
         openedBtn?.addEventListener('click', handleOpenClick);
         closeBtn?.addEventListener('click', handleCloseClick);
@@ -138,7 +141,6 @@ export function InitModals() {
         }
     }
 
-
     catalogBtns.forEach(btn => {
         btn?.addEventListener('click', (event) => {
             event.preventDefault();
@@ -146,14 +148,12 @@ export function InitModals() {
         });
     });
 
-
     if (catalogCloseBtn) {
         catalogCloseBtn.addEventListener('click', (event) => {
             event.preventDefault();
             closeModal(catalogModal);
         });
     }
-
 
     if (burgerBtn) {
         burgerBtn.addEventListener('click', (event) => {
@@ -169,7 +169,6 @@ export function InitModals() {
         });
     }
 
-
     feedbackBtns.forEach(btn => {
         btn?.addEventListener('click', (event) => {
             event.preventDefault();
@@ -183,7 +182,6 @@ export function InitModals() {
             closeModal(feedbackModal);
         });
     }
-
 
     placedBtns.forEach(btn => {
         btn?.addEventListener('click', (event) => {
@@ -199,6 +197,29 @@ export function InitModals() {
         });
     }
 
+    vacancyItemBtns.forEach(btn => {
+        btn?.addEventListener('click', (event) => {
+            event.preventDefault();
+            openModal(vacancyModal);
+        });
+    });
+
+
+    vacancyLinkBtns.forEach(btn => {
+        btn?.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('Vacancy link button clicked');
+            openModal(feedbackModal);
+        });
+    });
+
+    if (vacancyCloseBtn) {
+        vacancyCloseBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            closeModal(vacancyModal);
+        });
+    }
 
     if (overlay) {
         overlay.addEventListener('click', (event) => {
@@ -212,29 +233,29 @@ export function InitModals() {
                 if (placedModal?.classList.contains('opened')) {
                     closeModal(placedModal);
                 }
+                if (vacancyModal?.classList.contains('opened')) {
+                    closeModal(vacancyModal);
+                }
             }
         });
     }
 
-
     document.addEventListener('click', (event) => {
-
         if (catalogModal?.classList.contains('opened')) {
             let isClickInsideModal = catalogModal.contains(event.target);
             let isCatalogBtn = false;
             let isCatalogClose = catalogCloseBtn?.contains(event.target);
 
-            catalogBtns.forEach(btn => {
+            for (const btn of catalogBtns) {
                 if (btn.contains(event.target)) {
                     isCatalogBtn = true;
                 }
-            });
+            }
 
             if (!isClickInsideModal && !isCatalogBtn && !isCatalogClose) {
                 closeModal(catalogModal);
             }
         }
-
 
         if (mobileMenu?.classList.contains('opened')) {
             let isClickInsideMenu = mobileMenu.contains(event.target);
@@ -245,41 +266,54 @@ export function InitModals() {
             }
         }
 
-
         if (feedbackModal?.classList.contains('opened')) {
             let isClickInsideFeedback = feedbackModal.contains(event.target);
             let isFeedbackBtn = false;
             let isFeedbackClose = feedbackCloseBtn?.contains(event.target);
 
-            feedbackBtns.forEach(btn => {
+            for (const btn of feedbackBtns) {
                 if (btn.contains(event.target)) {
                     isFeedbackBtn = true;
                 }
-            });
+            }
 
             if (!isClickInsideFeedback && !isFeedbackBtn && !isFeedbackClose) {
                 closeModal(feedbackModal);
             }
         }
 
-
         if (placedModal?.classList.contains('opened')) {
             let isClickInsidePlaced = placedModal.contains(event.target);
             let isPlacedBtn = false;
             let isPlacedClose = placedCloseBtn?.contains(event.target);
 
-            placedBtns.forEach(btn => {
+            for (const btn of placedBtns) {
                 if (btn.contains(event.target)) {
                     isPlacedBtn = true;
                 }
-            });
+            }
 
             if (!isClickInsidePlaced && !isPlacedBtn && !isPlacedClose) {
                 closeModal(placedModal);
             }
         }
-    });
 
+        if (vacancyModal?.classList.contains('opened')) {
+            let isClickInsideVacancy = vacancyModal.contains(event.target);
+            let isVacancyBtn = false;
+            let isVacancyClose = vacancyCloseBtn?.contains(event.target);
+
+            for (const btn of vacancyItemBtns) {
+                if (btn.contains(event.target)) {
+                    isVacancyBtn = true;
+                }
+            }
+
+            if (!isClickInsideVacancy && !isVacancyBtn && !isVacancyClose) {
+                closeModal(vacancyModal);
+            }
+        }
+    });
 
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
@@ -295,9 +329,11 @@ export function InitModals() {
             if (placedModal?.classList.contains('opened')) {
                 closeModal(placedModal);
             }
+            if (vacancyModal?.classList.contains('opened')) {
+                closeModal(vacancyModal);
+            }
         }
     });
-
 
     window.addEventListener('resize', () => {
         if (window.innerWidth > 1300) {
@@ -308,7 +344,6 @@ export function InitModals() {
             closeModal(mobileMenu);
         }
     });
-
 
     console.log('Modals initialized:', {
         catalogModal: !!catalogModal,
@@ -323,6 +358,10 @@ export function InitModals() {
         placedModal: !!placedModal,
         placedBtns: placedBtns.length,
         placedCloseBtn: !!placedCloseBtn,
+        vacancyModal: !!vacancyModal,
+        vacancyItemBtns: vacancyItemBtns.length,
+        vacancyLinkBtns: vacancyLinkBtns.length,
+        vacancyCloseBtn: !!vacancyCloseBtn,
         overlay: !!overlay
     });
 }
