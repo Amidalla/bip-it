@@ -2531,7 +2531,7 @@ body.no-scroll {
        padding-left: 0;
        padding-right: 0;
        z-index: 100;
-       height: 100%;
+       height: 100vh;
        overflow-y: auto;
      }
    }
@@ -7381,11 +7381,6 @@ body.no-scroll {
 }
 
 .modal-placed {
-     width: 523px;
-     background: url("../images/modal-placed_bg.jpg") no-repeat center;
-     background-size: cover;
-     padding: 67px 27px 48px 27px;
-     border-radius: 20px;
      position: fixed;
      top: 50%;
      left: 50%;
@@ -7394,9 +7389,13 @@ body.no-scroll {
      opacity: 0;
      visibility: hidden;
      display: none;
+     max-height: 95vh;
+    overflow-y: auto;
 
      @media (max-width: 560px) {
        width: 100%;
+       padding-left: 10px;
+       padding-right: 10px;
      }
 
      &.opened {
@@ -7418,8 +7417,15 @@ body.no-scroll {
      }
 
      &__inner {
-       max-height: 90vh;
-       overflow-y: auto;
+       width: 523px;
+       background: url("../images/modal-placed_bg.jpg") no-repeat center;
+       background-size: cover;
+       padding: 67px 27px 48px 27px;
+       border-radius: 20px;
+
+       @media (max-width: 560px) {
+         width: 100%;
+       }
      }
 
      &__title {
@@ -9309,9 +9315,12 @@ body.no-scroll {
 }
 
 .vacancy-form {
-  background: url("../images/modal-form-bg.png") no-repeat center;
-  background-size: cover;
-  border-radius: 20px;
+  
+  @media (max-width: 555px) {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 
   .input-wrapper {
     position: relative;
@@ -9643,11 +9652,6 @@ body.no-scroll {
 
 
 .modal-marketplace {
-  width: 523px;
-  background: url("../images/modal-marketplace-bg.jpg") no-repeat center;
-  background-size: cover;
-  padding: 67px 27px 48px 27px;
-  border-radius: 20px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -9656,9 +9660,13 @@ body.no-scroll {
   opacity: 0;
   visibility: hidden;
   display: none;
+  max-height: 95vh;
+  overflow-y: auto;
 
   @media (max-width: 560px) {
     width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   &.opened {
@@ -9666,6 +9674,18 @@ body.no-scroll {
     visibility: visible;
     opacity: 1;
     display: block;
+  }
+
+  &__inner {
+    width: 523px;
+    background: url("../images/modal-marketplace-bg.jpg") no-repeat center;
+    background-size: cover;
+    padding: 67px 27px 48px 27px;
+    border-radius: 20px;
+
+    @media (max-width: 560px) {
+      width: 100%;
+    }
   }
 
   &__items {
@@ -9689,10 +9709,6 @@ body.no-scroll {
     top: 17px;
     right: 18px;
     cursor: pointer;
-
-    @media (max-width: 560px) {
-      top: 38px;
-    }
   }
 
   &__title {
