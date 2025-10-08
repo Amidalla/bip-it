@@ -32,82 +32,6 @@ export function InitModals() {
 
     const overlay = document.querySelector(".overlay");
 
-    function initDraggableModal(modal) {
-        const inner = modal.querySelector('.modal-form__inner');
-        if (!inner) return;
-
-        let isDragging = false;
-        let startX, startY, initialX, initialY;
-
-        function startDrag(e) {
-            if (e.target.closest('form') ||
-                e.target.closest('input') ||
-                e.target.closest('textarea') ||
-                e.target.closest('button') ||
-                e.target.closest('a') ||
-                e.target.closest('.feedback-form__close') ||
-                e.target.closest('.modal-marketplace__close') ||
-                e.target.closest('.vacancy-form__close')) {
-                return;
-            }
-
-            isDragging = true;
-            inner.style.transition = 'none';
-
-            const rect = inner.getBoundingClientRect();
-            initialX = rect.left;
-            initialY = rect.top;
-
-            startX = e.clientX || e.touches[0].clientX;
-            startY = e.clientY || e.touches[0].clientY;
-
-            e.preventDefault();
-        }
-
-        function duringDrag(e) {
-            if (!isDragging) return;
-
-            const currentX = e.clientX || e.touches[0].clientX;
-            const currentY = e.clientY || e.touches[0].clientY;
-
-            const deltaX = currentX - startX;
-            const deltaY = currentY - startY;
-
-            inner.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-        }
-
-        function stopDrag() {
-            if (!isDragging) return;
-
-            isDragging = false;
-            inner.style.transition = 'transform 0.3s ease';
-
-            setTimeout(() => {
-                inner.style.transform = 'translate(0, 0)';
-            }, 100);
-        }
-
-        inner.addEventListener('mousedown', startDrag);
-        document.addEventListener('mousemove', duringDrag);
-        document.addEventListener('mouseup', stopDrag);
-
-        inner.addEventListener('touchstart', startDrag);
-        document.addEventListener('touchmove', duringDrag);
-        document.addEventListener('touchend', stopDrag);
-
-        const observer = new MutationObserver(() => {
-            if (modal.classList.contains('opened')) {
-                inner.style.transform = 'translate(0, 0)';
-            }
-        });
-
-        observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
-    }
-
-    if (feedbackModal) initDraggableModal(feedbackModal);
-    if (vacancyModal) initDraggableModal(vacancyModal);
-    if (marketplaceModal) initDraggableModal(marketplaceModal);
-
     function shouldShowCatalogOverlay() {
         return window.innerWidth <= 760;
     }
@@ -184,7 +108,6 @@ export function InitModals() {
         if (modalFilter) {
             modalFilter.classList.add('active');
             document.body.classList.add('no-scroll');
-            document.addEventListener('touchmove', preventScroll, { passive: false });
         }
     }
 
@@ -192,7 +115,6 @@ export function InitModals() {
         if (modalFilter) {
             modalFilter.classList.remove('active');
             document.body.classList.remove('no-scroll');
-            document.removeEventListener('touchmove', preventScroll);
         }
     }
 
@@ -383,12 +305,6 @@ export function InitModals() {
         filterCloseButtons.forEach(button => {
             if (button) {
                 button.addEventListener('click', closeModalFilter);
-            }
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modalFilter.classList.contains('active')) {
-                closeModalFilter();
             }
         });
 

@@ -25,6 +25,7 @@ body.has-fixed-header {
 
 body.no-scroll {
   overflow: hidden;
+  touch-action: none;
 }
 
 
@@ -2532,7 +2533,7 @@ body.no-scroll {
        padding-left: 0;
        padding-right: 0;
        z-index: 100;
-       height: 100vh;
+       height: 100dvh;
        overflow-y: auto;
        z-index: 1000;
        transition: none;
@@ -4297,13 +4298,15 @@ body.no-scroll {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100dhv;
+  height: 100dvh;
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
   display: none;
   background: c.$white;
-  overflow: hidden;
+  overflow: visible;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 
   &.active {
     opacity: 1;
@@ -4333,8 +4336,11 @@ body.no-scroll {
     .modal-filter__inner {
       height: calc(100dvh - 100px);
       overflow-y: auto;
-      padding: 60px 15px 100px;
-      -webkit-overflow-scrolling: touch;
+      padding: 10px 15px 100px;
+
+      @supports (-webkit-overflow-scrolling: touch) {
+        -webkit-overflow-scrolling: touch;
+      }
 
       &::-webkit-scrollbar {
         width: 4px;
