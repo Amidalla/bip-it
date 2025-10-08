@@ -28,7 +28,6 @@ export function InitModals() {
 
     const overlay = document.querySelector(".overlay");
 
-    // Функция для перетаскивания модальных окон
     function initDraggableModal(modal) {
         const inner = modal.querySelector('.modal-form__inner');
         if (!inner) return;
@@ -101,6 +100,14 @@ export function InitModals() {
         observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
     }
 
+    if (feedbackModal) initDraggableModal(feedbackModal);
+    if (vacancyModal) initDraggableModal(vacancyModal);
+    if (marketplaceModal) initDraggableModal(marketplaceModal);
+
+    function shouldShowCatalogOverlay() {
+        return window.innerWidth <= 760;
+    }
+
     function openModal(modalElement) {
         if (modalElement !== catalogModal && catalogModal?.classList.contains('opened')) {
             closeModal(catalogModal);
@@ -127,6 +134,10 @@ export function InitModals() {
             overlay.classList.add('opened');
         }
 
+        if (modalElement === catalogModal && overlay && shouldShowCatalogOverlay()) {
+            overlay.classList.add('opened');
+        }
+
         document.body.style.overflow = 'hidden';
         document.body.classList.add('modal-opened');
 
@@ -139,6 +150,10 @@ export function InitModals() {
         modalElement?.classList.remove('opened');
 
         if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal || modalElement === vacancyModal || modalElement === marketplaceModal) && overlay) {
+            overlay.classList.remove('opened');
+        }
+
+        if (modalElement === catalogModal && overlay && shouldShowCatalogOverlay()) {
             overlay.classList.remove('opened');
         }
 
@@ -341,6 +356,9 @@ export function InitModals() {
                 }
                 if (marketplaceModal?.classList.contains('opened')) {
                     closeModal(marketplaceModal);
+                }
+                if (catalogModal?.classList.contains('opened') && shouldShowCatalogOverlay()) {
+                    closeModal(catalogModal);
                 }
             }
         });
