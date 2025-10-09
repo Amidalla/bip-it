@@ -1,0 +1,20 @@
+
+.animate-title,
+.animate-text,
+.animate-image,
+.animate-cards,
+.animate-list {
+  opacity: 0;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-title,
+  .animate-text,
+  .animate-image,
+  .animate-cards,
+  .animate-list {
+    opacity: 1;
+    transform: none !important;
+  }
+}

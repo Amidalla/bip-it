@@ -1,4 +1,4 @@
-import Swiper from "swiper";
+import Swiper from 'swiper';
 
 export function SlidersInit() {
     const mainSlider = new Swiper(".slider-main", {
@@ -11,7 +11,13 @@ export function SlidersInit() {
         navigation: {
             nextEl: '.slider-main .swiper-button-next',
             prevEl: '.slider-main .swiper-button-prev'
+        },
+        breakpoints: {
+            450: {
+                navigation: false
+            }
         }
+
     });
 
     const bestsellersSlider = new Swiper(".slider-bestsellers", {
@@ -44,10 +50,12 @@ export function SlidersInit() {
     });
 
     const partnersSlider = new Swiper(".slider-partners", {
-        autoplay: true,
+        autoplay: {
+            delay: 3000
+        },
         slidesPerView: 8,
         loop: true,
-        speed: 1000,
+        speed: 500,
         spaceBetween: 0,
         centeredSlides: false,
         initialSlide: 0,
@@ -60,6 +68,19 @@ export function SlidersInit() {
             },
             1640: {
                 slidesPerView: 8
+            }
+        },
+        on: {
+            init: function () {
+                const sliderElement = this.el;
+
+                sliderElement.addEventListener('mouseenter', () => {
+                    this.autoplay.stop();
+                });
+
+                sliderElement.addEventListener('mouseleave', () => {
+                    this.autoplay.start();
+                });
             }
         }
     });
@@ -141,4 +162,15 @@ export function SlidersInit() {
             prevEl: '.news-detail__controls .swiper-button-prev'
         }
     });
+
+
+    return {
+        mainSlider,
+        bestsellersSlider,
+        partnersSlider,
+        mainNewsSlider,
+        productSlider,
+        similarSlider,
+        newsSlider
+    };
 }

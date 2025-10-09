@@ -18,8 +18,10 @@
                         <div class="swiper-slide main-animation">
                             <div class="banner">
                                 <picture>
-                                    <source media="(max-width: 760px)" data-srcset="assets/images/new-house-mobile.png">
-                                    <source media="(max-width: 875px)" data-srcset="assets/images/house-tablet.png">
+                                    <source media="(max-width: 450px)" data-srcset="assets/images/house-mobile.png">
+                                    <source media="(max-width: 850px)" data-srcset="assets/images/house_tablet.png">
+                                    <source media="(max-width: 900px)" data-srcset="assets/images/main-slide-laptop.png">
+                                    <source media="(max-width: 1366px)" data-srcset="assets/images/house_laptop.png">
                                     <img class="lazy banner__image" data-src="assets/images/house.png" alt="Слайд 1">
                                 </picture>
                                 <div class="banner__lines">
@@ -38,9 +40,15 @@
                             </div>
                         </div>
                         <div class="swiper-slide">
+                            <picture>
+                                <source media="(max-width: 450px)" data-srcset="assets/images/house-mobile.png">
+                                <source media="(max-width: 850px)" data-srcset="assets/images/house_tablet.png">
+                                <source media="(max-width: 1366px)" data-srcset="assets/images/main-slide-laptop.png">
+                                <img class="lazy banner__image" data-src="assets/images/main-slide-bg.png" alt="Слайд 2">
+                            </picture>
                             <div class="main-slider__content">
                                 <div class="container">
-                                    <p class="main-slider__title"><span>Заземление,</span> молниезащита</p>
+                                    <p class="main-slider__title "><span>Заземление,</span> молниезащита</p>
                                     <p class="main-slider__info">Поставки компонентов заземления и молниезащиты, измерительных приборов для сертификации сетей ВОЛС, ручного инструмента</p>
                                     <a class="main-slider__link flex flex-center" href="#">
                                         <span>Подробнее</span>
@@ -50,6 +58,12 @@
                             </div>
                         </div>
                         <div class="swiper-slide">
+                            <picture>
+                                <source media="(max-width: 450px)" data-srcset="assets/images/house-mobile.png">
+                                <source media="(max-width: 850px)" data-srcset="assets/images/house_tablet.png">
+                                <source media="(max-width: 1366px)" data-srcset="assets/images/main-slide-laptop.png">
+                                <img class="lazy banner__image" data-src="assets/images/main-slide-bg.png" alt="Слайд 3">
+                            </picture>
                             <div class="main-slider__content">
                                 <div class="container">
                                     <p class="main-slider__title"><span>Заземление,</span> молниезащита</p>
@@ -86,7 +100,7 @@
                     <span>Все товары</span>
                 </a>
             </div>
-            <div class="bestsellers__tabs">
+            <div class="bestsellers__tabs animate-text">
                 <div class="tabs__header">
                     <button class="tab__btn active" data-tab="rods">Стержни заземления</button>
                     <button class="tab__btn" data-tab="conductors">Проводники</button>
@@ -484,8 +498,8 @@
     </section>
     <include src="layout/advantages-block.html"></include>
     <section class="partners">
-        <h2>С нами работают</h2>
-        <div class="partners__slider">
+        <h2 class="animate-title">С нами работают</h2>
+        <div class="partners__slider animate-slider">
             <div class="swiper slider-partners">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
