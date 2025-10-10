@@ -2955,6 +2955,11 @@ body.no-scroll {
     max-width: 100%;
     height: 100%;
   }
+
+  .main-slider__content {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 .bestsellers__mobile {
