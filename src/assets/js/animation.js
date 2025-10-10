@@ -9,35 +9,31 @@ export class BannerAnimation {
         if (!this.isMainPage) return;
 
         this.banner = document.querySelector('.banner');
-        this.bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
-        this.bannerImage = this.banner ? this.banner.querySelector('.banner__image') : null;
 
-
-        if (window.innerWidth <= 900 && this.bannerLines) {
-            this.bannerLines.style.display = 'none';
-        }
-
+        // НА МОБИЛЬНЫХ УДАЛЯЕМ banner__lines ИЗ DOM СРАЗУ
         if (window.innerWidth <= 900) {
+            const bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
+            if (bannerLines) {
+                bannerLines.remove();
+            }
+            this.bannerLines = null;
             this.lines = [];
             this.ball = null;
-            this.specificLine = null;
-            this.secondLine = null;
-            this.thirdLine = null;
-            this.fourthLine = null;
-            this.fifthLine = null;
-            this.sixthLine = null;
-            this.specialElements = [];
-            this.rectElements = [];
-            this.pathElements = [];
         } else {
+            this.bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
             this.lines = this.banner ? this.banner.querySelectorAll('.banner__lines .line') : [];
             this.ball = this.banner ? this.banner.querySelector('.pulsing-ball') : null;
+        }
 
-            if (this.banner) {
-                this.specialElements = this.findSpecialElements();
-                this.rectElements = this.findRectElements();
-                this.pathElements = this.findPathElements();
+        this.bannerImage = this.banner ? this.banner.querySelector('.banner__image') : null;
 
+        if (this.banner) {
+            this.specialElements = this.findSpecialElements();
+            this.rectElements = this.findRectElements();
+            this.pathElements = this.findPathElements();
+
+            // На мобильных не ищем линии
+            if (window.innerWidth > 900) {
                 this.specificLine = this.findSpecificLine();
                 this.secondLine = this.findSecondLine();
                 this.thirdLine = this.findThirdLine();
@@ -45,9 +41,6 @@ export class BannerAnimation {
                 this.fifthLine = this.findFifthLine();
                 this.sixthLine = this.findSixthLine();
             } else {
-                this.specialElements = [];
-                this.rectElements = [];
-                this.pathElements = [];
                 this.specificLine = null;
                 this.secondLine = null;
                 this.thirdLine = null;
@@ -55,6 +48,16 @@ export class BannerAnimation {
                 this.fifthLine = null;
                 this.sixthLine = null;
             }
+        } else {
+            this.specialElements = [];
+            this.rectElements = [];
+            this.pathElements = [];
+            this.specificLine = null;
+            this.secondLine = null;
+            this.thirdLine = null;
+            this.fourthLine = null;
+            this.fifthLine = null;
+            this.sixthLine = null;
         }
 
         this.animationEnabled = true;
@@ -68,6 +71,7 @@ export class BannerAnimation {
             this.initMobileAnimations();
         }
 
+        // На мобильных не проверяем наличие линий
         if (window.innerWidth > 900 && this.lines.length > 0 && this.ball && this.specificLine && this.secondLine &&
             this.thirdLine && this.fourthLine && this.fifthLine && this.sixthLine) {
 
@@ -457,15 +461,14 @@ export class BannerAnimation {
 
         const windowWidth = window.innerWidth;
 
-        // Обработка мобильной версии
         if (windowWidth <= 900) {
             this.disableAnimation();
 
-
+            // Если перешли на мобильное разрешение и banner__lines еще есть - удаляем
             if (this.bannerLines) {
-                this.bannerLines.style.display = 'none';
+                this.bannerLines.remove();
+                this.bannerLines = null;
             }
-
 
             if (!this.mobileAnimationPlayed) {
                 setTimeout(() => {
@@ -473,18 +476,18 @@ export class BannerAnimation {
                 }, 100);
             }
             return;
+        } else {
+            this.enableAnimation();
+            this.mobileAnimationPlayed = false;
+
+            // Если перешли на десктоп, но banner__lines был удален - перезагружаем страницу
+            if (!this.bannerLines) {
+                location.reload();
+                return;
+            }
         }
 
-        // Обработка десктопной версии
-        this.enableAnimation();
-        this.mobileAnimationPlayed = false;
-
-        // Показываем banner__lines на десктопе
-        if (this.bannerLines) {
-            this.bannerLines.style.display = 'block';
-        }
-
-        // Проверяем наличие bannerLines для десктопной логики
+        // Десктопная логика
         if (!this.bannerLines) return;
 
         const bannerRect = this.banner.getBoundingClientRect();
@@ -492,7 +495,6 @@ export class BannerAnimation {
         const bannerHeight = bannerRect.height;
 
         setTimeout(() => {
-            // Получаем размеры изображения или баннера
             let imgRect;
             if (this.bannerImage && this.bannerImage.offsetWidth > 0) {
                 imgRect = this.bannerImage.getBoundingClientRect();
@@ -505,7 +507,6 @@ export class BannerAnimation {
 
             let scale, rightOffset;
 
-            // Расчет масштаба и отступов для разных разрешений
             if (windowWidth <= 1100) {
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
@@ -529,14 +530,11 @@ export class BannerAnimation {
                 rightOffset = 20;
             }
 
-            // Расчет итоговых размеров
             const scaledSvgWidth = originalSvgWidth * scale;
             const scaledSvgHeight = originalSvgHeight * scale;
 
-            // Расчет верхнего отступа
             const topOffset = (windowWidth <= 1366) ? 0.01 : (bannerHeight - scaledSvgHeight) / 2;
 
-            // Применение стилей к bannerLines
             this.bannerLines.style.cssText = `
             position: absolute;
             top: ${topOffset}px;
@@ -545,10 +543,8 @@ export class BannerAnimation {
             height: ${scaledSvgHeight}px;
             pointer-events: none;
             z-index: 2;
-            display: block;
         `;
 
-            // Применение стилей к SVG внутри bannerLines
             const svg = this.bannerLines.querySelector('svg');
             if (svg) {
                 svg.style.cssText = `
