@@ -831,6 +831,30 @@ export class BannerAnimation {
         document.head.appendChild(preloaderStyle);
         document.body.appendChild(this.preloader);
     }
+
+    initWithPreloader() {
+        // На мобильных устройствах не используем прелоадер
+        if (window.innerWidth <= 900) {
+            return;
+        }
+
+        this.handleResize();
+
+        // Анимация кругового прогресс-бара
+        const progressCircle = this.preloader.querySelector('.preloader__circle-progress');
+
+        // Анимация заполнения круга
+        gsap.to(progressCircle, {
+            strokeDashoffset: 0,
+            duration: 2,
+            ease: 'power2.inOut',
+            onComplete: () => {
+                setTimeout(() => {
+                    this.hidePreloader();
+                }, 500);
+            }
+        });
+    }
     hidePreloader() {
 
         if (window.innerWidth <= 900) {
