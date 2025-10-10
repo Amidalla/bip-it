@@ -9,30 +9,31 @@ export class BannerAnimation {
         if (!this.isMainPage) return;
 
         this.banner = document.querySelector('.banner');
+        this.bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
         this.bannerImage = this.banner ? this.banner.querySelector('.banner__image') : null;
 
-
+        // На мобильных просто не используем линии
         if (window.innerWidth <= 900) {
-            const bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
-            if (bannerLines) {
-                bannerLines.remove();
-            }
-            this.bannerLines = null;
             this.lines = [];
             this.ball = null;
+            this.specificLine = null;
+            this.secondLine = null;
+            this.thirdLine = null;
+            this.fourthLine = null;
+            this.fifthLine = null;
+            this.sixthLine = null;
+            this.specialElements = [];
+            this.rectElements = [];
+            this.pathElements = [];
         } else {
-            this.bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
             this.lines = this.banner ? this.banner.querySelectorAll('.banner__lines .line') : [];
             this.ball = this.banner ? this.banner.querySelector('.pulsing-ball') : null;
-        }
 
-        if (this.banner) {
-            this.specialElements = this.findSpecialElements();
-            this.rectElements = this.findRectElements();
-            this.pathElements = this.findPathElements();
+            if (this.banner) {
+                this.specialElements = this.findSpecialElements();
+                this.rectElements = this.findRectElements();
+                this.pathElements = this.findPathElements();
 
-
-            if (window.innerWidth > 900) {
                 this.specificLine = this.findSpecificLine();
                 this.secondLine = this.findSecondLine();
                 this.thirdLine = this.findThirdLine();
@@ -40,6 +41,9 @@ export class BannerAnimation {
                 this.fifthLine = this.findFifthLine();
                 this.sixthLine = this.findSixthLine();
             } else {
+                this.specialElements = [];
+                this.rectElements = [];
+                this.pathElements = [];
                 this.specificLine = null;
                 this.secondLine = null;
                 this.thirdLine = null;
@@ -47,16 +51,6 @@ export class BannerAnimation {
                 this.fifthLine = null;
                 this.sixthLine = null;
             }
-        } else {
-            this.specialElements = [];
-            this.rectElements = [];
-            this.pathElements = [];
-            this.specificLine = null;
-            this.secondLine = null;
-            this.thirdLine = null;
-            this.fourthLine = null;
-            this.fifthLine = null;
-            this.sixthLine = null;
         }
 
         this.animationEnabled = true;
@@ -70,7 +64,6 @@ export class BannerAnimation {
             this.initMobileAnimations();
         }
 
-
         if (window.innerWidth > 900 && this.lines.length > 0 && this.ball && this.specificLine && this.secondLine &&
             this.thirdLine && this.fourthLine && this.fifthLine && this.sixthLine) {
 
@@ -78,7 +71,6 @@ export class BannerAnimation {
                 this.initWithPreloader();
             });
         } else if (window.innerWidth <= 900) {
-
             window.addEventListener('load', () => {
                 this.animateMobileContent();
             });
@@ -465,12 +457,6 @@ export class BannerAnimation {
         if (windowWidth <= 900) {
             this.disableAnimation();
 
-            // Если при ресайзе перешли на мобильное разрешение и banner__lines еще есть - удаляем
-            if (this.bannerLines) {
-                this.bannerLines.remove();
-                this.bannerLines = null;
-            }
-
             if (!this.mobileAnimationPlayed) {
                 setTimeout(() => {
                     this.animateMobileContent();
@@ -480,15 +466,11 @@ export class BannerAnimation {
         } else {
             this.enableAnimation();
             this.mobileAnimationPlayed = false;
-
-            // Если при ресайзе перешли на десктопное разрешение, но banner__lines был удален - перезагружаем страницу
-            if (!this.bannerLines) {
-                location.reload();
-                return;
-            }
         }
 
-        // Остальная логика handleResize для десктопа
+        // Для десктопной версии проверяем наличие bannerLines
+        if (!this.bannerLines) return;
+
         const bannerRect = this.banner.getBoundingClientRect();
         const bannerWidth = bannerRect.width;
         const bannerHeight = bannerRect.height;
@@ -554,7 +536,6 @@ export class BannerAnimation {
             }
         }, 50);
     }
-
     animateSliderText() {
         // Анимируем текст только в активном слайде
         const activeSlide = document.querySelector('.swiper-slide-active');
@@ -694,21 +675,21 @@ export class BannerAnimation {
         width: 100%;
     }
     
-    /* ИЗМЕНЕНО: Изначально скрываем контент на всех устройствах */
+  
     .main-slider__content {
         opacity: 0;
         visibility: hidden;
         transform: translateY(30px);
     }
     
-    /* ИЗМЕНЕНО: Убрали принудительное отображение для мобильных */
+  
     .main-slider__content--animated {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
     }
 
-    /* ИЗМЕНЕНО: Скрываем заголовок хитов продаж изначально */
+
     .bestsellers__title {
         opacity: 0;
         transform: translateY(40px);
@@ -719,15 +700,16 @@ export class BannerAnimation {
         transform: translateY(0);
     }
     
+    
+    @media (max-width: 900px) {
+        .banner__lines {
+            display: none !important;
+        }
+    }
+    
     @media (max-width: 1366px) {
         .banner__lines {
             right: 10px;
-        }
-    }
-
-    @media (max-width: 900px) {
-        .banner__lines {
-            display: none;
         }
     }
 `;
