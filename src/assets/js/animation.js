@@ -61,49 +61,52 @@ export class BannerAnimation {
         }
 
         this.animationEnabled = true;
+        this.mobileAnimationPlayed = false;
 
         this.initResizeHandler();
         this.initImageChangeHandler();
         this.addPreloaderStyles();
         this.createPreloader();
 
+        // ПРОСТАЯ ЛОГИКА: на мобильных запускаем анимацию сразу
         if (window.innerWidth <= 900) {
-            this.initMobileAnimations();
-        }
-
-        // На мобильных не проверяем наличие линий
-        if (window.innerWidth > 900 && this.lines.length > 0 && this.ball && this.specificLine && this.secondLine &&
-            this.thirdLine && this.fourthLine && this.fifthLine && this.sixthLine) {
-
-            window.addEventListener('load', () => {
-                this.initWithPreloader();
-            });
-        } else if (window.innerWidth <= 900) {
-            window.addEventListener('load', () => {
+            // Небольшая задержка для стабилизации DOM
+            setTimeout(() => {
                 this.animateMobileContent();
-            });
+            }, 500);
+        } else {
+            // Десктопная логика с прелоадером
+            if (this.lines.length > 0 && this.ball && this.specificLine && this.secondLine &&
+                this.thirdLine && this.fourthLine && this.fifthLine && this.sixthLine) {
+                window.addEventListener('load', () => {
+                    this.initWithPreloader();
+                });
+            }
         }
     }
     initMobileAnimations() {
+        // Полностью сбрасываем все предыдущие анимации
+        gsap.killTweensOf('.main-slider__content, .main-slider__title, .main-slider__info, .main-slider__link, .bestsellers__title');
 
         const activeSlide = document.querySelector('.swiper-slide-active');
         if (activeSlide && activeSlide.classList.contains('main-animation')) {
             const content = activeSlide.querySelector('.main-slider__content');
             if (content) {
-
+                // Полностью сбрасываем стили
                 gsap.set(content, {
                     opacity: 0,
-                    y: 30
+                    y: 30,
+                    clearProps: "all"
                 });
             }
         }
-
 
         const bestsellersTitle = document.querySelector('.bestsellers__title');
         if (bestsellersTitle) {
             gsap.set(bestsellersTitle, {
                 opacity: 0,
-                y: 40
+                y: 40,
+                clearProps: "all"
             });
         }
     }
@@ -111,75 +114,45 @@ export class BannerAnimation {
 
     animateMobileContent() {
         if (window.innerWidth > 900) return;
-
-
         if (this.mobileAnimationPlayed) return;
+
         this.mobileAnimationPlayed = true;
 
+        console.log('Запуск мобильной анимации'); // Для отладки
 
-        // Анимация контента главного слайдера
+        // Простая анимация без сложных проверок
         const activeSlide = document.querySelector('.swiper-slide-active');
         if (activeSlide && activeSlide.classList.contains('main-animation')) {
             const content = activeSlide.querySelector('.main-slider__content');
-            if (content && !content.classList.contains('main-slider__content--animated')) {
-
-
+            if (content) {
                 content.classList.add('main-slider__content--animated');
 
-                gsap.to(content, {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    ease: "power2.out"
-                });
-
-                // Анимация элементов внутри контента
-                const title = content.querySelector('.main-slider__title');
-                const info = content.querySelector('.main-slider__info');
-                const link = content.querySelector('.main-slider__link');
-
-                if (title) {
-                    gsap.to(title, {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.6,
-                        delay: 0.2,
-                        ease: "power2.out"
-                    });
-                }
-
-                if (info) {
-                    gsap.to(info, {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.5,
-                        delay: 0.3,
-                        ease: "power2.out"
-                    });
-                }
-
-                if (link) {
-                    gsap.to(link, {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.4,
-                        delay: 0.4,
-                        ease: "power2.out"
-                    });
-                }
+                gsap.fromTo(content,
+                    { y: 30, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }
+                );
             }
         }
 
-        // Анимация заголовка хитов продаж
-        this.animateBestsellersTitle();
+        // Анимация заголовка бестселлеров
+        const bestsellersTitle = document.querySelector('.bestsellers__title');
+        if (bestsellersTitle) {
+            bestsellersTitle.classList.add('bestsellers__title--animated');
+
+            gsap.fromTo(bestsellersTitle,
+                { y: 40, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.8, delay: 0.5, ease: "power2.out" }
+            );
+        }
     }
 
-// Анимация заголовка хитов продаж
+    // Анимация заголовка хитов продаж (только для десктопа)
     animateBestsellersTitle() {
+        // НА МОБИЛЬНЫХ НЕ ЗАПУСКАЕМ - она уже запускается в animateMobileContent
+        if (window.innerWidth <= 900) return;
+
         const bestsellersTitle = document.querySelector('.bestsellers__title');
         if (bestsellersTitle && !bestsellersTitle.classList.contains('bestsellers__title--animated')) {
-
-
             bestsellersTitle.classList.add('bestsellers__title--animated');
 
             gsap.to(bestsellersTitle, {
@@ -193,92 +166,82 @@ export class BannerAnimation {
     }
 
 // Анимация контента слайда
+    // Анимация контента слайда
     animateSlideContent() {
         const activeSlide = document.querySelector('.swiper-slide-active');
-        // Анимируем только слайды с классом main-animation
         if (!activeSlide || !activeSlide.classList.contains('main-animation')) return;
 
         const content = activeSlide.querySelector('.main-slider__content');
         if (!content) return;
 
-
+        // НА МОБИЛЬНЫХ НЕ ЗАПУСКАЕМ АНИМАЦИЮ - она уже запускается в animateMobileContent
         if (window.innerWidth <= 900) {
-            gsap.fromTo(content, {
+            return;
+        }
+
+        // Десктопная логика
+        gsap.set(content, {
+            y: 80,
+            opacity: 0
+        });
+
+        content.classList.add('main-slider__content--animated');
+
+        // Анимация основного контента
+        gsap.to(content, {
+            y: 0,
+            opacity: 1,
+            duration: 1.0,
+            ease: "power2.out"
+        });
+
+        // Анимация заголовка бестселлеров
+        this.animateBestsellersTitle();
+
+        // Анимация внутренних элементов контента
+        const title = content.querySelector('.main-slider__title');
+        const info = content.querySelector('.main-slider__info');
+        const link = content.querySelector('.main-slider__link');
+
+        if (title) {
+            gsap.fromTo(title, {
+                y: 80,
+                opacity: 0
+            }, {
+                y: 0,
+                opacity: 1,
+                duration: 1.2,
+                delay: 0.3,
+                ease: "power2.out"
+            });
+        }
+
+        if (info) {
+            gsap.fromTo(info, {
                 y: 30,
                 opacity: 0
             }, {
                 y: 0,
                 opacity: 1,
                 duration: 0.8,
+                delay: 0.5,
                 ease: "power2.out"
             });
-        } else {
+        }
 
-            gsap.set(content, {
-                y: 80,
+        if (link) {
+            gsap.fromTo(link, {
+                y: 20,
                 opacity: 0
-            });
-
-            content.classList.add('main-slider__content--animated');
-
-            gsap.to(content, {
+            }, {
                 y: 0,
                 opacity: 1,
-                duration: 1.0,
+                duration: 0.6,
+                delay: 0.7,
                 ease: "power2.out"
             });
         }
-
-
-        this.animateBestsellersTitle();
-
-
-        if (window.innerWidth > 900) {
-            const title = content.querySelector('.main-slider__title');
-            const info = content.querySelector('.main-slider__info');
-            const link = content.querySelector('.main-slider__link');
-
-            if (title) {
-                gsap.fromTo(title, {
-                    y: 80,
-                    opacity: 0
-                }, {
-                    y: 0,
-                    opacity: 1,
-                    duration: 1.2,
-                    delay: 0.3,
-                    ease: "power2.out"
-                });
-            }
-
-            if (info) {
-                gsap.fromTo(info, {
-                    y: 30,
-                    opacity: 0
-                }, {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    delay: 0.5,
-                    ease: "power2.out"
-                });
-            }
-
-            if (link) {
-                gsap.fromTo(link, {
-                    y: 20,
-                    opacity: 0
-                }, {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.6,
-                    delay: 0.7,
-                    ease: "power2.out"
-                });
-            }
-        }
     }
-
 
     findRectElements() {
         if (!this.banner) return [];
@@ -735,173 +698,139 @@ export class BannerAnimation {
         document.head.appendChild(style);
     }
     createPreloader() {
-
+        // На мобильных устройствах не создаем прелоадер
         if (window.innerWidth <= 900) {
-
-            this.initMobileAnimations();
-
-
-            setTimeout(() => {
-                this.animateMobileContent();
-            }, 300);
-            return;
+            return; // Просто выходим, ничего не создаем
         }
 
-        // Создаем элемент прелоадера
+        // Создаем прелоадер только для десктопа
         this.preloader = document.createElement('div');
         this.preloader.className = 'preloader';
         this.preloader.innerHTML = `
-            <div class="preloader__content">
-                <div class="preloader__icon">
-                    <svg width="18" height="40" viewBox="0 0 18 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10.6471 0V16.6185H17.2352L7.41075 39.9997V23.2599H0.764771L10.6471 0Z" fill="#F99A1C"></path>
-                        <g filter="url(#filter0_i_150_6133)">
-                            <path d="M10.6466 16.6187H17.2348L7.41028 39.9998V23.26L10.6466 16.6187Z" fill="#F07000"></path>
-                        </g>
-                        <defs>
-                            <filter id="filter0_i_150_6133" x="7.41028" y="16.6187" width="9.82449" height="24.5576" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                                <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
-                                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
-                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feFlood>
-                                <feOffset dy="1.17646"></feOffset>
-                                <feGaussianBlur stdDeviation="1.76469"></feGaussianBlur>
-                                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"></feComposite>
-                                <feColorMatrix type="matrix" values="0 0 0 0 0.735577 0 0 0 0 0.196154 0 0 0 0 0 0 0 0 1 0"></feColorMatrix>
-                                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_150_6133"></feBlend>
-                            </filter>
-                        </defs>
-                    </svg>
-                </div>
-                <div class="preloader__circle">
-                    <svg class="preloader__circle-svg" viewBox="0 0 100 100">
-                        <circle class="preloader__circle-bg" cx="50" cy="50" r="45"/>
-                        <circle class="preloader__circle-progress" cx="50" cy="50" r="45"/>
-                    </svg>
-                </div>
+        <div class="preloader__content">
+            <div class="preloader__icon">
+                <svg width="18" height="40" viewBox="0 0 18 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.6471 0V16.6185H17.2352L7.41075 39.9997V23.2599H0.764771L10.6471 0Z" fill="#F99A1C"></path>
+                    <g filter="url(#filter0_i_150_6133)">
+                        <path d="M10.6466 16.6187H17.2348L7.41028 39.9998V23.26L10.6466 16.6187Z" fill="#F07000"></path>
+                    </g>
+                    <defs>
+                        <filter id="filter0_i_150_6133" x="7.41028" y="16.6187" width="9.82449" height="24.5576" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+                            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
+                            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feFlood>
+                            <feOffset dy="1.17646"></feOffset>
+                            <feGaussianBlur stdDeviation="1.76469"></feGaussianBlur>
+                            <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"></feComposite>
+                            <feColorMatrix type="matrix" values="0 0 0 0 0.735577 0 0 0 0 0.196154 0 0 0 0 0 0 0 0 1 0"></feColorMatrix>
+                            <feBlend mode="normal" in2="shape" result="effect1_innerShadow_150_6133"></feBlend>
+                        </filter>
+                    </defs>
+                </svg>
             </div>
-        `;
+            <div class="preloader__circle">
+                <svg class="preloader__circle-svg" viewBox="0 0 100 100">
+                    <circle class="preloader__circle-bg" cx="50" cy="50" r="45"/>
+                    <circle class="preloader__circle-progress" cx="50" cy="50" r="45"/>
+                </svg>
+            </div>
+        </div>
+    `;
 
-
+        // Создаем стили для прелоадера
         const preloaderStyle = document.createElement('style');
         preloaderStyle.textContent = `
-            .preloader {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: #0F162B;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0F162B;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .preloader__content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            position: relative;
+        }
+
+        .preloader__icon {
+            animation: pulse 1.5s ease-in-out infinite;
+            z-index: 2;
+            position: relative;
+        }
+
+        .preloader__circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+        }
+
+        .preloader__circle-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .preloader__circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 3;
+        }
+
+        .preloader__circle-progress {
+            fill: none;
+            stroke: #F99A1C;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
                 opacity: 1;
-                transition: opacity 0.5s ease;
             }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
-            .preloader__content {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 40px;
-                position: relative;
-            }
+        .preloader--hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-            .preloader__icon {
-                animation: pulse 1.5s ease-in-out infinite;
-                z-index: 2;
-                position: relative;
+        /* Скрываем прелоадер на мобильных устройствах */
+        @media (max-width: 900px) {
+            .preloader {
+                display: none;
             }
-
-            .preloader__circle {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 80px;
-                height: 80px;
-            }
-
-            .preloader__circle-svg {
-                width: 100%;
-                height: 100%;
-                transform: rotate(-90deg);
-            }
-
-            .preloader__circle-bg {
-                fill: none;
-                stroke: rgba(255, 255, 255, 0.1);
-                stroke-width: 3;
-            }
-
-            .preloader__circle-progress {
-                fill: none;
-                stroke: #F99A1C;
-                stroke-width: 3;
-                stroke-linecap: round;
-                stroke-dasharray: 283;
-                stroke-dashoffset: 283;
-                transition: stroke-dashoffset 0.3s ease;
-            }
-
-            @keyframes pulse {
-                0% {
-                    transform: scale(1);
-                    opacity: 1;
-                }
-                50% {
-                    transform: scale(1.1);
-                    opacity: 0.8;
-                }
-                100% {
-                    transform: scale(1);
-                    opacity: 1;
-                }
-            }
-
-            .preloader--hidden {
-                opacity: 0;
-                pointer-events: none;
-            }
-
-            /* Скрываем прелоадер на мобильных устройствах */
-            @media (max-width: 900px) {
-                .preloader {
-                    display: none;
-                }
-            }
-        `;
+        }
+    `;
 
         document.head.appendChild(preloaderStyle);
         document.body.appendChild(this.preloader);
     }
-
-    initWithPreloader() {
-
-        if (window.innerWidth <= 900) {
-            this.animateMobileContent();
-            return;
-        }
-
-
-        this.handleResize();
-
-        // Анимация кругового прогресс-бара
-        const progressCircle = this.preloader.querySelector('.preloader__circle-progress');
-
-        // Анимация заполнения круга
-        gsap.to(progressCircle, {
-            strokeDashoffset: 0,
-            duration: 2,
-            ease: 'power2.inOut',
-            onComplete: () => {
-                setTimeout(() => {
-                    this.hidePreloader();
-                }, 500);
-            }
-        });
-    }
-
     hidePreloader() {
 
         if (window.innerWidth <= 900) {
