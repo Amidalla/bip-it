@@ -32,14 +32,6 @@ export class Tabs {
         const buttons = this.container.querySelectorAll(`${headerSelector} ${btnSelector}`);
         const panes = this.container.querySelectorAll(`${contentSelector} ${paneSelector}`);
 
-        console.log('Tabs found:', {
-            container: this.container,
-            buttons: buttons.length,
-            panes: panes.length,
-            headerSelector,
-            btnSelector
-        });
-
         buttons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -192,10 +184,9 @@ export class Tabs {
 export function InitTabs() {
     const tabsContainers = document.querySelectorAll('.bestsellers__tabs, .product__tabs, .tabs-desktop, .placing-order__tabs, .personal-account__tabs, .tabs_mobile');
 
-    console.log('Tabs containers found:', tabsContainers.length);
 
     tabsContainers.forEach(container => {
-        console.log('Initializing tabs for:', container.className);
+
         if (container.offsetParent !== null) {
             new Tabs(container);
         }

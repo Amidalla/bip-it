@@ -64,8 +64,6 @@ export class BannerAnimation {
         }
     }
     initMobileAnimations() {
-        console.log('📱 Initializing mobile animations');
-
 
         const activeSlide = document.querySelector('.swiper-slide-active');
         if (activeSlide && activeSlide.classList.contains('main-animation')) {
@@ -97,7 +95,6 @@ export class BannerAnimation {
         if (this.mobileAnimationPlayed) return;
         this.mobileAnimationPlayed = true;
 
-        console.log('📱 Starting mobile content animation');
 
         // Анимация контента главного слайдера
         const activeSlide = document.querySelector('.swiper-slide-active');
@@ -182,8 +179,6 @@ export class BannerAnimation {
 
         const content = activeSlide.querySelector('.main-slider__content');
         if (!content) return;
-
-        console.log('🎯 Animating main animation slide content');
 
 
         if (window.innerWidth <= 900) {
@@ -536,16 +531,6 @@ export class BannerAnimation {
             `;
             }
 
-            console.log('SVG resized:', {
-                screenWidth: windowWidth,
-                is1300: windowWidth <= 1300,
-                is1366: windowWidth <= 1366,
-                scale: scale,
-                bannerSize: { width: bannerWidth, height: bannerHeight },
-                imageSize: { width: imgRect.width, height: imgRect.height },
-                svgSize: { width: scaledSvgWidth, height: scaledSvgHeight },
-                position: { top: topOffset, right: rightOffset }
-            });
         }, 50);
     }
 
@@ -643,7 +628,6 @@ export class BannerAnimation {
 
         gsap.globalTimeline.clear();
 
-        console.log('Animation disabled for mobile devices (<= 900px)');
     }
 
 
@@ -658,7 +642,6 @@ export class BannerAnimation {
             this.bannerLines.style.display = 'block';
         }
 
-        console.log('Animation enabled for desktop devices (> 900px)');
     }
 
     addPreloaderStyles() {
@@ -738,8 +721,6 @@ export class BannerAnimation {
     createPreloader() {
 
         if (window.innerWidth <= 900) {
-            console.log('Preloader skipped for mobile devices');
-
 
             this.initMobileAnimations();
 
@@ -882,7 +863,6 @@ export class BannerAnimation {
     initWithPreloader() {
 
         if (window.innerWidth <= 900) {
-            console.log('Animation skipped for mobile devices');
             this.animateMobileContent();
             return;
         }
@@ -934,7 +914,6 @@ export class BannerAnimation {
     init() {
 
         if (window.innerWidth <= 900) {
-            console.log('Animation initialization skipped for mobile devices');
             return;
         }
 

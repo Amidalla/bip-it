@@ -34,8 +34,6 @@ class App {
         }
 
         initAll() {
-                console.log('🚀 Initializing application...');
-
 
                 this.initCoreModules();
 
@@ -51,7 +49,6 @@ class App {
         }
 
         initCoreModules() {
-                console.log('📦 Initializing core modules...');
 
                 // Слайдеры
                 SlidersInit();
@@ -76,14 +73,12 @@ class App {
         }
 
         initForms() {
-                console.log('📝 Initializing forms...');
                 this.initPhoneMasksWithPlaceholder();
                 this.initMasks();
                 this.initINNValidation();
         }
 
         initUIComponents() {
-                console.log('🎨 Initializing UI components...');
                 this.initSearch();
                 this.initFixedHeader();
                 this.initQuantityCounters();
@@ -99,21 +94,16 @@ class App {
         }
 
         initAnimations() {
-                console.log('🎬 Initializing animations...');
 
                 // Баннерная анимация (только на главной)
                 this.bannerAnimation = new BannerAnimation();
-                console.log('🎯 BannerAnimation initialized:', this.bannerAnimation);
-
 
                 this.scrollAnimations = new ScrollAnimations();
-                console.log('📜 ScrollAnimations initialized:', this.scrollAnimations);
 
 
                 setTimeout(() => {
                         if (this.scrollAnimations && typeof this.scrollAnimations.refresh === 'function') {
                                 this.scrollAnimations.refresh();
-                                console.log('🔄 ScrollAnimations refreshed after initialization');
                         }
                 }, 1000);
         }

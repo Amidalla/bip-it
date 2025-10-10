@@ -4268,7 +4268,7 @@ body.no-scroll {
 
   @media (max-width: 1250px) {
     .filter__bg {
-     padding: 0;
+      padding: 0;
     }
     &__title {
       position: sticky;
@@ -4325,6 +4325,16 @@ body.no-scroll {
       margin-right: 0;
       margin-left: 0;
     }
+
+
+    .filter-variants__content {
+      overflow: hidden;
+    }
+
+    .price-filter__content {
+      overflow: hidden;
+    }
+
   }
 
   .filter-form fieldset {
@@ -4383,7 +4393,6 @@ body.no-scroll {
   justify-content: center;
 }
 
-
 .price-filter {
   display: block;
   opacity: 1;
@@ -4403,7 +4412,6 @@ body.no-scroll {
     }
   }
 }
-
 
 .filter {
   @media (max-width: 1250px) {

@@ -1,3 +1,5 @@
+import { gsap } from 'gsap';
+
 export function InitModals() {
     const catalogModal = document.querySelector(".modal-catalog");
     const catalogBtns = document.querySelectorAll(".catalog-btn");
@@ -32,19 +34,16 @@ export function InitModals() {
 
     const overlay = document.querySelector(".overlay");
 
-    // ===== HELPERS =====
     function shouldShowCatalogOverlay() {
         return window.innerWidth <= 760;
     }
 
-    // Fix высоты для iOS (100vh баг)
     function fixCatalogHeight() {
         if (catalogModal?.classList.contains("opened")) {
             catalogModal.style.height = `${window.innerHeight}px`;
         }
     }
 
-    // Подгрузка ленивых картинок каталога
     function loadCatalogImages() {
         const imgs = catalogModal?.querySelectorAll(".modal-catalog__img .lazy");
         imgs?.forEach(img => {
@@ -54,9 +53,177 @@ export function InitModals() {
         });
     }
 
-    // ===== OPEN / CLOSE MODALS =====
+    function initFilterToggles() {
+        const allFilterHeaders = document.querySelectorAll(`
+            .filter-variants__header,
+            .price-filter__legend
+        `);
+
+        allFilterHeaders.forEach((header) => {
+            const newHeader = header.cloneNode(true);
+            header.parentNode.replaceChild(newHeader, header);
+
+            newHeader.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleFilterToggle(newHeader);
+            });
+
+            initializeFilterContent(newHeader);
+        });
+    }
+
+    function initializeFilterContent(header) {
+        let content;
+
+        if (header.classList.contains('filter-variants__header')) {
+            const item = header.closest('.filter-variants__item');
+            content = item.querySelector('.filter-variants__content');
+
+            if (!item.classList.contains('expanded') && !item.classList.contains('collapsed')) {
+                item.classList.add('collapsed');
+                gsap.set(content, { height: 0, opacity: 0 });
+            }
+        } else if (header.classList.contains('price-filter__legend')) {
+            const priceFilter = header.closest('.price-filter');
+            content = priceFilter.querySelector('.price-filter__content');
+
+            if (!priceFilter.classList.contains('expanded') && !priceFilter.classList.contains('collapsed')) {
+                priceFilter.classList.add('collapsed');
+                gsap.set(content, { height: 0, opacity: 0 });
+            }
+        }
+    }
+
+    function handleFilterToggle(header) {
+        if (header.classList.contains('filter-variants__header')) {
+            const item = header.closest('.filter-variants__item');
+            const content = item.querySelector('.filter-variants__content');
+
+            if (item.classList.contains('collapsed')) {
+                item.classList.remove('collapsed');
+                item.classList.add('expanded');
+
+                content.style.display = 'block';
+                content.style.visibility = 'visible';
+                content.style.opacity = '1';
+                content.style.height = 'auto';
+                content.style.maxHeight = 'none';
+                content.style.overflow = 'visible';
+            } else {
+                item.classList.remove('expanded');
+                item.classList.add('collapsed');
+
+                content.style.display = 'none';
+            }
+        } else if (header.classList.contains('price-filter__legend')) {
+            const priceFilter = header.closest('.price-filter');
+            const content = priceFilter.querySelector('.price-filter__content');
+
+            if (priceFilter.classList.contains('collapsed')) {
+                priceFilter.classList.remove('collapsed');
+                priceFilter.classList.add('expanded');
+
+                content.style.display = 'block';
+                content.style.visibility = 'visible';
+                content.style.opacity = '1';
+                content.style.height = 'auto';
+                content.style.maxHeight = 'none';
+                content.style.overflow = 'visible';
+            } else {
+                priceFilter.classList.remove('expanded');
+                priceFilter.classList.add('collapsed');
+
+                content.style.display = 'none';
+            }
+        }
+    }
+
+    function initPriceFilter() {
+        const minPriceInput = document.getElementById('min-price-modal');
+        const maxPriceInput = document.getElementById('max-price-modal');
+        const minSlider = document.getElementById('min-slider-2');
+        const maxSlider = document.getElementById('max-slider-2');
+        const sliderTrack = document.querySelector('.slider-track');
+
+        if (!minPriceInput || !maxPriceInput || !minSlider || !maxSlider || !sliderTrack) {
+            return;
+        }
+
+        let minVal = parseInt(minSlider.value);
+        let maxVal = parseInt(maxSlider.value);
+
+        function updatePriceInputs() {
+            minPriceInput.value = minVal;
+            maxPriceInput.value = maxVal;
+            fillSlider();
+        }
+
+        function fillSlider() {
+            const min = parseInt(minSlider.min);
+            const max = parseInt(minSlider.max);
+            const percent1 = (minVal - min) / (max - min) * 100;
+            const percent2 = (maxVal - min) / (max - min) * 100;
+            sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}%, #F99A1C ${percent1}%, #F99A1C ${percent2}%, #dadae5 ${percent2}%)`;
+        }
+
+        function setToggleAccessible(currentTarget) {
+            const maxVal = parseInt(currentTarget.max);
+            if (parseInt(currentTarget.value) <= maxVal * 0.05) {
+                currentTarget.style.zIndex = "2";
+            } else {
+                currentTarget.style.zIndex = "0";
+            }
+        }
+
+        minSlider.addEventListener("input", function() {
+            minVal = parseInt(minSlider.value);
+            if (minVal > maxVal) {
+                minVal = maxVal;
+                minSlider.value = minVal;
+            }
+            updatePriceInputs();
+            setToggleAccessible(minSlider);
+        });
+
+        maxSlider.addEventListener("input", function() {
+            maxVal = parseInt(maxSlider.value);
+            if (maxVal < minVal) {
+                maxVal = minVal;
+                maxSlider.value = maxVal;
+            }
+            updatePriceInputs();
+            setToggleAccessible(maxSlider);
+        });
+
+        minPriceInput.addEventListener("input", function() {
+            minVal = parseInt(minPriceInput.value) || 0;
+            if (minVal < parseInt(minSlider.min)) minVal = parseInt(minSlider.min);
+            if (minVal > parseInt(minSlider.max)) minVal = parseInt(minSlider.max);
+            if (minVal > maxVal) minVal = maxVal;
+            minSlider.value = minVal;
+            updatePriceInputs();
+        });
+
+        maxPriceInput.addEventListener("input", function() {
+            maxVal = parseInt(maxPriceInput.value) || 0;
+            if (maxVal < parseInt(maxSlider.min)) maxVal = parseInt(maxSlider.min);
+            if (maxVal > parseInt(maxSlider.max)) maxVal = parseInt(maxSlider.max);
+            if (maxVal < minVal) maxVal = minVal;
+            maxSlider.value = maxVal;
+            updatePriceInputs();
+        });
+
+        fillSlider();
+        setToggleAccessible(maxSlider);
+    }
+
+    function initModalFilter() {
+        initFilterToggles();
+        initPriceFilter();
+    }
+
     function openModal(modalElement) {
-        // Закрываем другие модалки
         [catalogModal, mobileMenu, feedbackModal, placedModal, vacancyModal, marketplaceModal].forEach(m => {
             if (modalElement !== m && m?.classList.contains("opened")) closeModal(m);
         });
@@ -75,7 +242,6 @@ export function InitModals() {
         document.body.style.overflow = "hidden";
         document.body.classList.add("modal-opened");
 
-        // Дополнительно для каталога
         if (modalElement === catalogModal) {
             initCatalogLists();
             fixCatalogHeight();
@@ -99,7 +265,7 @@ export function InitModals() {
 
         if (modalElement === catalogModal) {
             resetCatalogLists();
-            catalogModal.style.height = ""; // сброс
+            catalogModal.style.height = "";
         }
     }
 
@@ -111,6 +277,10 @@ export function InitModals() {
         if (modalFilter) {
             modalFilter.classList.add("active");
             document.body.classList.add("no-scroll");
+
+            setTimeout(() => {
+                initModalFilter();
+            }, 100);
         }
     }
 
@@ -121,11 +291,6 @@ export function InitModals() {
         }
     }
 
-    function preventScroll(e) {
-        if (modalFilter?.classList.contains("active")) e.preventDefault();
-    }
-
-    // ===== CATALOG LISTS =====
     function initCatalogLists() {
         const openedBtn = catalogModal?.querySelector(".list-opened-btn");
         const closeBtn = catalogModal?.querySelector(".list-close-btn");
@@ -182,7 +347,6 @@ export function InitModals() {
         }
     }
 
-    // ===== INIT LISTENERS =====
     catalogBtns.forEach(btn => btn?.addEventListener("click", e => {
         e.preventDefault();
         toggleModal(catalogModal);
@@ -258,11 +422,11 @@ export function InitModals() {
 
     filterButtons.forEach(btn => btn.addEventListener("click", openModalFilter));
     filterCloseButtons.forEach(btn => btn.addEventListener("click", closeModalFilter));
+
     modalFilter?.addEventListener("click", e => {
         if (e.target === modalFilter) closeModalFilter();
     });
 
-    // Overlay click
     overlay?.addEventListener("click", e => {
         if (e.target === overlay) {
             [feedbackModal, mobileMenu, placedModal, vacancyModal, marketplaceModal].forEach(modal => {
@@ -273,7 +437,6 @@ export function InitModals() {
         }
     });
 
-    // ESC
     document.addEventListener("keydown", e => {
         if (e.key === "Escape") {
             [catalogModal, mobileMenu, feedbackModal, placedModal, vacancyModal, marketplaceModal].forEach(m => {
@@ -283,48 +446,16 @@ export function InitModals() {
         }
     });
 
-    // Resize
     window.addEventListener("resize", () => {
         if (window.innerWidth > 1300) resetCatalogLists();
         if (window.innerWidth > 992 && mobileMenu?.classList.contains("opened")) closeModal(mobileMenu);
-
-        // Обновление высоты каталога на iOS
         fixCatalogHeight();
     });
 
-    // Дополнительные обработчики для каталога
     catalogBtns.forEach(btn => {
         btn.addEventListener('click', () => setTimeout(fixCatalogHeight, 0));
         btn.addEventListener('click', () => setTimeout(loadCatalogImages, 50));
     });
 
-    // Глобальный обработчик ресайза для фикса высоты каталога
     window.addEventListener('resize', fixCatalogHeight);
-
-    console.log('Modals initialized:', {
-        catalogModal: !!catalogModal,
-        mobileMenu: !!mobileMenu,
-        burgerBtn: !!burgerBtn,
-        catalogBtns: catalogBtns.length,
-        catalogCloseBtn: !!catalogCloseBtn,
-        catalogImage: !!catalogImage,
-        feedbackModal: !!feedbackModal,
-        feedbackBtns: feedbackBtns.length,
-        feedbackCloseBtn: !!feedbackCloseBtn,
-        placedModal: !!placedModal,
-        placedBtns: placedBtns.length,
-        placedCloseBtn: !!placedCloseBtn,
-        vacancyModal: !!vacancyModal,
-        vacancyItemBtns: vacancyItemBtns.length,
-        vacancyLinkBtns: vacancyLinkBtns.length,
-        vacancyCloseBtn: !!vacancyCloseBtn,
-        websiteErrorLinks: websiteErrorLinks.length,
-        marketplaceModal: !!marketplaceModal,
-        buyMarketplaceBtns: buyMarketplaceBtns.length,
-        marketplaceCloseBtn: !!marketplaceCloseBtn,
-        modalFilter: !!modalFilter,
-        filterButtons: filterButtons.length,
-        filterCloseButtons: filterCloseButtons.length,
-        overlay: !!overlay
-    });
 }

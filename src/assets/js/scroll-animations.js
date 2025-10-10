@@ -11,7 +11,6 @@ export class ScrollAnimations {
     init() {
 
         if (!this.isMainPage()) {
-            console.log('Not main page - scroll animations disabled');
             return;
         }
 
@@ -32,14 +31,11 @@ export class ScrollAnimations {
     setupAnimations() {
 
         if (!this.isMainPage()) {
-            console.log('Not main page - skipping animations setup');
             return;
         }
 
-        console.log('Setting up scroll animations with GSAP', gsap.version);
 
         if (typeof ScrollTrigger === 'undefined') {
-            console.error('ScrollTrigger not available');
             return;
         }
 
@@ -63,7 +59,6 @@ export class ScrollAnimations {
 
         setTimeout(() => {
             ScrollTrigger.refresh();
-            console.log('ScrollTrigger refreshed');
         }, 500);
     }
 
@@ -71,11 +66,9 @@ export class ScrollAnimations {
     animateBestsellersSection() {
         const bestsellersTabs = document.querySelector('.bestsellers__tabs');
         if (!bestsellersTabs) {
-            console.log('Bestsellers tabs not found');
             return;
         }
 
-        console.log('Animating bestsellers tabs');
 
         // Анимация табов
         gsap.fromTo(bestsellersTabs, {
@@ -120,11 +113,9 @@ export class ScrollAnimations {
     animateAdvantagesSection() {
         const advantagesSection = document.querySelector('.advantages');
         if (!advantagesSection) {
-            console.log('Advantages section not found');
             return;
         }
 
-        console.log('Animating advantages section');
 
         // Анимация заголовка
         const title = advantagesSection.querySelector('h2.animate-title');
@@ -213,11 +204,9 @@ export class ScrollAnimations {
     animatePartnersSection() {
         const partnersSection = document.querySelector('.partners.animate-section');
         if (!partnersSection) {
-            console.log('Partners section not found');
             return;
         }
 
-        console.log('Animating partners section');
 
         // Анимация заголовка
         const title = partnersSection.querySelector('h2.animate-title');
@@ -266,11 +255,9 @@ export class ScrollAnimations {
     animateNewsSection() {
         const newsSection = document.querySelector('.main-news.animate-section');
         if (!newsSection) {
-            console.log('News section not found');
             return;
         }
 
-        console.log('Animating news section');
 
         // Анимация заголовка
         const title = newsSection.querySelector('.main-news__title.animate-title');
@@ -340,11 +327,9 @@ export class ScrollAnimations {
     animateFormSection() {
         const formSection = document.querySelector('.main-form');
         if (!formSection) {
-            console.log('Form section not found');
             return;
         }
 
-        console.log('Animating form section');
 
         // Анимация левой части
         const leftContent = formSection.querySelector('.animate-left');
@@ -482,13 +467,12 @@ export class ScrollAnimations {
     // Анимация появления элементов при скролле
     animateOnScroll() {
         // Анимация для заголовков
-        gsap.utils.toArray('.animate-title').forEach(title => {
+         gsap.utils.toArray('.animate-title').forEach(title => {
+            if (!title || !title.isConnected) return;
             if (this.isInMainSlider(title)) {
-                console.log('Skipping title in main slider:', title);
                 return;
             }
 
-            console.log('Animating title:', title);
 
             gsap.fromTo(title, {
                 y: 80,
@@ -510,12 +494,11 @@ export class ScrollAnimations {
 
         // Анимация для текста
         gsap.utils.toArray('.animate-text').forEach(text => {
+            if (!text || !text.isConnected) return;
             if (this.isInMainSlider(text)) {
-                console.log('Skipping text in main slider:', text);
                 return;
             }
 
-            console.log('Animating text:', text);
 
             gsap.fromTo(text, {
                 y: 50,
@@ -536,12 +519,11 @@ export class ScrollAnimations {
 
         // Анимация для изображений
         gsap.utils.toArray('.animate-image').forEach(image => {
+            if (!image || !image.isConnected) return;
             if (this.isInMainSlider(image)) {
-                console.log('Skipping image in main slider:', image);
                 return;
             }
 
-            console.log('Animating image:', image);
 
             gsap.fromTo(image, {
                 scale: 0.95,
@@ -562,14 +544,13 @@ export class ScrollAnimations {
 
         // Анимация для карточек
         gsap.utils.toArray('.animate-cards').forEach(container => {
+            if (!container || !container.isConnected) return;
             if (this.isInMainSlider(container)) {
-                console.log('Skipping cards container in main slider:', container);
                 return;
             }
 
             const cards = container.querySelectorAll('.card, .service-item, .product-card');
 
-            console.log('Animating cards container:', container, 'with', cards.length, 'cards');
 
             gsap.fromTo(cards, {
                 y: 60,
@@ -593,14 +574,13 @@ export class ScrollAnimations {
 
         // Анимация для списков
         gsap.utils.toArray('.animate-list').forEach(list => {
+            if (!list || !list.isConnected) return;
             if (this.isInMainSlider(list)) {
-                console.log('Skipping list in main slider:', list);
                 return;
             }
 
             const items = list.querySelectorAll('li, .list-item');
 
-            console.log('Animating list:', list, 'with', items.length, 'items');
 
             gsap.fromTo(items, {
                 x: -50,
@@ -634,18 +614,15 @@ export class ScrollAnimations {
 
                 triggers.forEach(trigger => {
                     trigger.kill();
-                    console.log('Killed ScrollTrigger for element in main slider:', element);
                 });
             });
         }
 
-        console.log('All scroll animations initialized (main slider excluded)');
     }
 
     refresh() {
         if (typeof ScrollTrigger !== 'undefined') {
             ScrollTrigger.refresh();
-            console.log('ScrollTrigger manually refreshed');
         }
     }
 
