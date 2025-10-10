@@ -9,23 +9,44 @@ export class BannerAnimation {
         if (!this.isMainPage) return;
 
         this.banner = document.querySelector('.banner');
-        this.bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
         this.bannerImage = this.banner ? this.banner.querySelector('.banner__image') : null;
 
-        this.lines = this.banner ? this.banner.querySelectorAll('.banner__lines .line') : [];
-        this.ball = this.banner ? this.banner.querySelector('.pulsing-ball') : null;
+
+        if (window.innerWidth <= 900) {
+            const bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
+            if (bannerLines) {
+                bannerLines.remove();
+            }
+            this.bannerLines = null;
+            this.lines = [];
+            this.ball = null;
+        } else {
+            this.bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
+            this.lines = this.banner ? this.banner.querySelectorAll('.banner__lines .line') : [];
+            this.ball = this.banner ? this.banner.querySelector('.pulsing-ball') : null;
+        }
 
         if (this.banner) {
             this.specialElements = this.findSpecialElements();
             this.rectElements = this.findRectElements();
             this.pathElements = this.findPathElements();
 
-            this.specificLine = this.findSpecificLine();
-            this.secondLine = this.findSecondLine();
-            this.thirdLine = this.findThirdLine();
-            this.fourthLine = this.findFourthLine();
-            this.fifthLine = this.findFifthLine();
-            this.sixthLine = this.findSixthLine();
+
+            if (window.innerWidth > 900) {
+                this.specificLine = this.findSpecificLine();
+                this.secondLine = this.findSecondLine();
+                this.thirdLine = this.findThirdLine();
+                this.fourthLine = this.findFourthLine();
+                this.fifthLine = this.findFifthLine();
+                this.sixthLine = this.findSixthLine();
+            } else {
+                this.specificLine = null;
+                this.secondLine = null;
+                this.thirdLine = null;
+                this.fourthLine = null;
+                this.fifthLine = null;
+                this.sixthLine = null;
+            }
         } else {
             this.specialElements = [];
             this.rectElements = [];
@@ -45,24 +66,25 @@ export class BannerAnimation {
         this.addPreloaderStyles();
         this.createPreloader();
 
-
         if (window.innerWidth <= 900) {
             this.initMobileAnimations();
         }
 
-        if (this.lines.length > 0 && this.ball && this.specificLine && this.secondLine &&
+
+        if (window.innerWidth > 900 && this.lines.length > 0 && this.ball && this.specificLine && this.secondLine &&
             this.thirdLine && this.fourthLine && this.fifthLine && this.sixthLine) {
 
             window.addEventListener('load', () => {
+                this.initWithPreloader();
+            });
+        } else if (window.innerWidth <= 900) {
 
-                if (window.innerWidth <= 900) {
-                    this.animateMobileContent();
-                } else {
-                    this.initWithPreloader();
-                }
+            window.addEventListener('load', () => {
+                this.animateMobileContent();
             });
         }
     }
+
     initMobileAnimations() {
 
         const activeSlide = document.querySelector('.swiper-slide-active');
@@ -436,12 +458,18 @@ export class BannerAnimation {
     }
 
     handleResize() {
-        if (!this.banner || !this.bannerLines) return;
+        if (!this.banner) return;
 
         const windowWidth = window.innerWidth;
 
         if (windowWidth <= 900) {
             this.disableAnimation();
+
+            // Если при ресайзе перешли на мобильное разрешение и banner__lines еще есть - удаляем
+            if (this.bannerLines) {
+                this.bannerLines.remove();
+                this.bannerLines = null;
+            }
 
             if (!this.mobileAnimationPlayed) {
                 setTimeout(() => {
@@ -451,17 +479,21 @@ export class BannerAnimation {
             return;
         } else {
             this.enableAnimation();
-
             this.mobileAnimationPlayed = false;
+
+            // Если при ресайзе перешли на десктопное разрешение, но banner__lines был удален - перезагружаем страницу
+            if (!this.bannerLines) {
+                location.reload();
+                return;
+            }
         }
 
+        // Остальная логика handleResize для десктопа
         const bannerRect = this.banner.getBoundingClientRect();
         const bannerWidth = bannerRect.width;
         const bannerHeight = bannerRect.height;
 
-
         setTimeout(() => {
-
             let imgRect;
             if (this.bannerImage && this.bannerImage.offsetWidth > 0) {
                 imgRect = this.bannerImage.getBoundingClientRect();
@@ -469,47 +501,38 @@ export class BannerAnimation {
                 imgRect = bannerRect;
             }
 
-
             const originalSvgWidth = 1130;
             const originalSvgHeight = 860;
-
 
             let scale, rightOffset;
 
             if (windowWidth <= 1100) {
-                // ЛОГИКА ДЛЯ 1100px И МЕНЬШЕ
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.96;
-                rightOffset = -45; // Отступ для 1100px
+                rightOffset = -45;
             }
             else if (windowWidth <= 1300) {
-                // ЛОГИКА ДЛЯ 1300px И МЕНЬШЕ
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.95;
                 rightOffset = -55;
             } else if (windowWidth <= 1366) {
-                // ЛОГИКА ДЛЯ 1366px И МЕНЬШЕ (но больше 1300px)
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.95;
                 rightOffset = -65;
             } else {
-                // ЛОГИКА ДЛЯ ЭКРАНОВ ВЫШЕ 1366px
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.98;
                 rightOffset = 20;
             }
 
-
             const scaledSvgWidth = originalSvgWidth * scale;
             const scaledSvgHeight = originalSvgHeight * scale;
 
-
             const topOffset = (windowWidth <= 1366) ? 0.01 : (bannerHeight - scaledSvgHeight) / 2;
-
 
             this.bannerLines.style.cssText = `
             position: absolute;
@@ -521,7 +544,6 @@ export class BannerAnimation {
             z-index: 2;
         `;
 
-
             const svg = this.bannerLines.querySelector('svg');
             if (svg) {
                 svg.style.cssText = `
@@ -530,10 +552,8 @@ export class BannerAnimation {
                 display: block;
             `;
             }
-
         }, 50);
     }
-
 
     animateSliderText() {
         // Анимируем текст только в активном слайде
@@ -620,14 +640,11 @@ export class BannerAnimation {
 
         this.animationEnabled = false;
 
-
         if (this.bannerLines) {
             this.bannerLines.style.display = 'none';
         }
 
-
         gsap.globalTimeline.clear();
-
     }
 
 
@@ -637,11 +654,9 @@ export class BannerAnimation {
         this.animationEnabled = true;
         this.mobileAnimationPlayed = false;
 
-
         if (this.bannerLines) {
             this.bannerLines.style.display = 'block';
         }
-
     }
 
     addPreloaderStyles() {
