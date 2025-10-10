@@ -559,6 +559,7 @@ body.no-scroll {
 
   .swiper-slide.main-animation {
     text-align: right;
+    background-color: #0F162B;
 
     .main-slider__content {
       text-align: left;
@@ -1425,6 +1426,12 @@ body.no-scroll {
 .main-news {
   background: c.$light-grey;
   padding-top: 85px;
+
+  .slider-main-news .news-item .news-link {
+    &:hover {
+      box-shadow: none;
+    }
+  }
 
   @media (max-width: 1000px) {
     padding-top: 48px;
@@ -2941,7 +2948,7 @@ body.no-scroll {
 }
 
 .main-slider .swiper-slide:not(.main-animation) {
-  background: none;
+  background-color: #0F162B;
 
   img {
     width: 100%;
