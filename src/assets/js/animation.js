@@ -12,7 +12,11 @@ export class BannerAnimation {
         this.bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
         this.bannerImage = this.banner ? this.banner.querySelector('.banner__image') : null;
 
-        // На мобильных просто не используем линии
+
+        if (window.innerWidth <= 900 && this.bannerLines) {
+            this.bannerLines.style.display = 'none';
+        }
+
         if (window.innerWidth <= 900) {
             this.lines = [];
             this.ball = null;
@@ -76,7 +80,6 @@ export class BannerAnimation {
             });
         }
     }
-
     initMobileAnimations() {
 
         const activeSlide = document.querySelector('.swiper-slide-active');
@@ -454,8 +457,15 @@ export class BannerAnimation {
 
         const windowWidth = window.innerWidth;
 
+        // Обработка мобильной версии
         if (windowWidth <= 900) {
             this.disableAnimation();
+
+
+            if (this.bannerLines) {
+                this.bannerLines.style.display = 'none';
+            }
+
 
             if (!this.mobileAnimationPlayed) {
                 setTimeout(() => {
@@ -463,12 +473,18 @@ export class BannerAnimation {
                 }, 100);
             }
             return;
-        } else {
-            this.enableAnimation();
-            this.mobileAnimationPlayed = false;
         }
 
-        // Для десктопной версии проверяем наличие bannerLines
+        // Обработка десктопной версии
+        this.enableAnimation();
+        this.mobileAnimationPlayed = false;
+
+        // Показываем banner__lines на десктопе
+        if (this.bannerLines) {
+            this.bannerLines.style.display = 'block';
+        }
+
+        // Проверяем наличие bannerLines для десктопной логики
         if (!this.bannerLines) return;
 
         const bannerRect = this.banner.getBoundingClientRect();
@@ -476,6 +492,7 @@ export class BannerAnimation {
         const bannerHeight = bannerRect.height;
 
         setTimeout(() => {
+            // Получаем размеры изображения или баннера
             let imgRect;
             if (this.bannerImage && this.bannerImage.offsetWidth > 0) {
                 imgRect = this.bannerImage.getBoundingClientRect();
@@ -488,6 +505,7 @@ export class BannerAnimation {
 
             let scale, rightOffset;
 
+            // Расчет масштаба и отступов для разных разрешений
             if (windowWidth <= 1100) {
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
@@ -511,11 +529,14 @@ export class BannerAnimation {
                 rightOffset = 20;
             }
 
+            // Расчет итоговых размеров
             const scaledSvgWidth = originalSvgWidth * scale;
             const scaledSvgHeight = originalSvgHeight * scale;
 
+            // Расчет верхнего отступа
             const topOffset = (windowWidth <= 1366) ? 0.01 : (bannerHeight - scaledSvgHeight) / 2;
 
+            // Применение стилей к bannerLines
             this.bannerLines.style.cssText = `
             position: absolute;
             top: ${topOffset}px;
@@ -524,8 +545,10 @@ export class BannerAnimation {
             height: ${scaledSvgHeight}px;
             pointer-events: none;
             z-index: 2;
+            display: block;
         `;
 
+            // Применение стилей к SVG внутри bannerLines
             const svg = this.bannerLines.querySelector('svg');
             if (svg) {
                 svg.style.cssText = `
