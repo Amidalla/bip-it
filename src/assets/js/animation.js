@@ -39,12 +39,12 @@ export class BannerAnimation {
         }
 
         this.animationEnabled = true;
+        this.mobileAnimationPlayed = false;
 
         this.initResizeHandler();
         this.initImageChangeHandler();
         this.addPreloaderStyles();
         this.createPreloader();
-
 
         if (window.innerWidth <= 900) {
             this.initMobileAnimations();
@@ -54,29 +54,22 @@ export class BannerAnimation {
             this.thirdLine && this.fourthLine && this.fifthLine && this.sixthLine) {
 
             window.addEventListener('load', () => {
-
-                if (window.innerWidth <= 900) {
-                    this.animateMobileContent();
-                } else {
-                    this.initWithPreloader();
-                }
+                this.initWithPreloader();
             });
         }
     }
-    initMobileAnimations() {
 
+    initMobileAnimations() {
         const activeSlide = document.querySelector('.swiper-slide-active');
         if (activeSlide && activeSlide.classList.contains('main-animation')) {
             const content = activeSlide.querySelector('.main-slider__content');
             if (content) {
-                // НЕ добавляем класс здесь - это сделает GSAP
                 gsap.set(content, {
                     opacity: 0,
                     y: 30
                 });
             }
         }
-
 
         const bestsellersTitle = document.querySelector('.bestsellers__title');
         if (bestsellersTitle) {
@@ -87,78 +80,111 @@ export class BannerAnimation {
         }
     }
 
-
     animateMobileContent() {
         if (window.innerWidth > 900) return;
-
-
         if (this.mobileAnimationPlayed) return;
         this.mobileAnimationPlayed = true;
 
+        // Принудительно отключаем CSS transitions
+        document.querySelectorAll('.main-slider__content, .main-slider__title, .main-slider__info, .main-slider__link, .bestsellers__title').forEach(el => {
+            el.style.transition = 'none';
+        });
 
-        // Анимация контента главного слайдера
-        const activeSlide = document.querySelector('.swiper-slide-active');
-        if (activeSlide && activeSlide.classList.contains('main-animation')) {
-            const content = activeSlide.querySelector('.main-slider__content');
-            if (content && !content.classList.contains('main-slider__content--animated')) {
+        // Ждем следующего фрейма для применения стилей
+        requestAnimationFrame(() => {
+            const mobileTL = gsap.timeline();
 
+            // Анимация контента главного слайдера
+            const activeSlide = document.querySelector('.swiper-slide-active');
+            if (activeSlide && activeSlide.classList.contains('main-animation')) {
+                const content = activeSlide.querySelector('.main-slider__content');
+                if (content && !content.classList.contains('main-slider__content--animated')) {
 
-                content.classList.add('main-slider__content--animated');
+                    content.classList.add('main-slider__content--animated');
 
-                gsap.to(content, {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    ease: "power2.out"
-                });
+                    // Используем fromTo для полного контроля над начальным и конечным состоянием
+                    mobileTL.fromTo(content,
+                        { y: 30, opacity: 0 },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            duration: 0.8,
+                            ease: "power2.out"
+                        },
+                        0
+                    );
 
-                // Анимация элементов внутри контента
-                const title = content.querySelector('.main-slider__title');
-                const info = content.querySelector('.main-slider__info');
-                const link = content.querySelector('.main-slider__link');
+                    // Анимация элементов внутри контента
+                    const title = content.querySelector('.main-slider__title');
+                    const info = content.querySelector('.main-slider__info');
+                    const link = content.querySelector('.main-slider__link');
 
-                if (title) {
-                    gsap.to(title, {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.6,
-                        delay: 0.2,
-                        ease: "power2.out"
-                    });
-                }
+                    if (title) {
+                        mobileTL.fromTo(title,
+                            { y: 20, opacity: 0 },
+                            {
+                                y: 0,
+                                opacity: 1,
+                                duration: 0.6,
+                                ease: "power2.out"
+                            },
+                            0.2
+                        );
+                    }
 
-                if (info) {
-                    gsap.to(info, {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.5,
-                        delay: 0.3,
-                        ease: "power2.out"
-                    });
-                }
+                    if (info) {
+                        mobileTL.fromTo(info,
+                            { y: 15, opacity: 0 },
+                            {
+                                y: 0,
+                                opacity: 1,
+                                duration: 0.5,
+                                ease: "power2.out"
+                            },
+                            0.3
+                        );
+                    }
 
-                if (link) {
-                    gsap.to(link, {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.4,
-                        delay: 0.4,
-                        ease: "power2.out"
-                    });
+                    if (link) {
+                        mobileTL.fromTo(link,
+                            { y: 10, opacity: 0 },
+                            {
+                                y: 0,
+                                opacity: 1,
+                                duration: 0.4,
+                                ease: "power2.out"
+                            },
+                            0.4
+                        );
+                    }
                 }
             }
-        }
 
-        // Анимация заголовка хитов продаж
-        this.animateBestsellersTitle();
+            // Анимация заголовка хитов продаж в той же timeline
+            mobileTL.add(() => {
+                const bestsellersTitle = document.querySelector('.bestsellers__title');
+                if (bestsellersTitle && !bestsellersTitle.classList.contains('bestsellers__title--animated')) {
+
+                    bestsellersTitle.classList.add('bestsellers__title--animated');
+
+                    // Используем fromTo для заголовка бестселлеров
+                    gsap.fromTo(bestsellersTitle,
+                        { y: 40, opacity: 0 },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            duration: 0.8,
+                            ease: "power2.out"
+                        }
+                    );
+                }
+            }, 0.5);
+        });
     }
 
-// Анимация заголовка хитов продаж
     animateBestsellersTitle() {
         const bestsellersTitle = document.querySelector('.bestsellers__title');
         if (bestsellersTitle && !bestsellersTitle.classList.contains('bestsellers__title--animated')) {
-
-
             bestsellersTitle.classList.add('bestsellers__title--animated');
 
             gsap.to(bestsellersTitle, {
@@ -171,15 +197,12 @@ export class BannerAnimation {
         }
     }
 
-// Анимация контента слайда
     animateSlideContent() {
         const activeSlide = document.querySelector('.swiper-slide-active');
-        // Анимируем только слайды с классом main-animation
         if (!activeSlide || !activeSlide.classList.contains('main-animation')) return;
 
         const content = activeSlide.querySelector('.main-slider__content');
         if (!content) return;
-
 
         if (window.innerWidth <= 900) {
             gsap.fromTo(content, {
@@ -192,7 +215,6 @@ export class BannerAnimation {
                 ease: "power2.out"
             });
         } else {
-
             gsap.set(content, {
                 y: 80,
                 opacity: 0
@@ -208,9 +230,7 @@ export class BannerAnimation {
             });
         }
 
-
         this.animateBestsellersTitle();
-
 
         if (window.innerWidth > 900) {
             const title = content.querySelector('.main-slider__title');
@@ -257,7 +277,6 @@ export class BannerAnimation {
             }
         }
     }
-
 
     findRectElements() {
         if (!this.banner) return [];
@@ -376,19 +395,15 @@ export class BannerAnimation {
         });
     }
 
-    // Метод для инициализации обработчика ресайза
     initResizeHandler() {
-
         setTimeout(() => {
             this.handleResize();
         }, 100);
-
 
         this.resizeTimeout = null;
         window.addEventListener('resize', () => {
             clearTimeout(this.resizeTimeout);
             this.resizeTimeout = setTimeout(() => {
-
                 setTimeout(() => {
                     this.handleResize();
                 }, 150);
@@ -396,11 +411,9 @@ export class BannerAnimation {
         });
     }
 
-    // Метод для отслеживания изменения изображения
     initImageChangeHandler() {
         if (!this.bannerImage) return;
 
-        // Отслеживаем загрузку lazy изображения
         if (this.bannerImage.classList.contains('lazy')) {
             this.bannerImage.addEventListener('load', () => {
                 setTimeout(() => {
@@ -409,10 +422,8 @@ export class BannerAnimation {
             });
         }
 
-
         const picture = this.bannerImage.closest('picture');
         if (picture) {
-
             this.resizeObserver = new ResizeObserver((entries) => {
                 for (let entry of entries) {
                     if (entry.target === this.bannerImage) {
@@ -425,7 +436,6 @@ export class BannerAnimation {
 
             this.resizeObserver.observe(this.bannerImage);
         }
-
 
         this.mediaQueryList = window.matchMedia('(max-width: 1366px)');
         this.mediaQueryList.addListener(() => {
@@ -451,7 +461,6 @@ export class BannerAnimation {
             return;
         } else {
             this.enableAnimation();
-
             this.mobileAnimationPlayed = false;
         }
 
@@ -459,9 +468,7 @@ export class BannerAnimation {
         const bannerWidth = bannerRect.width;
         const bannerHeight = bannerRect.height;
 
-
         setTimeout(() => {
-
             let imgRect;
             if (this.bannerImage && this.bannerImage.offsetWidth > 0) {
                 imgRect = this.bannerImage.getBoundingClientRect();
@@ -469,81 +476,67 @@ export class BannerAnimation {
                 imgRect = bannerRect;
             }
 
-
             const originalSvgWidth = 1130;
             const originalSvgHeight = 860;
-
 
             let scale, rightOffset;
 
             if (windowWidth <= 1100) {
-                // ЛОГИКА ДЛЯ 1100px И МЕНЬШЕ
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.96;
-                rightOffset = -45; // Отступ для 1100px
+                rightOffset = -45;
             }
             else if (windowWidth <= 1300) {
-                // ЛОГИКА ДЛЯ 1300px И МЕНЬШЕ
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.95;
                 rightOffset = -55;
             } else if (windowWidth <= 1366) {
-                // ЛОГИКА ДЛЯ 1366px И МЕНЬШЕ (но больше 1300px)
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.95;
                 rightOffset = -65;
             } else {
-                // ЛОГИКА ДЛЯ ЭКРАНОВ ВЫШЕ 1366px
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.98;
                 rightOffset = 20;
             }
 
-
             const scaledSvgWidth = originalSvgWidth * scale;
             const scaledSvgHeight = originalSvgHeight * scale;
 
-
             const topOffset = (windowWidth <= 1366) ? 0.01 : (bannerHeight - scaledSvgHeight) / 2;
 
-
             this.bannerLines.style.cssText = `
-            position: absolute;
-            top: ${topOffset}px;
-            right: ${rightOffset}px;
-            width: ${scaledSvgWidth}px;
-            height: ${scaledSvgHeight}px;
-            pointer-events: none;
-            z-index: 2;
-        `;
-
+                position: absolute;
+                top: ${topOffset}px;
+                right: ${rightOffset}px;
+                width: ${scaledSvgWidth}px;
+                height: ${scaledSvgHeight}px;
+                pointer-events: none;
+                z-index: 2;
+            `;
 
             const svg = this.bannerLines.querySelector('svg');
             if (svg) {
                 svg.style.cssText = `
-                width: 100%;
-                height: 100%;
-                display: block;
-            `;
+                    width: 100%;
+                    height: 100%;
+                    display: block;
+                `;
             }
-
         }, 50);
     }
 
-
     animateSliderText() {
-        // Анимируем текст только в активном слайде
         const activeSlide = document.querySelector('.swiper-slide-active');
         if (!activeSlide || !activeSlide.classList.contains('main-animation')) return;
 
         const titles = activeSlide.querySelectorAll('.animate-title');
         const texts = activeSlide.querySelectorAll('.animate-text');
 
-        // Анимация заголовков с задержкой после основной анимации
         gsap.fromTo(titles, {
             y: 50,
             opacity: 0
@@ -556,7 +549,6 @@ export class BannerAnimation {
             ease: "power2.out"
         });
 
-        // Анимация текста
         gsap.fromTo(texts, {
             y: 30,
             opacity: 0
@@ -570,14 +562,11 @@ export class BannerAnimation {
         });
     }
 
-
     startAnimation() {
-
         if (window.innerWidth <= 900) {
             return;
         }
 
-        // Анимация линий
         const lineAnimation = gsap.to(this.lines, {
             strokeDashoffset: 0,
             duration: 2,
@@ -610,26 +599,20 @@ export class BannerAnimation {
             }
         });
 
-
         this.animateSlideContent();
     }
-
 
     disableAnimation() {
         if (!this.animationEnabled) return;
 
         this.animationEnabled = false;
 
-
         if (this.bannerLines) {
             this.bannerLines.style.display = 'none';
         }
 
-
         gsap.globalTimeline.clear();
-
     }
-
 
     enableAnimation() {
         if (this.animationEnabled) return;
@@ -637,101 +620,92 @@ export class BannerAnimation {
         this.animationEnabled = true;
         this.mobileAnimationPlayed = false;
 
-
         if (this.bannerLines) {
             this.bannerLines.style.display = 'block';
         }
-
     }
 
     addPreloaderStyles() {
         const style = document.createElement('style');
         style.textContent = `
-    .banner__lines {
-        opacity: 0;
-        visibility: hidden;
-        position: absolute;
-        top: 0;
-        right: 0;
-        pointer-events: none;
-        z-index: 2;
-    }
-    .banner__lines--visible {
-        opacity: 1;
-        visibility: visible;
-    }
-    .banner {
-        position: relative;
-        width: 100%;
-        overflow: hidden;
-    }
-    .banner__image {
-        width: 100%;
-        height: auto;
-        display: block;
-        transition: opacity 0.3s ease;
-    }
-    .main-animation {
-        position: relative;
-    }
-    picture {
-        display: block;
-        width: 100%;
-    }
-    
-    /* ИЗМЕНЕНО: Изначально скрываем контент на всех устройствах */
-    .main-slider__content {
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(30px);
-    }
-    
-    /* ИЗМЕНЕНО: Убрали принудительное отображение для мобильных */
-    .main-slider__content--animated {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
+            .banner__lines {
+                opacity: 0;
+                visibility: hidden;
+                position: absolute;
+                top: 0;
+                right: 0;
+                pointer-events: none;
+                z-index: 2;
+            }
+            .banner__lines--visible {
+                opacity: 1;
+                visibility: visible;
+            }
+            .banner {
+                position: relative;
+                width: 100%;
+                overflow: hidden;
+            }
+            .banner__image {
+                width: 100%;
+                height: auto;
+                display: block;
+                transition: opacity 0.3s ease;
+            }
+            .main-animation {
+                position: relative;
+            }
+            picture {
+                display: block;
+                width: 100%;
+            }
+            
+            .main-slider__content {
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(30px);
+            }
+            
+            .main-slider__content--animated {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
 
-    /* ИЗМЕНЕНО: Скрываем заголовок хитов продаж изначально */
-    .bestsellers__title {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    
-    .bestsellers__title--animated {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    
-    @media (max-width: 1366px) {
-        .banner__lines {
-            right: 10px;
-        }
-    }
+            .bestsellers__title {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            
+            .bestsellers__title--animated {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            
+            @media (max-width: 1366px) {
+                .banner__lines {
+                    right: 10px;
+                }
+            }
 
-    @media (max-width: 900px) {
-        .banner__lines {
-            display: none;
-        }
-    }
-`;
+            @media (max-width: 900px) {
+                .banner__lines {
+                    display: none;
+                }
+                
+                .main-slider__content,
+                .main-slider__title,
+                .main-slider__info,
+                .main-slider__link,
+                .bestsellers__title {
+                    transition: none !important;
+                }
+            }
+        `;
         document.head.appendChild(style);
     }
+
     createPreloader() {
-
-        if (window.innerWidth <= 900) {
-
-            this.initMobileAnimations();
-
-
-            setTimeout(() => {
-                this.animateMobileContent();
-            }, 300);
-            return;
-        }
-
-        // Создаем элемент прелоадера
         this.preloader = document.createElement('div');
         this.preloader.className = 'preloader';
         this.preloader.innerHTML = `
@@ -764,7 +738,6 @@ export class BannerAnimation {
                 </div>
             </div>
         `;
-
 
         const preloaderStyle = document.createElement('style');
         preloaderStyle.textContent = `
@@ -848,10 +821,18 @@ export class BannerAnimation {
                 pointer-events: none;
             }
 
-            /* Скрываем прелоадер на мобильных устройствах */
             @media (max-width: 900px) {
-                .preloader {
-                    display: none;
+                .preloader__content {
+                    gap: 30px;
+                }
+                
+                .preloader__circle {
+                    width: 60px;
+                    height: 60px;
+                }
+                
+                .preloader__icon {
+                    transform: scale(0.8);
                 }
             }
         `;
@@ -861,19 +842,10 @@ export class BannerAnimation {
     }
 
     initWithPreloader() {
-
-        if (window.innerWidth <= 900) {
-            this.animateMobileContent();
-            return;
-        }
-
-
         this.handleResize();
 
-        // Анимация кругового прогресс-бара
         const progressCircle = this.preloader.querySelector('.preloader__circle-progress');
 
-        // Анимация заполнения круга
         gsap.to(progressCircle, {
             strokeDashoffset: 0,
             duration: 2,
@@ -887,12 +859,6 @@ export class BannerAnimation {
     }
 
     hidePreloader() {
-
-        if (window.innerWidth <= 900) {
-            return;
-        }
-
-        // Анимация скрытия прелоадера
         gsap.to(this.preloader, {
             opacity: 0,
             duration: 0.5,
@@ -900,19 +866,20 @@ export class BannerAnimation {
             onComplete: () => {
                 this.preloader.classList.add('preloader--hidden');
 
-
                 if (this.bannerLines) {
                     this.bannerLines.classList.add('banner__lines--visible');
                 }
 
-
-                this.init();
+                if (window.innerWidth <= 900) {
+                    this.animateMobileContent();
+                } else {
+                    this.init();
+                }
             }
         });
     }
 
     init() {
-
         if (window.innerWidth <= 900) {
             return;
         }
@@ -922,18 +889,15 @@ export class BannerAnimation {
     }
 
     setupAnimation() {
-
         if (window.innerWidth <= 900) {
             return;
         }
-
 
         this.specialElements.forEach(element => {
             gsap.set(element, {
                 opacity: 0
             });
         });
-
 
         this.lines.forEach(line => {
             const length = line.getTotalLength();
@@ -960,11 +924,7 @@ export class BannerAnimation {
         }
     }
 
-
-
-
     animateBall() {
-
         if (window.innerWidth <= 900) {
             return;
         }
@@ -980,7 +940,6 @@ export class BannerAnimation {
             duration: 0.1,
             ease: "power2.out",
             onComplete: () => {
-
                 gsap.to(this.ball, {
                     attr: {
                         cx: startPoint.x,
@@ -1302,7 +1261,6 @@ export class BannerAnimation {
             }
         });
     }
-
 
     destroy() {
         window.removeEventListener('resize', this.handleResize.bind(this));
