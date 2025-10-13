@@ -515,7 +515,7 @@ body.no-scroll {
 }
 
 .main-page {
-  max-width: 1920px;
+  max-width: 100%;
 
   .visually-hidden {
     position: absolute;
@@ -541,7 +541,7 @@ body.no-scroll {
       position: relative;
 
     img {
-        width: auto;
+        width: 100%;
         height: auto;
         object-fit: cover;
 
@@ -1587,14 +1587,26 @@ body.no-scroll {
 
 
 .main-form {
-  background:
-          url('../images/main-form_bg.png') no-repeat right,
-          linear-gradient(90deg, #121932 0%, #354C98 100%);
+  background-image: url('../images/main-form_bg.png');
+  background-repeat: no-repeat;
+  background-position: right;
+  background-color: #18213A;
   background-size: cover;
   padding-top: 63px;
   padding-bottom: 176px;
   position: relative;
   overflow: hidden;
+  background-position-x: 60%;
+
+@media(max-width: 1870px) {
+  background-position-x: 30%;
+}
+
+  @media(max-width: 1300px) {
+    background-position-x: 0;
+    background-color: linear-gradient(90deg, #121932 0%, #354C98 100%);
+  }
+
 
   @media (max-width: 1000px) {
     padding-top: 48px;
@@ -1618,14 +1630,39 @@ body.no-scroll {
     position: absolute;
     left: 0;
     z-index: 3;
-    max-width: 1065px;
-    bottom: -43px;
-    display: none;
+    max-width: 980px;
+    bottom: -100px;
 
-
-    img {
-      width: 100%;
+    @media (max-width: 1840px) {
+      max-width: 1031px;
+      bottom: -114px;
     }
+
+    @media(max-width: 1650px){
+      max-width: 938px;
+      bottom: -91px;
+    }
+    @media(max-width: 1460px){
+      max-width: 783px;
+      bottom: -44px;
+    }
+
+    @media(max-width: 1380px){
+      max-width: 699px;
+      bottom: -17px;
+    }
+    @media(max-width: 1300px){
+      display: none;
+    }
+
+
+
+    img,
+    video {
+      width: 100%;
+      object-fit: cover;
+    }
+    
   }
 
   &__info {
