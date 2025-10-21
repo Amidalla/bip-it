@@ -3112,7 +3112,7 @@ body.no-scroll {
   h1 {
     margin-top: 22px;
     font-size: 70px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 120%;
     color: c.$white;
 
@@ -3872,6 +3872,8 @@ body.no-scroll {
 
     &__img {
       max-width: 256px;
+      max-height: 261px;
+
       @media(max-width: 700px) {
         max-width: 299px;
         margin: 0 auto;
@@ -3888,6 +3890,7 @@ body.no-scroll {
         border-radius: 8px;
         width: 100%;
         height: 100%;
+        object-fit: cover;
       }
     }
 
@@ -4628,6 +4631,10 @@ body.no-scroll {
         display: none;
       }
     }
+    @media (max-width: 650px) {
+      width: 100%;
+    }
+
   }
 
   &__inner {
@@ -4640,6 +4647,8 @@ body.no-scroll {
   }
 
   &__tabs {
+    margin-top: 30px;
+
     @media (max-width: 1640px) {
       max-width: 910px;
     }
@@ -4681,12 +4690,17 @@ body.no-scroll {
   }
   &__slider {
      max-width: 573px;
+     flex: 0 0 40%;
     
     @media (max-width: 1640px) {
       max-width: 406px;
     }
     @media (max-width: 1300px) {
       max-width: 100%;
+    }
+
+    @media (max-width: 1300px) {
+      flex: 0;
     }
 
 
@@ -4707,6 +4721,14 @@ body.no-scroll {
       .swiper-pagination-bullet-active {
         background: rgba(255, 112, 49, 0.5);
       }
+    }
+  }
+
+  &__text {
+    flex: 1;
+
+    @media (max-width: 1300px) {
+      flex: none;
     }
   }
 
@@ -4854,7 +4876,6 @@ body.no-scroll {
   font-weight: 400;
   line-height: 150%;
   color: #FF7031;
-  margin-bottom: 30px;
   cursor: pointer;
 
   @media (max-width: 650px) {
@@ -9903,4 +9924,177 @@ body.no-scroll {
   transform: translateY(0);
 }
 
+.search-results {
+  padding-bottom: 113px;
+  
+  @media (max-width: 1500px) {
+    padding-bottom: 80px;
+  }
+  @media (max-width: 1300px) {
+    padding-bottom: 56px;
+  }
+  @media (max-width: 700px) {
+    padding-bottom: 62px;
+  }
 
+  .more-products {
+    display: none;
+    
+    @media (max-width: 500px) {
+      display: flex;
+      margin-top: 19px;
+      margin-bottom: 0;
+    }
+  }
+
+  .pagination {
+    margin-top: 22px;
+
+    @media (max-width: 500px) {
+      display: none;
+    }
+  }
+
+  h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2A3632;
+    margin-bottom: 24px;
+  }
+
+  &__mobile {
+    display: none;
+
+    @media (max-width: 500px) {
+      display: block;
+      margin-top: 22px;
+    }
+  }
+
+   &__inner {
+     background: c.$white;
+     padding: 30px;
+     max-width: 1114px;
+     
+     @media (max-width: 1300px) {
+       max-width: 777px;
+     }
+
+     @media (max-width: 800px) {
+       max-width: 100%;
+     }
+
+     p {
+       font-size: 16px;
+       font-weight: 400;
+       line-height: 150%;
+       color: #2A3632;
+     }
+
+     .search-results__btn {
+       @media (max-width: 500px) {
+         display: none;
+       }
+     }
+   }
+  .search {
+    max-width: 572px;
+    margin-left: 0;
+    margin-right: auto;
+    margin-bottom: 16px;
+
+    .search__form-container {
+      @media (max-width: 760px) {
+        position: static;
+        width: 100%;
+
+        .search__close {
+         display: none;
+        }
+      }
+    }
+
+    input[type=search] {
+      min-width: 572px;
+    }
+
+    @media (max-width: 800px) {
+      max-width: 246px;
+
+      input[type=search] {
+        max-width: 246px;
+        min-width: 246px;
+      }
+    }
+  }
+
+  &__title {
+    a {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 150%;
+      color: #F8991D;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__data {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 150%;
+    color: #2A3632;
+  }
+
+  &__item {
+      margin-bottom: 20px;
+  }
+
+  &__btn {
+
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+
+    span {
+      flex-shrink: 0;
+    }
+
+    a {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 150%;
+      color: #F8991D;
+      flex-shrink: 0;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &.active {
+        color: #2A3632;
+      }
+    }
+  }
+
+  &__path {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 150%;
+    color: #2A3632;
+
+    a {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 150%;
+      color: #F8991D;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
