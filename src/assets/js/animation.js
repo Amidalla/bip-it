@@ -428,7 +428,7 @@ export class BannerAnimation {
             this.disableAnimation();
 
             // Если перешли на мобильное разрешение и banner__lines еще есть - удаляем
-            if (this.bannerLines) {
+            if (this.bannerLines && this.bannerLines.parentNode) {
                 this.bannerLines.remove();
                 this.bannerLines = null;
             }
@@ -473,7 +473,7 @@ export class BannerAnimation {
             if (windowWidth <= 1100) {
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
-                scale = Math.min(scaleX, scaleY) * 0.96;
+                scale = Math.min(scaleX, scaleY) * 0.95;
                 rightOffset = -45;
             }
             else if (windowWidth <= 1300) {
@@ -489,7 +489,7 @@ export class BannerAnimation {
             } else {
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
-                scale = Math.min(scaleX, scaleY) * 0.98;
+                scale = Math.min(scaleX, scaleY) * 0.99;
                 rightOffset = 20;
             }
 
@@ -498,18 +498,21 @@ export class BannerAnimation {
 
             const topOffset = (windowWidth <= 1366) ? 0.01 : (bannerHeight - scaledSvgHeight) / 2;
 
-            this.bannerLines.style.cssText = `
-            position: absolute;
-            top: ${topOffset}px;
-            right: ${rightOffset}px;
-            width: ${scaledSvgWidth}px;
-            height: ${scaledSvgHeight}px;
-            pointer-events: none;
-            z-index: 2;
-        `;
 
-            const svg = this.bannerLines.querySelector('svg');
-            if (svg) {
+            if (this.bannerLines && this.bannerLines.style) {
+                this.bannerLines.style.cssText = `
+                position: absolute;
+                top: ${topOffset}px;
+                right: ${rightOffset}px;
+                width: ${scaledSvgWidth}px;
+                height: ${scaledSvgHeight}px;
+                pointer-events: none;
+                z-index: 2;
+            `;
+            }
+
+            const svg = this.bannerLines ? this.bannerLines.querySelector('svg') : null;
+            if (svg && svg.style) {
                 svg.style.cssText = `
                 width: 100%;
                 height: 100%;
