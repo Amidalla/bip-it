@@ -68,7 +68,7 @@ export class BannerAnimation {
         this.addPreloaderStyles();
         this.createPreloader();
 
-        // ПРОСТАЯ ЛОГИКА: на мобильных запускаем анимацию сразу
+        // на мобильных запускаем анимацию сразу
         if (window.innerWidth <= 900) {
             // Небольшая задержка для стабилизации DOM
             setTimeout(() => {
@@ -118,9 +118,7 @@ export class BannerAnimation {
 
         this.mobileAnimationPlayed = true;
 
-        console.log('Запуск мобильной анимации'); // Для отладки
 
-        // Простая анимация без сложных проверок
         const activeSlide = document.querySelector('.swiper-slide-active');
         if (activeSlide && activeSlide.classList.contains('main-animation')) {
             const content = activeSlide.querySelector('.main-slider__content');
@@ -470,6 +468,7 @@ export class BannerAnimation {
 
             let scale, rightOffset;
 
+            // Логика для меньших разрешений
             if (windowWidth <= 1100) {
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
@@ -485,11 +484,18 @@ export class BannerAnimation {
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.95;
-                rightOffset = -65;
-            } else {
+                rightOffset = -60;
+            } else if (windowWidth <= 2000) {
+                // Для разрешений с 1367 до 1920 - масштаб 0.99
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.99;
+                rightOffset = 20;
+            } else {
+                // Для разрешений больше 1920 - масштаб 1
+                const scaleX = bannerWidth / originalSvgWidth;
+                const scaleY = bannerHeight / originalSvgHeight;
+                scale = Math.min(scaleX, scaleY) * 1.0;
                 rightOffset = 20;
             }
 
@@ -497,7 +503,6 @@ export class BannerAnimation {
             const scaledSvgHeight = originalSvgHeight * scale;
 
             const topOffset = (windowWidth <= 1366) ? 0.01 : (bannerHeight - scaledSvgHeight) / 2;
-
 
             if (this.bannerLines && this.bannerLines.style) {
                 this.bannerLines.style.cssText = `
