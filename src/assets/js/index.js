@@ -81,7 +81,6 @@ class App {
         initUIComponents() {
                 this.initSearch();
                 this.initFixedHeader();
-                this.initQuantityCounters();
                 this.initCheckboxes();
                 this.initPriceSlider();
                 this.initPriceFilterToggle();
@@ -457,11 +456,6 @@ class App {
                 });
         }
 
-        // Счетчики количества
-        initQuantityCounters() {
-                const counters = document.querySelectorAll('.quantity-counter');
-                counters.forEach(container => new QuantityCounter(container));
-        }
 
         // Чекбоксы
         initCheckboxes() {
@@ -592,96 +586,6 @@ class App {
                 });
         }
 }
-
-// Класс счетчика количества
-class QuantityCounter {
-        constructor(container) {
-                this.container = container;
-                this.input = container.querySelector('.counter-input');
-                this.minusBtn = container.querySelector('.counter-minus');
-                this.plusBtn = container.querySelector('.counter-plus');
-                this.init();
-        }
-
-        init() {
-                this.minusBtn.addEventListener('click', () => this.decrease());
-                this.plusBtn.addEventListener('click', () => this.increase());
-                this.input.addEventListener('input', () => this.validate());
-                this.input.addEventListener('blur', () => this.fixValue());
-                this.updateButtons();
-        }
-
-        decrease() {
-                let value = parseInt(this.input.value) || 1;
-                if (value > parseInt(this.input.min)) {
-                        this.input.value = value - 1;
-                        this.updateButtons();
-                        this.emitChangeEvent();
-                }
-        }
-
-        increase() {
-                let value = parseInt(this.input.value) || 1;
-                const max = parseInt(this.input.max) || 99;
-                if (value < max) {
-                        this.input.value = value + 1;
-                        this.updateButtons();
-                        this.emitChangeEvent();
-                }
-        }
-
-        validate() {
-                let value = this.input.value;
-                value = value.replace(/[^\d]/g, '');
-                const max = parseInt(this.input.max) || 99;
-                if (value > max) {
-                        value = max;
-                }
-                this.input.value = value;
-                this.updateButtons();
-        }
-
-        fixValue() {
-                let value = parseInt(this.input.value);
-                if (isNaN(value) || value < parseInt(this.input.min)) {
-                        value = parseInt(this.input.min) || 1;
-                }
-                const max = parseInt(this.input.max) || 99;
-                if (value > max) {
-                        value = max;
-                }
-                this.input.value = value;
-                this.updateButtons();
-                this.emitChangeEvent();
-        }
-
-        updateButtons() {
-                const value = parseInt(this.input.value);
-                const min = parseInt(this.input.min) || 1;
-                const max = parseInt(this.input.max) || 99;
-                this.minusBtn.disabled = value <= min;
-                this.plusBtn.disabled = value >= max;
-        }
-
-        emitChangeEvent() {
-                this.input.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-
-        getValue() {
-                return parseInt(this.input.value);
-        }
-
-        setValue(value) {
-                const numValue = parseInt(value);
-                if (!isNaN(numValue)) {
-                        const min = parseInt(this.input.min) || 1;
-                        const max = parseInt(this.input.max) || 99;
-                        this.input.value = Math.max(min, Math.min(max, numValue));
-                        this.updateButtons();
-                }
-        }
-}
-
 
 const app = new App();
 
