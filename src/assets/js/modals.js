@@ -3,7 +3,6 @@ import { gsap } from 'gsap';
 export function InitModals() {
     const catalogModal = document.querySelector(".modal-catalog");
     const catalogBtns = document.querySelectorAll(".catalog-btn");
-    const catalogCloseBtn = document.querySelector(".catalog-close");
     const mobileMenu = document.querySelector(".mobile-menu");
     const burgerBtn = document.querySelector(".header__burger");
     const closeMobileMenuBtn = document.querySelector(".mobile-menu__close");
@@ -34,12 +33,12 @@ export function InitModals() {
 
     const overlay = document.querySelector(".overlay");
 
-    function shouldShowCatalogOverlay() {
+    function isMobileCatalogView() {
         return window.innerWidth <= 760;
     }
 
     function fixCatalogHeight() {
-        if (catalogModal?.classList.contains("opened")) {
+        if (catalogModal?.classList.contains("opened") && isMobileCatalogView()) {
             catalogModal.style.height = `${window.innerHeight}px`;
         }
     }
@@ -231,11 +230,8 @@ export function InitModals() {
 
         modalElement?.classList.add("opened");
 
+        // Для каталога оверлей НЕ показываем
         if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal || modalElement === vacancyModal || modalElement === marketplaceModal) && overlay) {
-            overlay.classList.add("opened");
-        }
-
-        if (modalElement === catalogModal && overlay && shouldShowCatalogOverlay()) {
             overlay.classList.add("opened");
         }
 
@@ -246,17 +242,20 @@ export function InitModals() {
             initCatalogLists();
             fixCatalogHeight();
             loadCatalogImages();
+
+            // Добавляем обработчик для мобильного крестика
+            const mobileCatalogClose = catalogModal.querySelector('.catalog-close');
+            if (mobileCatalogClose) {
+                mobileCatalogClose.addEventListener('click', handleMobileCatalogClose);
+            }
         }
     }
 
     function closeModal(modalElement) {
         modalElement?.classList.remove("opened");
 
+        // Для каталога оверлей НЕ скрываем (его и не было)
         if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal || modalElement === vacancyModal || modalElement === marketplaceModal) && overlay) {
-            overlay.classList.remove("opened");
-        }
-
-        if (modalElement === catalogModal && overlay && shouldShowCatalogOverlay()) {
             overlay.classList.remove("opened");
         }
 
@@ -265,8 +264,22 @@ export function InitModals() {
 
         if (modalElement === catalogModal) {
             resetCatalogLists();
-            catalogModal.style.height = "";
+            // Сбрасываем высоту только если она была установлена (на мобильных)
+            if (isMobileCatalogView()) {
+                catalogModal.style.height = "";
+            }
+
+            // Убираем обработчик для мобильного крестика
+            const mobileCatalogClose = catalogModal.querySelector('.catalog-close');
+            if (mobileCatalogClose) {
+                mobileCatalogClose.removeEventListener('click', handleMobileCatalogClose);
+            }
         }
+    }
+
+    function handleMobileCatalogClose(e) {
+        e.preventDefault();
+        closeModal(catalogModal);
     }
 
     function toggleModal(modalElement) {
@@ -347,14 +360,23 @@ export function InitModals() {
         }
     }
 
+    // Обработчики для каталога - toggle функционал
     catalogBtns.forEach(btn => btn?.addEventListener("click", e => {
         e.preventDefault();
         toggleModal(catalogModal);
     }));
 
-    catalogCloseBtn?.addEventListener("click", e => {
-        e.preventDefault();
-        closeModal(catalogModal);
+    // Закрытие каталога при клике вне модалки
+    document.addEventListener("click", e => {
+        if (catalogModal?.classList.contains("opened")) {
+            // Проверяем, что клик был вне модалки каталога и не по кнопке открытия каталога
+            const isClickInsideCatalog = catalogModal.contains(e.target);
+            const isClickOnCatalogBtn = e.target.closest(".catalog-btn");
+
+            if (!isClickInsideCatalog && !isClickOnCatalogBtn) {
+                closeModal(catalogModal);
+            }
+        }
     });
 
     burgerBtn?.addEventListener("click", e => {
@@ -429,16 +451,17 @@ export function InitModals() {
 
     overlay?.addEventListener("click", e => {
         if (e.target === overlay) {
-            [feedbackModal, mobileMenu, placedModal, vacancyModal, marketplaceModal].forEach(modal => {
+            // Закрываем все модалки кроме каталога при клике на оверлей
+            [mobileMenu, feedbackModal, placedModal, vacancyModal, marketplaceModal].forEach(modal => {
                 if (modal?.classList.contains("opened")) closeModal(modal);
             });
-            if (catalogModal?.classList.contains("opened") && shouldShowCatalogOverlay()) closeModal(catalogModal);
             if (modalFilter?.classList.contains("active")) closeModalFilter();
         }
     });
 
     document.addEventListener("keydown", e => {
         if (e.key === "Escape") {
+            // Закрываем все модалки включая каталог при Escape
             [catalogModal, mobileMenu, feedbackModal, placedModal, vacancyModal, marketplaceModal].forEach(m => {
                 if (m?.classList.contains("opened")) closeModal(m);
             });
@@ -449,7 +472,7 @@ export function InitModals() {
     window.addEventListener("resize", () => {
         if (window.innerWidth > 1300) resetCatalogLists();
         if (window.innerWidth > 992 && mobileMenu?.classList.contains("opened")) closeModal(mobileMenu);
-        fixCatalogHeight();
+        fixCatalogHeight(); // Пересчитываем высоту при ресайзе
     });
 
     catalogBtns.forEach(btn => {

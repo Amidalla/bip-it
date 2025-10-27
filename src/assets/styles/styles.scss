@@ -1045,13 +1045,38 @@ body.no-scroll {
       }
       .slide-container {
         column-gap: 28px;
+        height: 100%;
         @media (max-width: 1300px) {
           padding-left: 30px;
         }
 
         .product-card {
           column-gap: 30px;
-          min-height: 409px;
+          min-height: 453px;
+
+          @media (max-width: 1300px) {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+          }
+
+
+          &__tablet {
+            display: none;
+
+            @media (max-width: 1300px) {
+              display: block;
+              grid-column: 1 / span 2;
+
+              .counter {
+                display: flex !important;
+              }
+
+              .purchase {
+                display: flex !important;
+                flex-direction: row !important;
+              }
+            }
+          }
 
           &__img {
             max-width: 355px;
@@ -1078,6 +1103,10 @@ body.no-scroll {
             @media(max-width: 1640px) {
               flex-direction: column;
               row-gap: 10px;
+            }
+
+            @media (max-width: 1300px) {
+              display: none;
             }
 
             a {
@@ -1154,6 +1183,7 @@ body.no-scroll {
             display: flex;
             column-gap: 8px;
             margin-bottom: 18px;
+            margin-bottom: auto;
           }
 
           &__item {
@@ -1199,6 +1229,11 @@ body.no-scroll {
             display: flex;
             column-gap: 27px;
             margin-bottom: 13px;
+            margin-top: 18px;
+
+            @media (max-width: 1300px) {
+              display: none;
+            }
 
             &__prise {
               font-size: 30px;
@@ -2666,6 +2701,7 @@ body.no-scroll {
     &__item {
       margin-bottom: 32px;
 
+
       &:first-child {
         margin-top: 20px;
       }
@@ -2693,18 +2729,44 @@ body.no-scroll {
       transition: all 0.3s ease;
       color: #0F1019;
       letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+
 
       @media(max-width: 1640px) {
         font-size: 16px;
       }
 
-      &:hover {
-        color: c.$orange;
-      }
-
       svg {
         margin-left: 8px;
         margin-top: 4px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      &.list-opened-btn {
+        svg {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+
+      &.list-close-btn {
+        svg {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+
+      &:hover {
+        color: c.$orange;
+
+        svg {
+          opacity: 1;
+          visibility: visible;
+        }
       }
     }
 
@@ -6251,6 +6313,7 @@ body.no-scroll {
             gap: 8px;
             margin-left: 27px;
             margin-right: 20px;
+            min-width: 183px;
 
             @media (max-width: 1840px) {
               margin-left: 0;
