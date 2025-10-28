@@ -5408,17 +5408,17 @@ body.no-scroll {
            display: flex;
            flex-direction: column;
            justify-content: space-between;
-         }
 
-         .counter {
-           @media (max-width: 1300px) {
-             display: none;
+           .counter {
+             @media (max-width: 1300px) {
+               display: none;
+             }
            }
-         }
 
-         .purchase {
-           @media (max-width: 1300px) {
-             display: none;
+           .purchase {
+             @media (max-width: 1300px) {
+               display: none;
+             }
            }
          }
 
