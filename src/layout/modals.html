@@ -1,135 +1,528 @@
-<div class="modal-catalog">
-    <div class="modal-catalog__close">
-        <span>Каталог</span>
-        <span class="catalog-close">
-            <include src="assets/svg/cross.html"></include>
-        </span>
-    </div>
-    <div class="container">
-        <div class="modal-catalog__inner">
-             <ul class="modal-catalog__list first-list">
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link">
-                         <span>Стержни заземления</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link">
-                         <span>Комплекты заземления универсальные</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link">
-                         <span>Проводники</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link">
-                         <span>Зжимы и держатели</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link">
-                         <span>Аксессуары для металлорукава</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link">
-                         <span>Молнеприемнки и мачты</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link">
-                         <span>Комплекты молниезащиты</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link">
-                         <span>Электролитическое заземление</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link">
-                         <span>Шины</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-                 <li class="modal-catalog__item">
-                     <a href="#" class="modal-catalog__link list-opened-btn">
-                         <span>Комплектующие и аксессуары</span>
-                         <include src="assets/svg/orange-arrow.html"></include>
-                     </a>
-                 </li>
-             </ul>
-            <ul class="modal-catalog__list second-list">
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link list-close-btn">
-                        <include src="assets/svg/orange-arrow.html"></include>
-                        <span>Комплектующие и аксессуары</span>
-                    </a>
+<div class="catalog-modal">
+    <div class="catalog-container">
+        <div class="catalog-header">
+            <div class="catalog-title">Каталог</div>
+            <span class="catalog-close">
+                <include src="assets/svg/cross.html"></include>
+            </span>
+        </div>
+        <div class="categories-section">
+            <ul class="category-list">
+                <li class="category-item active" data-category="ground-rods" data-image="assets/images/modal-catalog-img.jpg">
+                    <span>Стержни заземления</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link">
-                        Головки
-                    </a>
+                <li class="category-item" data-category="grounding-kits" data-image="assets/images/modal-catalog-img2.jpg">
+                    <span>Комплекты заземления универсальные</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link">
-                        Муфты
-                    </a>
+                <li class="category-item" data-category="conductors" data-image="assets/images/modal-catalog-img.jpg">
+                    <span>Проводники</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link">
-                        Проводники
-                    </a>
+                <li class="category-item" data-category="clamps-holders" data-image="assets/images/modal-catalog-img2.jpg">
+                    <span>Зажимы и держатели</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link">
-                        Наконечники
-                    </a>
+                <li class="category-item" data-category="accessories" data-image="assets/images/modal-catalog-img.jpg">
+                    <span>Аксессуары для металлорукава</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link">
-                        Насадки на отбойный молоток
-                    </a>
+                <li class="category-item" data-category="lightning-rods" data-image="assets/images/modal-catalog-img2.jpg">
+                    <span>Молниеприемники и мачты</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link">
-                        Ленты и пасты
-                    </a>
+                <li class="category-item" data-category="lightning-protection" data-image="assets/images/modal-catalog-img.jpg">
+                    <span>Комплекты молниезащиты</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link">
-                        Инспекционные колодцы и лючки
-                    </a>
+                <li class="category-item" data-category="electrolytic" data-image="assets/images/modal-catalog-img2.jpg">
+                    <span>Электролитическое заземление</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link">
-                        Для молниезащиты
-                    </a>
+                <li class="category-item" data-category="busbars" data-image="assets/images/modal-catalog-img.jpg">
+                    <span>Шины</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
-                <li class="modal-catalog__item">
-                    <a href="#" class="modal-catalog__link">
-                        Прочее
-                    </a>
+                <li class="category-item" data-category="components" data-image="assets/images/modal-catalog-img2.jpg">
+                    <span>Комплектующие и аксессуары</span>
+                    <include src="assets/svg/orange-arrow.html"></include>
                 </li>
             </ul>
         </div>
-        <div class="modal-catalog__img">
-            <picture>
-                <source media="(max-width: 1300px)" data-srcset="assets/images/modal-catalog-img2.jpg">
-                <img class="lazy" data-src="assets/images/modal-catalog-img.jpg">
-            </picture>
-            <img class="lazy active" data-src="assets/images/modal-catalog-img3.jpg">
-            <img class="lazy active-mobile" data-src="assets/images/modal-catalog-img4.jpg">
+        <div class="subcategories-section">
+            <div class="subcategory-group active" data-category="ground-rods">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Стержни заземления</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Головки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Муфты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Проводники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Наконечники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Насадки на отбойный молоток
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Ленты и пасты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Инспекционные колодцы и лючки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для молниезащиты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Прочее
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="grounding-kits">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Комплекты заземления универсальные</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Универсальные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Промышленные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для жилых домов
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="conductors">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Проводники</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Медные проводники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Алюминиевые проводники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Стальные проводники
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="ground-rods">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Зжимы и держатели</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Головки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Муфты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Проводники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Наконечники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Насадки на отбойный молоток
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Ленты и пасты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Инспекционные колодцы и лючки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для молниезащиты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Прочее
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="clamps-holders">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Зажимы и держатели</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Универсальные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Промышленные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для жилых домов
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="accessories">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Аксессуары для металлорукава</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Головки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Муфты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Проводники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Наконечники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Насадки на отбойный молоток
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Ленты и пасты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Инспекционные колодцы и лючки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для молниезащиты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Прочее
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="lightning-rods">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Молнеприемнки и мачты</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Универсальные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Промышленные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для жилых домов
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="lightning-protection">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Комплекты молниезащиты</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Головки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Муфты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Проводники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Наконечники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Насадки на отбойный молоток
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Ленты и пасты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Инспекционные колодцы и лючки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для молниезащиты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Прочее
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="electrolytic">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Электролитическое заземление</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Универсальные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Промышленные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для жилых домов
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="busbars">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Шины</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Головки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Муфты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Проводники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Наконечники
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Насадки на отбойный молоток
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Ленты и пасты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Инспекционные колодцы и лючки
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для молниезащиты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Прочее
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="subcategory-group" data-category="components">
+                <div class="subcategory-back">
+                    <include src="assets/svg/orange-arrow.html"></include>
+                    <span>Комплектующие и аксессуары</span>
+                </div>
+                <ul class="subcategory-list">
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link all-category">
+                            <span>Перейти в раздел</span>
+                            <include src="assets/svg/orange-arrow.html"></include>
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Универсальные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Промышленные комплекты
+                        </a>
+                    </li>
+                    <li class="subcategory-item">
+                        <a href="#" class="subcategory-link">
+                            Для жилых домов
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="image-section">
+            <img class="lazy" data-src="assets/images/modal-catalog-img.jpg" alt="" id="catalogImage">
         </div>
     </div>
 </div>

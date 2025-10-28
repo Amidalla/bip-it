@@ -341,6 +341,7 @@ class App {
                 return 'Неверный ИНН. Проверьте контрольную сумму';
         }
 
+
         // Поиск
         initSearch() {
                 const searchContainers = document.querySelectorAll('.search');
@@ -350,10 +351,47 @@ class App {
                         const searchContainer = search.querySelector('.search__form-container');
                         const searchInput = search.querySelector('.search__form input[type="search"]');
                         const searchClose = search.querySelector('.search__close');
+                        const searchIconDesc = search.querySelector('.search-icon-desc');
+                        const searchIcon = search.querySelector('.search-icon');
+                        const searchForm = search.querySelector('.search__form');
 
                         if (!searchToggle || !searchContainer || !searchInput || !searchClose) {
                                 return;
                         }
+
+
+                        const performSearch = () => {
+                                const searchValue = searchInput.value.trim();
+                                if (searchValue) {
+
+                                        searchForm.submit();
+
+                                }
+                        };
+
+
+                        if (searchIconDesc) {
+                                searchIconDesc.addEventListener('click', function(e) {
+                                        e.stopPropagation();
+                                        performSearch();
+                                });
+                        }
+
+
+                        if (searchIcon) {
+                                searchIcon.addEventListener('click', function(e) {
+                                        e.stopPropagation();
+                                        performSearch();
+                                });
+                        }
+
+
+                        searchInput.addEventListener('keydown', function(e) {
+                                if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        performSearch();
+                                }
+                        });
 
                         searchToggle.addEventListener('click', function(e) {
                                 e.stopPropagation();

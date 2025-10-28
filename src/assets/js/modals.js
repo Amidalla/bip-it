@@ -1,12 +1,12 @@
 import { gsap } from 'gsap';
 
 export function InitModals() {
-    const catalogModal = document.querySelector(".modal-catalog");
+    const catalogModal = document.querySelector(".catalog-modal");
     const catalogBtns = document.querySelectorAll(".catalog-btn");
     const mobileMenu = document.querySelector(".mobile-menu");
     const burgerBtn = document.querySelector(".header__burger");
     const closeMobileMenuBtn = document.querySelector(".mobile-menu__close");
-    const catalogImage = catalogModal?.querySelector(".modal-catalog__img");
+    const catalogImage = catalogModal?.querySelector("#catalogImage");
 
     const feedbackModal = document.querySelector(".feedback-form");
     const feedbackBtns = document.querySelectorAll(".feedback-btn");
@@ -33,18 +33,8 @@ export function InitModals() {
 
     const overlay = document.querySelector(".overlay");
 
-    function isMobileCatalogView() {
-        return window.innerWidth <= 760;
-    }
-
-    function fixCatalogHeight() {
-        if (catalogModal?.classList.contains("opened") && isMobileCatalogView()) {
-            catalogModal.style.height = `${window.innerHeight}px`;
-        }
-    }
-
     function loadCatalogImages() {
-        const imgs = catalogModal?.querySelectorAll(".modal-catalog__img .lazy");
+        const imgs = catalogModal?.querySelectorAll(".lazy");
         imgs?.forEach(img => {
             if (!img.src && img.dataset.src) {
                 img.src = img.dataset.src;
@@ -52,6 +42,172 @@ export function InitModals() {
         });
     }
 
+    function initCatalogModal() {
+        const categoryItems = catalogModal?.querySelectorAll('.category-item');
+        const subcategoryGroups = catalogModal?.querySelectorAll('.subcategory-group');
+        const catalogImage = catalogModal?.querySelector('#catalogImage');
+        const imageSection = catalogModal?.querySelector('.image-section');
+        const categoriesSection = catalogModal?.querySelector('.categories-section');
+        const subcategoriesSection = catalogModal?.querySelector('.subcategories-section');
+        const backButtons = catalogModal?.querySelectorAll('.subcategory-back');
+        const catalogClose = catalogModal?.querySelector('.catalog-close');
+
+        if (!categoryItems || !subcategoryGroups || !catalogImage || !imageSection) return;
+
+
+        function isMobileView() {
+            return window.innerWidth <= 1300;
+        }
+
+        function isSmallMobileView() {
+            return window.innerWidth <= 760;
+        }
+
+
+        function toggleImageVisibility(showImage) {
+            if (window.innerWidth > 1300) {
+
+                imageSection.style.display = 'block';
+                return;
+            }
+
+
+            if (showImage) {
+                if (isSmallMobileView()) {
+                    imageSection.classList.add('mobile-visible');
+                } else {
+                    imageSection.style.display = 'block';
+                }
+            } else {
+                if (isSmallMobileView()) {
+                    imageSection.classList.remove('mobile-visible');
+                } else {
+                    imageSection.style.display = 'block';
+                }
+            }
+        }
+
+        function toggleImageVisibility(showImage) {
+            if (!isMobileView()) {
+
+                imageSection.style.display = 'block';
+                return;
+            }
+
+
+            if (showImage) {
+                imageSection.classList.add('mobile-visible');
+            } else {
+                imageSection.classList.remove('mobile-visible');
+            }
+        }
+
+
+        catalogClose?.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeModal(catalogModal);
+        });
+
+        let activeCategoryItem = null;
+
+        function showMobileSubcategories(categoryItem) {
+            if (!isMobileView()) return;
+
+            const categoryId = categoryItem.dataset.category;
+            activeCategoryItem = categoryItem;
+
+            categoriesSection?.classList.add('mobile-hidden');
+            subcategoriesSection?.classList.add('mobile-active');
+
+
+            toggleImageVisibility(true);
+
+            subcategoryGroups.forEach(group => group.classList.remove('active'));
+            const targetGroup = catalogModal?.querySelector(`.subcategory-group[data-category="${categoryId}"]`);
+            if (targetGroup) {
+                targetGroup.classList.add('active');
+            }
+        }
+
+        function hideMobileSubcategories() {
+            if (!isMobileView()) return;
+
+            categoriesSection?.classList.remove('mobile-hidden');
+            subcategoriesSection?.classList.remove('mobile-active');
+
+
+            toggleImageVisibility(false);
+
+            if (activeCategoryItem) {
+                categoryItems.forEach(cat => cat.classList.remove('active'));
+                activeCategoryItem.classList.add('active');
+            }
+        }
+
+        backButtons?.forEach(button => {
+            button.addEventListener('click', hideMobileSubcategories);
+        });
+
+        categoryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const categoryId = this.dataset.category;
+                const imageSrc = this.dataset.image;
+                const imageAlt = this.textContent.trim();
+
+                categoryItems.forEach(cat => cat.classList.remove('active'));
+                this.classList.add('active');
+
+                activeCategoryItem = this;
+
+                if (isMobileView()) {
+
+                    showMobileSubcategories(this);
+                } else {
+
+                    subcategoryGroups.forEach(group => group.classList.remove('active'));
+                    const targetGroup = catalogModal?.querySelector(`.subcategory-group[data-category="${categoryId}"]`);
+                    if (targetGroup) {
+                        targetGroup.classList.add('active');
+                    }
+
+
+                    toggleImageVisibility(true);
+                }
+
+                if (catalogImage && imageSrc) {
+                    catalogImage.src = imageSrc;
+                    catalogImage.alt = imageAlt;
+                    if (catalogImage.classList.contains('lazy')) {
+                        catalogImage.dataset.src = imageSrc;
+                    }
+                }
+            });
+        });
+
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1300) {
+
+                categoriesSection?.classList.remove('mobile-hidden');
+                subcategoriesSection?.classList.remove('mobile-active');
+
+                toggleImageVisibility(true);
+            } else if (window.innerWidth <= 760) {
+
+                if (subcategoriesSection?.classList.contains('mobile-active')) {
+                    toggleImageVisibility(true);
+                } else {
+                    toggleImageVisibility(false);
+                }
+            }
+        });
+
+
+
+        if (isMobileView()) {
+            toggleImageVisibility(false);
+        }
+    }
     function initFilterToggles() {
         const allFilterHeaders = document.querySelectorAll(`
             .filter-variants__header,
@@ -230,7 +386,7 @@ export function InitModals() {
 
         modalElement?.classList.add("opened");
 
-        // Для каталога оверлей НЕ показываем
+
         if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal || modalElement === vacancyModal || modalElement === marketplaceModal) && overlay) {
             overlay.classList.add("opened");
         }
@@ -239,47 +395,21 @@ export function InitModals() {
         document.body.classList.add("modal-opened");
 
         if (modalElement === catalogModal) {
-            initCatalogLists();
-            fixCatalogHeight();
+            initCatalogModal();
             loadCatalogImages();
-
-            // Добавляем обработчик для мобильного крестика
-            const mobileCatalogClose = catalogModal.querySelector('.catalog-close');
-            if (mobileCatalogClose) {
-                mobileCatalogClose.addEventListener('click', handleMobileCatalogClose);
-            }
         }
     }
 
     function closeModal(modalElement) {
         modalElement?.classList.remove("opened");
 
-        // Для каталога оверлей НЕ скрываем (его и не было)
+
         if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal || modalElement === vacancyModal || modalElement === marketplaceModal) && overlay) {
             overlay.classList.remove("opened");
         }
 
         document.body.style.overflow = "";
         document.body.classList.remove("modal-opened");
-
-        if (modalElement === catalogModal) {
-            resetCatalogLists();
-            // Сбрасываем высоту только если она была установлена (на мобильных)
-            if (isMobileCatalogView()) {
-                catalogModal.style.height = "";
-            }
-
-            // Убираем обработчик для мобильного крестика
-            const mobileCatalogClose = catalogModal.querySelector('.catalog-close');
-            if (mobileCatalogClose) {
-                mobileCatalogClose.removeEventListener('click', handleMobileCatalogClose);
-            }
-        }
-    }
-
-    function handleMobileCatalogClose(e) {
-        e.preventDefault();
-        closeModal(catalogModal);
     }
 
     function toggleModal(modalElement) {
@@ -304,72 +434,16 @@ export function InitModals() {
         }
     }
 
-    function initCatalogLists() {
-        const openedBtn = catalogModal?.querySelector(".list-opened-btn");
-        const closeBtn = catalogModal?.querySelector(".list-close-btn");
-        const firstList = catalogModal?.querySelector(".first-list");
-        const secondList = catalogModal?.querySelector(".second-list");
 
-        function isMobileView() {
-            return window.innerWidth <= 1300;
-        }
-
-        function showSecondList() {
-            if (isMobileView() && firstList && secondList) {
-                firstList.classList.add("hidden");
-                secondList.classList.add("active");
-                catalogImage?.classList.add("active");
-            }
-        }
-
-        function hideSecondList() {
-            if (firstList && secondList) {
-                firstList.classList.remove("hidden");
-                secondList.classList.remove("active");
-                catalogImage?.classList.remove("active");
-            }
-        }
-
-        function handleOpenClick(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            showSecondList();
-        }
-
-        function handleCloseClick(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            hideSecondList();
-        }
-
-        openedBtn?.removeEventListener("click", handleOpenClick);
-        closeBtn?.removeEventListener("click", handleCloseClick);
-
-        openedBtn?.addEventListener("click", handleOpenClick);
-        closeBtn?.addEventListener("click", handleCloseClick);
-    }
-
-    function resetCatalogLists() {
-        const firstList = catalogModal?.querySelector(".first-list");
-        const secondList = catalogModal?.querySelector(".second-list");
-
-        if (firstList && secondList) {
-            firstList.classList.remove("hidden");
-            secondList.classList.remove("active");
-            catalogImage?.classList.remove("active");
-        }
-    }
-
-    // Обработчики для каталога - toggle функционал
     catalogBtns.forEach(btn => btn?.addEventListener("click", e => {
         e.preventDefault();
         toggleModal(catalogModal);
     }));
 
-    // Закрытие каталога при клике вне модалки
+
     document.addEventListener("click", e => {
         if (catalogModal?.classList.contains("opened")) {
-            // Проверяем, что клик был вне модалки каталога и не по кнопке открытия каталога
+
             const isClickInsideCatalog = catalogModal.contains(e.target);
             const isClickOnCatalogBtn = e.target.closest(".catalog-btn");
 
@@ -451,7 +525,7 @@ export function InitModals() {
 
     overlay?.addEventListener("click", e => {
         if (e.target === overlay) {
-            // Закрываем все модалки кроме каталога при клике на оверлей
+
             [mobileMenu, feedbackModal, placedModal, vacancyModal, marketplaceModal].forEach(modal => {
                 if (modal?.classList.contains("opened")) closeModal(modal);
             });
@@ -461,7 +535,7 @@ export function InitModals() {
 
     document.addEventListener("keydown", e => {
         if (e.key === "Escape") {
-            // Закрываем все модалки включая каталог при Escape
+
             [catalogModal, mobileMenu, feedbackModal, placedModal, vacancyModal, marketplaceModal].forEach(m => {
                 if (m?.classList.contains("opened")) closeModal(m);
             });
@@ -470,15 +544,10 @@ export function InitModals() {
     });
 
     window.addEventListener("resize", () => {
-        if (window.innerWidth > 1300) resetCatalogLists();
         if (window.innerWidth > 992 && mobileMenu?.classList.contains("opened")) closeModal(mobileMenu);
-        fixCatalogHeight(); // Пересчитываем высоту при ресайзе
     });
 
     catalogBtns.forEach(btn => {
-        btn.addEventListener('click', () => setTimeout(fixCatalogHeight, 0));
         btn.addEventListener('click', () => setTimeout(loadCatalogImages, 50));
     });
-
-    window.addEventListener('resize', fixCatalogHeight);
 }
