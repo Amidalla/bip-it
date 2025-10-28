@@ -2645,6 +2645,7 @@ body.no-scroll {
     padding-left: 0;
     display: none;
 
+
     &.mobile-visible {
       display: block;
     }
@@ -2925,6 +2926,7 @@ body.no-scroll {
     @media (max-width: 760px) {
       margin-left: 0;
       display: none;
+      padding-left: 0;
     }
   }
 }
