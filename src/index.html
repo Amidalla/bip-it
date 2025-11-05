@@ -4,6 +4,36 @@
 <include src="layout/head.html"></include>
 
 <body>
+<div class="preloader" id="preloader">
+    <div class="preloader__content">
+        <div class="preloader__icon">
+            <svg width="18" height="40" viewBox="0 0 18 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10.6471 0V16.6185H17.2352L7.41075 39.9997V23.2599H0.764771L10.6471 0Z" fill="#F99A1C"></path>
+                <g filter="url(#filter0_i_150_6133)">
+                    <path d="M10.6466 16.6187H17.2348L7.41028 39.9998V23.26L10.6466 16.6187Z" fill="#F07000"></path>
+                </g>
+                <defs>
+                    <filter id="filter0_i_150_6133" x="7.41028" y="16.6187" width="9.82449" height="24.5576" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                        <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+                        <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
+                        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix>
+                        <feOffset dy="1.17646"></feOffset>
+                        <feGaussianBlur stdDeviation="1.76469"></feGaussianBlur>
+                        <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"></feComposite>
+                        <feColorMatrix type="matrix" values="0 0 0 0 0.735577 0 0 0 0 0.196154 0 0 0 0 0 0 0 0 1 0"></feColorMatrix>
+                        <feBlend mode="normal" in2="shape" result="effect1_innerShadow_150_6133"></feBlend>
+                    </filter>
+                </defs>
+            </svg>
+        </div>
+        <div class="preloader__circle">
+            <svg class="preloader__circle-svg" viewBox="0 0 100 100">
+                <circle class="preloader__circle-bg" cx="50" cy="50" r="45"/>
+                <circle class="preloader__circle-progress" cx="50" cy="50" r="45"/>
+            </svg>
+        </div>
+    </div>
+</div>
 
 <include src="layout/header1.html"></include>
 
@@ -19,9 +49,8 @@
                             <div class="banner">
                                 <picture>
                                     <source media="(max-width: 450px)" data-srcset="assets/images/house-mobile.png">
-                                    <source media="(max-width: 850px)" data-srcset="assets/images/house_tablet.png">
-                                    <source media="(max-width: 900px)" data-srcset="assets/images/main-slide-laptop.png">
-                                    <source media="(max-width: 1366px)" data-srcset="assets/images/house_laptop.png">
+                                    <source media="(max-width: 900px)" data-srcset="assets/images/house_tablet.png">
+                                    <source media="(max-width: 1366px)" data-srcset="assets/images/main-slide-laptop.png">
                                     <img class="lazy banner__image" data-src="assets/images/house.png" alt="Слайд 1">
                                 </picture>
                                 <div class="banner__lines">
@@ -42,7 +71,7 @@
                         <div class="swiper-slide">
                             <picture>
                                 <source media="(max-width: 450px)" data-srcset="assets/images/house-mobile.png">
-                                <source media="(max-width: 850px)" data-srcset="assets/images/house_tablet.png">
+                                <source media="(max-width: 900px)" data-srcset="assets/images/house_tablet.png">
                                 <source media="(max-width: 1366px)" data-srcset="assets/images/main-slide-laptop.png">
                                 <img class="lazy banner__image" data-src="assets/images/main-slide-bg.png" alt="Слайд 2">
                             </picture>
@@ -60,7 +89,7 @@
                         <div class="swiper-slide">
                             <picture>
                                 <source media="(max-width: 450px)" data-srcset="assets/images/house-mobile.png">
-                                <source media="(max-width: 850px)" data-srcset="assets/images/house_tablet.png">
+                                <source media="(max-width: 900px)" data-srcset="assets/images/house_tablet.png">
                                 <source media="(max-width: 1366px)" data-srcset="assets/images/main-slide-laptop.png">
                                 <img class="lazy banner__image" data-src="assets/images/main-slide-bg.png" alt="Слайд 3">
                             </picture>

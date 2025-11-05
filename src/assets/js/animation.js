@@ -2,28 +2,35 @@ import { gsap } from 'gsap';
 
 export class BannerAnimation {
     constructor() {
-        // Проверяем, есть ли секция main-slider (главная страница)
+        // Сначала проверяем, главная ли это страница
         this.isMainPage = document.querySelector('.main-slider') !== null;
 
         // Если не главная страница - не создаем прелоадер и не запускаем анимацию
-        if (!this.isMainPage) return;
+        if (!this.isMainPage) {
+            // Скрываем прелоадер если это не главная страница
+            this.hidePreloaderImmediately();
+            return;
+        }
+
+        // Проверяем мобильное устройство ДО показа прелоадера
+        if (window.innerWidth <= 900) {
+            // На мобильных сразу скрываем прелоадер и выходим
+            this.hidePreloaderImmediately();
+            // Дальнейшая инициализация для мобильных
+            this.initForMobile();
+            return;
+        }
+
+        // Только для десктопных главных страниц показываем прелоадер
+        this.showPreloader();
 
         this.banner = document.querySelector('.banner');
+        this.preloader = document.getElementById('preloader');
 
-        // НА МОБИЛЬНЫХ УДАЛЯЕМ banner__lines ИЗ DOM СРАЗУ
-        if (window.innerWidth <= 900) {
-            const bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
-            if (bannerLines) {
-                bannerLines.remove();
-            }
-            this.bannerLines = null;
-            this.lines = [];
-            this.ball = null;
-        } else {
-            this.bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
-            this.lines = this.banner ? this.banner.querySelectorAll('.banner__lines .line') : [];
-            this.ball = this.banner ? this.banner.querySelector('.pulsing-ball') : null;
-        }
+        // Десктопная логика
+        this.bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
+        this.lines = this.banner ? this.banner.querySelectorAll('.banner__lines .line') : [];
+        this.ball = this.banner ? this.banner.querySelector('.pulsing-ball') : null;
 
         this.bannerImage = this.banner ? this.banner.querySelector('.banner__image') : null;
 
@@ -32,22 +39,13 @@ export class BannerAnimation {
             this.rectElements = this.findRectElements();
             this.pathElements = this.findPathElements();
 
-            // На мобильных не ищем линии
-            if (window.innerWidth > 900) {
-                this.specificLine = this.findSpecificLine();
-                this.secondLine = this.findSecondLine();
-                this.thirdLine = this.findThirdLine();
-                this.fourthLine = this.findFourthLine();
-                this.fifthLine = this.findFifthLine();
-                this.sixthLine = this.findSixthLine();
-            } else {
-                this.specificLine = null;
-                this.secondLine = null;
-                this.thirdLine = null;
-                this.fourthLine = null;
-                this.fifthLine = null;
-                this.sixthLine = null;
-            }
+            // На десктопе ищем все линии
+            this.specificLine = this.findSpecificLine();
+            this.secondLine = this.findSecondLine();
+            this.thirdLine = this.findThirdLine();
+            this.fourthLine = this.findFourthLine();
+            this.fifthLine = this.findFifthLine();
+            this.sixthLine = this.findSixthLine();
         } else {
             this.specialElements = [];
             this.rectElements = [];
@@ -65,25 +63,70 @@ export class BannerAnimation {
 
         this.initResizeHandler();
         this.initImageChangeHandler();
-        this.addPreloaderStyles();
-        this.createPreloader();
 
-        // на мобильных запускаем анимацию сразу
-        if (window.innerWidth <= 900) {
-            // Небольшая задержка для стабилизации DOM
-            setTimeout(() => {
-                this.animateMobileContent();
-            }, 500);
-        } else {
-            // Десктопная логика с прелоадером
-            if (this.lines.length > 0 && this.ball && this.specificLine && this.secondLine &&
-                this.thirdLine && this.fourthLine && this.fifthLine && this.sixthLine) {
-                window.addEventListener('load', () => {
-                    this.initWithPreloader();
-                });
-            }
+        // Десктопная логика с прелоадером
+        if (this.lines.length > 0 && this.ball && this.specificLine && this.secondLine &&
+            this.thirdLine && this.fourthLine && this.fifthLine && this.sixthLine) {
+            window.addEventListener('load', () => {
+                this.initWithPreloader();
+            });
         }
     }
+
+    initForMobile() {
+        this.banner = document.querySelector('.banner');
+
+        // На мобильных удаляем banner__lines
+        const bannerLines = this.banner ? this.banner.querySelector('.banner__lines') : null;
+        if (bannerLines) {
+            bannerLines.remove();
+        }
+
+        this.bannerLines = null;
+        this.lines = [];
+        this.ball = null;
+        this.bannerImage = this.banner ? this.banner.querySelector('.banner__image') : null;
+
+        this.specialElements = [];
+        this.rectElements = [];
+        this.pathElements = [];
+        this.specificLine = null;
+        this.secondLine = null;
+        this.thirdLine = null;
+        this.fourthLine = null;
+        this.fifthLine = null;
+        this.sixthLine = null;
+
+        this.animationEnabled = false;
+        this.mobileAnimationPlayed = false;
+
+        this.initResizeHandler();
+        this.initImageChangeHandler();
+
+        // Запускаем мобильную анимацию
+        setTimeout(() => {
+            this.animateMobileContent();
+        }, 500);
+    }
+
+    showPreloader() {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            preloader.style.display = 'flex';
+            preloader.style.opacity = '1';
+            preloader.style.visibility = 'visible';
+        }
+    }
+
+    hidePreloaderImmediately() {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            preloader.style.display = 'none';
+            preloader.style.opacity = '0';
+            preloader.style.visibility = 'hidden';
+        }
+    }
+
     initMobileAnimations() {
         // Полностью сбрасываем все предыдущие анимации
         gsap.killTweensOf('.main-slider__content, .main-slider__title, .main-slider__info, .main-slider__link, .bestsellers__title');
@@ -111,13 +154,11 @@ export class BannerAnimation {
         }
     }
 
-
     animateMobileContent() {
         if (window.innerWidth > 900) return;
         if (this.mobileAnimationPlayed) return;
 
         this.mobileAnimationPlayed = true;
-
 
         const activeSlide = document.querySelector('.swiper-slide-active');
         if (activeSlide && activeSlide.classList.contains('main-animation')) {
@@ -132,38 +173,9 @@ export class BannerAnimation {
             }
         }
 
-        // Анимация заголовка бестселлеров
-        const bestsellersTitle = document.querySelector('.bestsellers__title');
-        if (bestsellersTitle) {
-            bestsellersTitle.classList.add('bestsellers__title--animated');
-
-            gsap.fromTo(bestsellersTitle,
-                { y: 40, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.8, delay: 0.5, ease: "power2.out" }
-            );
-        }
     }
 
-    // Анимация заголовка хитов продаж (только для десктопа)
-    animateBestsellersTitle() {
-        // НА МОБИЛЬНЫХ НЕ ЗАПУСКАЕМ - она уже запускается в animateMobileContent
-        if (window.innerWidth <= 900) return;
 
-        const bestsellersTitle = document.querySelector('.bestsellers__title');
-        if (bestsellersTitle && !bestsellersTitle.classList.contains('bestsellers__title--animated')) {
-            bestsellersTitle.classList.add('bestsellers__title--animated');
-
-            gsap.to(bestsellersTitle, {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                delay: 0.5,
-                ease: "power2.out"
-            });
-        }
-    }
-
-// Анимация контента слайда
     // Анимация контента слайда
     animateSlideContent() {
         const activeSlide = document.querySelector('.swiper-slide-active');
@@ -193,8 +205,6 @@ export class BannerAnimation {
             ease: "power2.out"
         });
 
-        // Анимация заголовка бестселлеров
-        this.animateBestsellersTitle();
 
         // Анимация внутренних элементов контента
         const title = content.querySelector('.main-slider__title');
@@ -360,17 +370,14 @@ export class BannerAnimation {
 
     // Метод для инициализации обработчика ресайза
     initResizeHandler() {
-
         setTimeout(() => {
             this.handleResize();
         }, 100);
-
 
         this.resizeTimeout = null;
         window.addEventListener('resize', () => {
             clearTimeout(this.resizeTimeout);
             this.resizeTimeout = setTimeout(() => {
-
                 setTimeout(() => {
                     this.handleResize();
                 }, 150);
@@ -391,10 +398,8 @@ export class BannerAnimation {
             });
         }
 
-
         const picture = this.bannerImage.closest('picture');
         if (picture) {
-
             this.resizeObserver = new ResizeObserver((entries) => {
                 for (let entry of entries) {
                     if (entry.target === this.bannerImage) {
@@ -407,7 +412,6 @@ export class BannerAnimation {
 
             this.resizeObserver.observe(this.bannerImage);
         }
-
 
         this.mediaQueryList = window.matchMedia('(max-width: 1366px)');
         this.mediaQueryList.addListener(() => {
@@ -441,9 +445,8 @@ export class BannerAnimation {
             this.enableAnimation();
             this.mobileAnimationPlayed = false;
 
-            // Если перешли на десктоп, но banner__lines был удален - перезагружаем страницу
+            // Если перешли на десктоп, но banner__lines был удален - выходим
             if (!this.bannerLines) {
-                location.reload();
                 return;
             }
         }
@@ -469,28 +472,46 @@ export class BannerAnimation {
             let scale, rightOffset;
 
             // Логика для меньших разрешений
-            if (windowWidth <= 1100) {
+            if (windowWidth <= 950) {
+                const scaleX = bannerWidth / originalSvgWidth;
+                const scaleY = bannerHeight / originalSvgHeight;
+                scale = Math.min(scaleX, scaleY) * 0.94;
+                rightOffset = -41;
+            }
+            else if (windowWidth <= 1100) {
+                const scaleX = bannerWidth / originalSvgWidth;
+                const scaleY = bannerHeight / originalSvgHeight;
+                scale = Math.min(scaleX, scaleY) * 0.94;
+                rightOffset = -47;
+            }
+            else if (windowWidth <= 1200) {
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.95;
-                rightOffset = -45;
+                rightOffset = -59;
             }
             else if (windowWidth <= 1300) {
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.95;
-                rightOffset = -55;
+                rightOffset = -65;
             } else if (windowWidth <= 1366) {
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.95;
-                rightOffset = -60;
-            } else if (windowWidth <= 2000) {
+                rightOffset = -67;
+            } else if (windowWidth <= 1700) {
                 // Для разрешений с 1367 до 1920 - масштаб 0.99
                 const scaleX = bannerWidth / originalSvgWidth;
                 const scaleY = bannerHeight / originalSvgHeight;
                 scale = Math.min(scaleX, scaleY) * 0.99;
-                rightOffset = 20;
+                rightOffset = 12;
+            } else if (windowWidth <= 1920) {
+                // Для разрешений с 1367 до 1920 - масштаб 0.99
+                const scaleX = bannerWidth / originalSvgWidth;
+                const scaleY = bannerHeight / originalSvgHeight;
+                scale = Math.min(scaleX, scaleY) * 0.99;
+                rightOffset = 14;
             } else {
                 // Для разрешений больше 1920 - масштаб 1
                 const scaleX = bannerWidth / originalSvgWidth;
@@ -526,6 +547,7 @@ export class BannerAnimation {
             }
         }, 50);
     }
+
     animateSliderText() {
         // Анимируем текст только в активном слайде
         const activeSlide = document.querySelector('.swiper-slide-active');
@@ -561,50 +583,55 @@ export class BannerAnimation {
         });
     }
 
-
     startAnimation() {
-
         if (window.innerWidth <= 900) {
             return;
         }
 
-        // Анимация линий
-        const lineAnimation = gsap.to(this.lines, {
-            strokeDashoffset: 0,
-            duration: 2,
-            stagger: {
-                each: 0.3,
-                from: "start"
-            },
-            ease: "power2.out",
-            onComplete: () => {
-                gsap.to(this.pathElements, {
-                    opacity: 1,
-                    duration: 1.0,
-                    stagger: 0.08,
-                    ease: "power2.out"
-                });
-            }
-        });
+        // ПОКАЗЫВАЕМ ЛИНИИ ПЕРЕД НАЧАЛОМ АНИМАЦИИ
+        if (this.bannerLines) {
+            this.bannerLines.style.opacity = '1';
+            this.bannerLines.style.visibility = 'visible';
+        }
 
-        gsap.to(this.rectElements, {
-            opacity: 1,
-            duration: 1.0,
-            stagger: 0.1,
-            ease: "power2.out",
-            delay: 3.0,
-            onComplete: () => {
-                if (this.ball && this.specificLine && this.secondLine && this.thirdLine &&
-                    this.fourthLine && this.fifthLine && this.sixthLine) {
-                    this.animateBall();
+        // Даем небольшой timeout чтобы браузер успел отрендерить элемент
+        setTimeout(() => {
+            // Анимация линий
+            const lineAnimation = gsap.to(this.lines, {
+                strokeDashoffset: 0,
+                duration: 2,
+                stagger: {
+                    each: 0.3,
+                    from: "start"
+                },
+                ease: "power2.out",
+                onComplete: () => {
+                    gsap.to(this.pathElements, {
+                        opacity: 1,
+                        duration: 1.0,
+                        stagger: 0.08,
+                        ease: "power2.out"
+                    });
                 }
-            }
-        });
+            });
 
+            gsap.to(this.rectElements, {
+                opacity: 1,
+                duration: 1.0,
+                stagger: 0.1,
+                ease: "power2.out",
+                delay: 3.0,
+                onComplete: () => {
+                    if (this.ball && this.specificLine && this.secondLine && this.thirdLine &&
+                        this.fourthLine && this.fifthLine && this.sixthLine) {
+                        this.animateBall();
+                    }
+                }
+            });
 
-        this.animateSlideContent();
+            this.animateSlideContent();
+        }, 50);
     }
-
 
     disableAnimation() {
         if (!this.animationEnabled) return;
@@ -618,7 +645,6 @@ export class BannerAnimation {
         gsap.globalTimeline.clear();
     }
 
-
     enableAnimation() {
         if (this.animationEnabled) return;
 
@@ -628,216 +654,6 @@ export class BannerAnimation {
         if (this.bannerLines) {
             this.bannerLines.style.display = 'block';
         }
-    }
-
-    addPreloaderStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
-    .banner__lines {
-        opacity: 0;
-        visibility: hidden;
-        position: absolute;
-        top: 0;
-        right: 0;
-        pointer-events: none;
-        z-index: 2;
-    }
-    .banner__lines--visible {
-        opacity: 1;
-        visibility: visible;
-    }
-    .banner {
-        position: relative;
-        width: 100%;
-        overflow: hidden;
-    }
-    .banner__image {
-        width: 100%;
-        height: auto;
-        display: block;
-        transition: opacity 0.3s ease;
-    }
-    .main-animation {
-        position: relative;
-    }
-    picture {
-        display: block;
-        width: 100%;
-    }
-    
-  
-    .main-slider__content {
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(30px);
-    }
-    
-  
-    .main-slider__content--animated {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-
-
-    .bestsellers__title {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    
-    .bestsellers__title--animated {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    
-    
-    @media (max-width: 900px) {
-        .banner__lines {
-            display: none !important;
-        }
-    }
-    
-    @media (max-width: 1366px) {
-        .banner__lines {
-            right: 10px;
-        }
-    }
-`;
-        document.head.appendChild(style);
-    }
-    createPreloader() {
-        // На мобильных устройствах не создаем прелоадер
-        if (window.innerWidth <= 900) {
-            return; // Просто выходим, ничего не создаем
-        }
-
-        // Создаем прелоадер только для десктопа
-        this.preloader = document.createElement('div');
-        this.preloader.className = 'preloader';
-        this.preloader.innerHTML = `
-        <div class="preloader__content">
-            <div class="preloader__icon">
-                <svg width="18" height="40" viewBox="0 0 18 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10.6471 0V16.6185H17.2352L7.41075 39.9997V23.2599H0.764771L10.6471 0Z" fill="#F99A1C"></path>
-                    <g filter="url(#filter0_i_150_6133)">
-                        <path d="M10.6466 16.6187H17.2348L7.41028 39.9998V23.26L10.6466 16.6187Z" fill="#F07000"></path>
-                    </g>
-                    <defs>
-                        <filter id="filter0_i_150_6133" x="7.41028" y="16.6187" width="9.82449" height="24.5576" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                            <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
-                            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
-                            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feFlood>
-                            <feOffset dy="1.17646"></feOffset>
-                            <feGaussianBlur stdDeviation="1.76469"></feGaussianBlur>
-                            <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"></feComposite>
-                            <feColorMatrix type="matrix" values="0 0 0 0 0.735577 0 0 0 0 0.196154 0 0 0 0 0 0 0 0 1 0"></feColorMatrix>
-                            <feBlend mode="normal" in2="shape" result="effect1_innerShadow_150_6133"></feBlend>
-                        </filter>
-                    </defs>
-                </svg>
-            </div>
-            <div class="preloader__circle">
-                <svg class="preloader__circle-svg" viewBox="0 0 100 100">
-                    <circle class="preloader__circle-bg" cx="50" cy="50" r="45"/>
-                    <circle class="preloader__circle-progress" cx="50" cy="50" r="45"/>
-                </svg>
-            </div>
-        </div>
-    `;
-
-        // Создаем стили для прелоадера
-        const preloaderStyle = document.createElement('style');
-        preloaderStyle.textContent = `
-        .preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0F162B;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            opacity: 1;
-            transition: opacity 0.5s ease;
-        }
-
-        .preloader__content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
-            position: relative;
-        }
-
-        .preloader__icon {
-            animation: pulse 1.5s ease-in-out infinite;
-            z-index: 2;
-            position: relative;
-        }
-
-        .preloader__circle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-        }
-
-        .preloader__circle-svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-
-        .preloader__circle-bg {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 3;
-        }
-
-        .preloader__circle-progress {
-            fill: none;
-            stroke: #F99A1C;
-            stroke-width: 3;
-            stroke-linecap: round;
-            stroke-dasharray: 283;
-            stroke-dashoffset: 283;
-            transition: stroke-dashoffset 0.3s ease;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.1);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .preloader--hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Скрываем прелоадер на мобильных устройствах */
-        @media (max-width: 900px) {
-            .preloader {
-                display: none;
-            }
-        }
-    `;
-
-        document.head.appendChild(preloaderStyle);
-        document.body.appendChild(this.preloader);
     }
 
     initWithPreloader() {
@@ -863,8 +679,8 @@ export class BannerAnimation {
             }
         });
     }
-    hidePreloader() {
 
+    hidePreloader() {
         if (window.innerWidth <= 900) {
             return;
         }
@@ -877,11 +693,14 @@ export class BannerAnimation {
             onComplete: () => {
                 this.preloader.classList.add('preloader--hidden');
 
+                // Полностью скрываем прелоадер после анимации
+                setTimeout(() => {
+                    this.preloader.style.display = 'none';
+                }, 500);
 
                 if (this.bannerLines) {
                     this.bannerLines.classList.add('banner__lines--visible');
                 }
-
 
                 this.init();
             }
@@ -889,7 +708,6 @@ export class BannerAnimation {
     }
 
     init() {
-
         if (window.innerWidth <= 900) {
             return;
         }
@@ -899,18 +717,15 @@ export class BannerAnimation {
     }
 
     setupAnimation() {
-
         if (window.innerWidth <= 900) {
             return;
         }
-
 
         this.specialElements.forEach(element => {
             gsap.set(element, {
                 opacity: 0
             });
         });
-
 
         this.lines.forEach(line => {
             const length = line.getTotalLength();
@@ -937,11 +752,7 @@ export class BannerAnimation {
         }
     }
 
-
-
-
     animateBall() {
-
         if (window.innerWidth <= 900) {
             return;
         }
@@ -957,7 +768,6 @@ export class BannerAnimation {
             duration: 0.1,
             ease: "power2.out",
             onComplete: () => {
-
                 gsap.to(this.ball, {
                     attr: {
                         cx: startPoint.x,
@@ -1279,7 +1089,6 @@ export class BannerAnimation {
             }
         });
     }
-
 
     destroy() {
         window.removeEventListener('resize', this.handleResize.bind(this));

@@ -9,7 +9,6 @@ export class ScrollAnimations {
     }
 
     init() {
-
         if (!this.isMainPage()) {
             return;
         }
@@ -23,43 +22,66 @@ export class ScrollAnimations {
         }
     }
 
-
     isMainPage() {
         return document.querySelector('main.main-page') !== null;
     }
 
     setupAnimations() {
-
         if (!this.isMainPage()) {
             return;
         }
-
 
         if (typeof ScrollTrigger === 'undefined') {
             return;
         }
 
-        // Анимация появления элементов при скролле
+
+        this.animateVisibleElementsImmediately();
+
+
         this.animateOnScroll();
-
-        // Анимация для секции "Хиты продаж"
         this.animateBestsellersSection();
-
-        // Анимация для секции "Преимущества"
         this.animateAdvantagesSection();
-
-        // Анимация для секции "Партнеры"
         this.animatePartnersSection();
-
-        // Анимация для секции "Новости"
         this.animateNewsSection();
-
-        // Анимация для секции "Форма"
         this.animateFormSection();
 
         setTimeout(() => {
             ScrollTrigger.refresh();
         }, 500);
+    }
+
+    // Метод для проверки видимости элемента
+    isElementInViewport(element) {
+        if (!element) return false;
+
+        const rect = element.getBoundingClientRect();
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+        return (
+            rect.top >= 0 &&
+            rect.bottom <= windowHeight
+        );
+    }
+
+    // Анимация сразу видимых элементов при загрузке
+    animateVisibleElementsImmediately() {
+
+        const bestsellersTitle = document.querySelector('.bestsellers__title');
+        if (bestsellersTitle &&
+            !bestsellersTitle.classList.contains('bestsellers__title--animated') &&
+            this.isElementInViewport(bestsellersTitle)) {
+
+            gsap.to(bestsellersTitle, {
+                y: 0,
+                opacity: 1,
+                duration: 1.0,
+                ease: "power2.out",
+                onComplete: () => {
+                    bestsellersTitle.classList.add('bestsellers__title--animated');
+                }
+            });
+        }
     }
 
     // Анимация для секции "Хиты продаж"
@@ -69,35 +91,65 @@ export class ScrollAnimations {
             return;
         }
 
-
-        // Анимация табов
-        gsap.fromTo(bestsellersTabs, {
-            y: 120,
-            opacity: 0
-        }, {
-            y: 0,
-            opacity: 1,
-            duration: 0.3,
-            ease: "power3.out",
-            scrollTrigger: {
-                trigger: bestsellersTabs,
-                start: "top 85%",
-                end: "bottom 15%",
-                toggleActions: "play none none none",
-                markers: false
-            }
-        });
-
-        // Анимация заголовка
+        // Анимация заголовка (если еще не анимирован)
         const title = document.querySelector('.bestsellers__title');
-        if (title) {
-            gsap.fromTo(title, {
-                y: 60,
+        if (title && !title.classList.contains('bestsellers__title--animated')) {
+            const isMobile = window.innerWidth <= 900;
+
+            gsap.to(title, {
+                y: 0,
+                opacity: 1,
+                duration: isMobile ? 0.8 : 1.0,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: bestsellersTabs,
+                    start: "top 90%",
+                    end: "bottom 10%",
+                    toggleActions: "play none none none",
+                    onEnter: () => {
+                        title.classList.add('bestsellers__title--animated');
+                    },
+                    onEnterBack: () => {
+                        title.classList.add('bestsellers__title--animated');
+                    }
+                }
+            });
+        }
+
+        // Анимация контента (табов и карточек) с задержкой
+        const bestsellersContent = document.querySelector('.bestsellers__content');
+        if (bestsellersContent) {
+            const isMobile = window.innerWidth <= 900;
+
+            gsap.to(bestsellersContent, {
+                y: 0,
+                opacity: 1,
+                duration: 1.0,
+                delay: isMobile ? 0.4 : 0.2,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: bestsellersTabs,
+                    start: "top 85%",
+                    end: "bottom 15%",
+                    toggleActions: "play none none none"
+                }
+            });
+        }
+
+        // Анимация отдельных карточек товаров с дополнительной задержкой
+        const productCards = document.querySelectorAll('.bestsellers .product-card, .bestsellers .card');
+        if (productCards.length > 0) {
+            const isMobile = window.innerWidth <= 900;
+
+            gsap.fromTo(productCards, {
+                y: 30,
                 opacity: 0
             }, {
                 y: 0,
                 opacity: 1,
-                duration: 1.0,
+                duration: 0.8,
+                delay: isMobile ? 0.6 : 0.4,
+                stagger: 0.1,
                 ease: "power2.out",
                 scrollTrigger: {
                     trigger: bestsellersTabs,
@@ -115,7 +167,6 @@ export class ScrollAnimations {
         if (!advantagesSection) {
             return;
         }
-
 
         // Анимация заголовка
         const title = advantagesSection.querySelector('h2.animate-title');
@@ -207,7 +258,6 @@ export class ScrollAnimations {
             return;
         }
 
-
         // Анимация заголовка
         const title = partnersSection.querySelector('h2.animate-title');
         if (title) {
@@ -258,10 +308,10 @@ export class ScrollAnimations {
             return;
         }
 
-
-        // Анимация заголовка
-        const title = newsSection.querySelector('.main-news__title.animate-title');
+        const title = newsSection.querySelector('.main-news__title');
         if (title) {
+            title.classList.remove('animate-title');
+
             gsap.fromTo(title, {
                 y: 80,
                 opacity: 0
@@ -269,7 +319,7 @@ export class ScrollAnimations {
                 y: 0,
                 opacity: 1,
                 duration: 1.0,
-                ease: "power2.out",
+                ease: "none",
                 scrollTrigger: {
                     trigger: newsSection,
                     start: "top 80%",
@@ -285,14 +335,14 @@ export class ScrollAnimations {
             gsap.fromTo(newsSlides, {
                 y: 60,
                 opacity: 0,
-                scale: 0.3
+                scale: 0.95
             }, {
                 y: 0,
                 opacity: 1,
                 scale: 1,
                 duration: 1.0,
-                stagger: 0.1,
-                ease: "power2.out",
+                stagger: 0.15,
+                ease: "none",
                 scrollTrigger: {
                     trigger: newsSection,
                     start: "top 70%",
@@ -312,7 +362,7 @@ export class ScrollAnimations {
                 opacity: 1,
                 duration: 0.8,
                 delay: 0.3,
-                ease: "power2.out",
+                ease: "none",
                 scrollTrigger: {
                     trigger: newsSection,
                     start: "top 70%",
@@ -329,7 +379,6 @@ export class ScrollAnimations {
         if (!formSection) {
             return;
         }
-
 
         // Анимация левой части
         const leftContent = formSection.querySelector('.animate-left');
@@ -414,28 +463,6 @@ export class ScrollAnimations {
             });
         }
 
-        // Анимация полей формы
-        const formFields = formSection.querySelectorAll('input, textarea');
-        if (formFields.length > 0) {
-            gsap.fromTo(formFields, {
-                y: 30,
-                opacity: 0
-            }, {
-                y: 0,
-                opacity: 1,
-                duration: 0.6,
-                stagger: 0.05,
-                delay: 0.6,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: formSection,
-                    start: "top 80%",
-                    end: "bottom 20%",
-                    toggleActions: "play none none none"
-                }
-            });
-        }
-
         // Анимация кнопки
         const button = formSection.querySelector('.animate-button');
         if (button) {
@@ -464,15 +491,19 @@ export class ScrollAnimations {
         return element.closest('.main-slider') !== null;
     }
 
+    // Проверка, является ли элемент input или textarea
+    isFormElement(element) {
+        return element.tagName === 'INPUT' || element.tagName === 'TEXTAREA';
+    }
+
     // Анимация появления элементов при скролле
     animateOnScroll() {
         // Анимация для заголовков
-         gsap.utils.toArray('.animate-title').forEach(title => {
+        gsap.utils.toArray('.animate-title').forEach(title => {
             if (!title || !title.isConnected) return;
-            if (this.isInMainSlider(title)) {
+            if (this.isInMainSlider(title) || this.isFormElement(title)) {
                 return;
             }
-
 
             gsap.fromTo(title, {
                 y: 80,
@@ -495,10 +526,9 @@ export class ScrollAnimations {
         // Анимация для текста
         gsap.utils.toArray('.animate-text').forEach(text => {
             if (!text || !text.isConnected) return;
-            if (this.isInMainSlider(text)) {
+            if (this.isInMainSlider(text) || this.isFormElement(text)) {
                 return;
             }
-
 
             gsap.fromTo(text, {
                 y: 50,
@@ -520,10 +550,9 @@ export class ScrollAnimations {
         // Анимация для изображений
         gsap.utils.toArray('.animate-image').forEach(image => {
             if (!image || !image.isConnected) return;
-            if (this.isInMainSlider(image)) {
+            if (this.isInMainSlider(image) || this.isFormElement(image)) {
                 return;
             }
-
 
             gsap.fromTo(image, {
                 scale: 0.95,
@@ -550,26 +579,31 @@ export class ScrollAnimations {
             }
 
             const cards = container.querySelectorAll('.card, .service-item, .product-card');
+            // Исключаем инпуты из анимации карточек
+            const filteredCards = Array.from(cards).filter(card =>
+                !card.querySelector('input') && !card.querySelector('textarea')
+            );
 
-
-            gsap.fromTo(cards, {
-                y: 60,
-                opacity: 0,
-                scale: 0.1
-            }, {
-                y: 0,
-                opacity: 1,
-                scale: 1,
-                duration: 1.0,
-                stagger: 0.1,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: container,
-                    start: "top 80%",
-                    end: "bottom 20%",
-                    toggleActions: "play none none none"
-                }
-            });
+            if (filteredCards.length > 0) {
+                gsap.fromTo(filteredCards, {
+                    y: 60,
+                    opacity: 0,
+                    scale: 0.1
+                }, {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    duration: 1.0,
+                    stagger: 0.1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: container,
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none none"
+                    }
+                });
+            }
         });
 
         // Анимация для списков
@@ -580,24 +614,29 @@ export class ScrollAnimations {
             }
 
             const items = list.querySelectorAll('li, .list-item');
+            // Исключаем инпуты из анимации списков
+            const filteredItems = Array.from(items).filter(item =>
+                !item.querySelector('input') && !item.querySelector('textarea')
+            );
 
-
-            gsap.fromTo(items, {
-                x: -50,
-                opacity: 0
-            }, {
-                x: 0,
-                opacity: 1,
-                duration: 0.8,
-                stagger: 0.08,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: list,
-                    start: "top 85%",
-                    end: "bottom 15%",
-                    toggleActions: "play none none none"
-                }
-            });
+            if (filteredItems.length > 0) {
+                gsap.fromTo(filteredItems, {
+                    x: -50,
+                    opacity: 0
+                }, {
+                    x: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    stagger: 0.08,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: list,
+                        start: "top 85%",
+                        end: "bottom 15%",
+                        toggleActions: "play none none none"
+                    }
+                });
+            }
         });
 
         const mainSlider = document.querySelector('.main-slider');
@@ -617,7 +656,6 @@ export class ScrollAnimations {
                 });
             });
         }
-
     }
 
     refresh() {

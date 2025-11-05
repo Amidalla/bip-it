@@ -12,10 +12,6 @@ export function InitModals() {
     const feedbackBtns = document.querySelectorAll(".feedback-btn");
     const feedbackCloseBtn = document.querySelector(".feedback-form__close");
 
-    const placedModal = document.querySelector(".modal-placed");
-    const placedBtns = document.querySelectorAll(".checkout-button.active");
-    const placedCloseBtn = document.querySelector(".modal-placed__close");
-
     const vacancyModal = document.querySelector(".vacancy-form");
     const vacancyItemBtns = document.querySelectorAll(".vacancy-item__link");
     const vacancyLinkBtns = document.querySelectorAll(".vacancy__link");
@@ -27,11 +23,51 @@ export function InitModals() {
     const buyMarketplaceBtns = document.querySelectorAll(".buy-marketplace");
     const marketplaceCloseBtn = document.querySelector(".modal-marketplace__close");
 
+    const addedCartModal = document.querySelector(".added-cart");
+    const purchaseBtns = document.querySelectorAll(".purchase__btn");
+    const addedCartCloseBtn = document.querySelector(".added-cart__close");
+
     const modalFilter = document.querySelector(".modal-filter");
     const filterButtons = document.querySelectorAll(".filter-mobile__btn");
     const filterCloseButtons = document.querySelectorAll(".modal-filter__close");
+    const filterBtnClose = document.querySelectorAll(".modal-filter__btnClose");
 
     const overlay = document.querySelector(".overlay");
+    const menuFixed = document.querySelector(".menu_fixed"); // Добавляем элемент menu_fixed
+
+    // Функция для обновления состояния fixed класса у catalog-modal
+    function updateCatalogModalFixedState() {
+        if (!catalogModal) return;
+
+        if (menuFixed?.classList.contains("show")) {
+            catalogModal.classList.add("fixed");
+        } else {
+            catalogModal.classList.remove("fixed");
+        }
+    }
+
+    // Наблюдатель за изменениями класса menu_fixed
+    function initFixedMenuObserver() {
+        if (!menuFixed || !catalogModal) return;
+
+        // Инициализируем начальное состояние
+        updateCatalogModalFixedState();
+
+        // Создаем наблюдатель за изменениями атрибутов
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    updateCatalogModalFixedState();
+                }
+            });
+        });
+
+        // Начинаем наблюдение за изменениями класса
+        observer.observe(menuFixed, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    }
 
     function loadCatalogImages() {
         const imgs = catalogModal?.querySelectorAll(".lazy");
@@ -54,46 +90,19 @@ export function InitModals() {
 
         if (!categoryItems || !subcategoryGroups || !catalogImage || !imageSection) return;
 
-
         function isMobileView() {
-            return window.innerWidth <= 1300;
+            return window.innerWidth <= 1200;
         }
 
         function isSmallMobileView() {
             return window.innerWidth <= 760;
         }
 
-
-        function toggleImageVisibility(showImage) {
-            if (window.innerWidth > 1300) {
-
-                imageSection.style.display = 'block';
-                return;
-            }
-
-
-            if (showImage) {
-                if (isSmallMobileView()) {
-                    imageSection.classList.add('mobile-visible');
-                } else {
-                    imageSection.style.display = 'block';
-                }
-            } else {
-                if (isSmallMobileView()) {
-                    imageSection.classList.remove('mobile-visible');
-                } else {
-                    imageSection.style.display = 'block';
-                }
-            }
-        }
-
         function toggleImageVisibility(showImage) {
             if (!isMobileView()) {
-
                 imageSection.style.display = 'block';
                 return;
             }
-
 
             if (showImage) {
                 imageSection.classList.add('mobile-visible');
@@ -101,7 +110,6 @@ export function InitModals() {
                 imageSection.classList.remove('mobile-visible');
             }
         }
-
 
         catalogClose?.addEventListener('click', function(e) {
             e.preventDefault();
@@ -118,8 +126,6 @@ export function InitModals() {
 
             categoriesSection?.classList.add('mobile-hidden');
             subcategoriesSection?.classList.add('mobile-active');
-
-
             toggleImageVisibility(true);
 
             subcategoryGroups.forEach(group => group.classList.remove('active'));
@@ -134,8 +140,6 @@ export function InitModals() {
 
             categoriesSection?.classList.remove('mobile-hidden');
             subcategoriesSection?.classList.remove('mobile-active');
-
-
             toggleImageVisibility(false);
 
             if (activeCategoryItem) {
@@ -148,10 +152,16 @@ export function InitModals() {
             button.addEventListener('click', hideMobileSubcategories);
         });
 
+        const firstImg = isSmallMobileView() ? categoryItems[0].dataset.imageMob : categoryItems[0].dataset.image;
+
+        if (firstImg) {
+            catalogImage.src = firstImg;
+        }
+
         categoryItems.forEach(item => {
             item.addEventListener('click', function() {
                 const categoryId = this.dataset.category;
-                const imageSrc = this.dataset.image;
+                const imageSrc = isSmallMobileView() ? this.dataset.imageMob : this.dataset.image;
                 const imageAlt = this.textContent.trim();
 
                 categoryItems.forEach(cat => cat.classList.remove('active'));
@@ -160,17 +170,13 @@ export function InitModals() {
                 activeCategoryItem = this;
 
                 if (isMobileView()) {
-
                     showMobileSubcategories(this);
                 } else {
-
                     subcategoryGroups.forEach(group => group.classList.remove('active'));
                     const targetGroup = catalogModal?.querySelector(`.subcategory-group[data-category="${categoryId}"]`);
                     if (targetGroup) {
                         targetGroup.classList.add('active');
                     }
-
-
                     toggleImageVisibility(true);
                 }
 
@@ -180,20 +186,19 @@ export function InitModals() {
                     if (catalogImage.classList.contains('lazy')) {
                         catalogImage.dataset.src = imageSrc;
                     }
+                    catalogImage.style.display = 'inline';
+                } else {
+                    catalogImage.style.display = 'none';
                 }
             });
         });
 
-
         window.addEventListener('resize', function() {
             if (window.innerWidth > 1300) {
-
                 categoriesSection?.classList.remove('mobile-hidden');
                 subcategoriesSection?.classList.remove('mobile-active');
-
                 toggleImageVisibility(true);
             } else if (window.innerWidth <= 760) {
-
                 if (subcategoriesSection?.classList.contains('mobile-active')) {
                     toggleImageVisibility(true);
                 } else {
@@ -202,12 +207,11 @@ export function InitModals() {
             }
         });
 
-
-
         if (isMobileView()) {
             toggleImageVisibility(false);
         }
     }
+
     function initFilterToggles() {
         const allFilterHeaders = document.querySelectorAll(`
             .filter-variants__header,
@@ -258,18 +262,20 @@ export function InitModals() {
             if (item.classList.contains('collapsed')) {
                 item.classList.remove('collapsed');
                 item.classList.add('expanded');
-
-                content.style.display = 'block';
-                content.style.visibility = 'visible';
-                content.style.opacity = '1';
-                content.style.height = 'auto';
-                content.style.maxHeight = 'none';
-                content.style.overflow = 'visible';
+                if (content) {
+                    content.style.display = 'block';
+                    content.style.visibility = 'visible';
+                    content.style.opacity = '1';
+                    content.style.height = 'auto';
+                    content.style.maxHeight = 'none';
+                    content.style.overflow = 'visible';
+                }
             } else {
                 item.classList.remove('expanded');
                 item.classList.add('collapsed');
-
-                content.style.display = 'none';
+                if (content) {
+                    content.style.display = 'none';
+                }
             }
         } else if (header.classList.contains('price-filter__legend')) {
             const priceFilter = header.closest('.price-filter');
@@ -279,22 +285,26 @@ export function InitModals() {
                 priceFilter.classList.remove('collapsed');
                 priceFilter.classList.add('expanded');
 
-                content.style.display = 'block';
-                content.style.visibility = 'visible';
-                content.style.opacity = '1';
-                content.style.height = 'auto';
-                content.style.maxHeight = 'none';
-                content.style.overflow = 'visible';
+                if (content) {
+                    content.style.display = 'block';
+                    content.style.visibility = 'visible';
+                    content.style.opacity = '1';
+                    content.style.height = 'auto';
+                    content.style.maxHeight = 'none';
+                    content.style.overflow = 'visible';
+                }
             } else {
                 priceFilter.classList.remove('expanded');
                 priceFilter.classList.add('collapsed');
 
-                content.style.display = 'none';
+                if (content) {
+                    content.style.display = 'none';
+                }
             }
         }
     }
 
-    function initPriceFilter() {
+    function initModalPriceFilter() {
         const minPriceInput = document.getElementById('min-price-modal');
         const maxPriceInput = document.getElementById('max-price-modal');
         const minSlider = document.getElementById('min-slider-2');
@@ -351,43 +361,113 @@ export function InitModals() {
             setToggleAccessible(maxSlider);
         });
 
+        // Обработчики для полей ввода
         minPriceInput.addEventListener("input", function() {
-            minVal = parseInt(minPriceInput.value) || 0;
-            if (minVal < parseInt(minSlider.min)) minVal = parseInt(minSlider.min);
-            if (minVal > parseInt(minSlider.max)) minVal = parseInt(minSlider.max);
-            if (minVal > maxVal) minVal = maxVal;
+            let value = this.value.replace(/\D/g, '');
+            if (value === '') {
+                value = minSlider.min;
+            }
+
+            value = parseInt(value);
+            const minLimit = parseInt(minSlider.min);
+            const maxLimit = parseInt(minSlider.max);
+
+            if (value < minLimit) value = minLimit;
+            if (value > maxLimit) value = maxLimit;
+            if (value > maxVal) value = maxVal;
+
+            minVal = value;
+            this.value = minVal;
             minSlider.value = minVal;
-            updatePriceInputs();
+            fillSlider();
+            setToggleAccessible(minSlider);
         });
 
         maxPriceInput.addEventListener("input", function() {
-            maxVal = parseInt(maxPriceInput.value) || 0;
-            if (maxVal < parseInt(maxSlider.min)) maxVal = parseInt(maxSlider.min);
-            if (maxVal > parseInt(maxSlider.max)) maxVal = parseInt(maxSlider.max);
-            if (maxVal < minVal) maxVal = minVal;
+            let value = this.value.replace(/\D/g, '');
+            if (value === '') {
+                value = maxSlider.min;
+            }
+
+            value = parseInt(value);
+            const minLimit = parseInt(maxSlider.min);
+            const maxLimit = parseInt(maxSlider.max);
+
+            if (value < minLimit) value = minLimit;
+            if (value > maxLimit) value = maxLimit;
+            if (value < minVal) value = minVal;
+
+            maxVal = value;
+            this.value = maxVal;
             maxSlider.value = maxVal;
-            updatePriceInputs();
+            fillSlider();
+            setToggleAccessible(maxSlider);
         });
 
+        // Обработчики для потери фокуса
+        minPriceInput.addEventListener("blur", function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value === '') {
+                value = minSlider.min;
+            }
+
+            value = parseInt(value);
+            const minLimit = parseInt(minSlider.min);
+            const maxLimit = parseInt(minSlider.max);
+
+            if (value < minLimit) value = minLimit;
+            if (value > maxLimit) value = maxLimit;
+            if (value > maxVal) value = maxVal;
+
+            minVal = value;
+            this.value = minVal;
+            minSlider.value = minVal;
+            fillSlider();
+            setToggleAccessible(minSlider);
+        });
+
+        maxPriceInput.addEventListener("blur", function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value === '') {
+                value = maxSlider.min;
+            }
+
+            value = parseInt(value);
+            const minLimit = parseInt(maxSlider.min);
+            const maxLimit = parseInt(maxSlider.max);
+
+            if (value < minLimit) value = minLimit;
+            if (value > maxLimit) value = maxLimit;
+            if (value < minVal) value = minVal;
+
+            maxVal = value;
+            this.value = maxVal;
+            maxSlider.value = maxVal;
+            fillSlider();
+            setToggleAccessible(maxSlider);
+        });
+
+        // Инициализация начальных значений
+        updatePriceInputs();
         fillSlider();
         setToggleAccessible(maxSlider);
     }
 
+    // ПЕРЕМЕЩЕНА ФУНКЦИЯ ВНУТРЬ InitModals
     function initModalFilter() {
         initFilterToggles();
-        initPriceFilter();
+        initModalPriceFilter();
     }
 
     function openModal(modalElement) {
-        [catalogModal, mobileMenu, feedbackModal, placedModal, vacancyModal, marketplaceModal].forEach(m => {
+        [catalogModal, mobileMenu, feedbackModal, vacancyModal, marketplaceModal, addedCartModal].forEach(m => {
             if (modalElement !== m && m?.classList.contains("opened")) closeModal(m);
         });
         if (modalElement !== modalFilter && modalFilter?.classList.contains("active")) closeModalFilter();
 
         modalElement?.classList.add("opened");
 
-
-        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal || modalElement === vacancyModal || modalElement === marketplaceModal) && overlay) {
+        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === vacancyModal || modalElement === marketplaceModal || modalElement === addedCartModal) && overlay) {
             overlay.classList.add("opened");
         }
 
@@ -403,8 +483,7 @@ export function InitModals() {
     function closeModal(modalElement) {
         modalElement?.classList.remove("opened");
 
-
-        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === placedModal || modalElement === vacancyModal || modalElement === marketplaceModal) && overlay) {
+        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === vacancyModal || modalElement === marketplaceModal || modalElement === addedCartModal) && overlay) {
             overlay.classList.remove("opened");
         }
 
@@ -422,7 +501,7 @@ export function InitModals() {
             document.body.classList.add("no-scroll");
 
             setTimeout(() => {
-                initModalFilter();
+                initModalFilter(); // Теперь функция доступна
             }, 100);
         }
     }
@@ -431,19 +510,22 @@ export function InitModals() {
         if (modalFilter) {
             modalFilter.classList.remove("active");
             document.body.classList.remove("no-scroll");
+            document.querySelectorAll(".filter-mobile__btn")
+                .forEach(btn => btn.addEventListener("click", openModalFilter));
         }
     }
 
+    // Инициализация наблюдателя за menu_fixed
+    initFixedMenuObserver();
 
+    // Остальные обработчики событий...
     catalogBtns.forEach(btn => btn?.addEventListener("click", e => {
         e.preventDefault();
         toggleModal(catalogModal);
     }));
 
-
     document.addEventListener("click", e => {
         if (catalogModal?.classList.contains("opened")) {
-
             const isClickInsideCatalog = catalogModal.contains(e.target);
             const isClickOnCatalogBtn = e.target.closest(".catalog-btn");
 
@@ -473,16 +555,6 @@ export function InitModals() {
         closeModal(feedbackModal);
     });
 
-    placedBtns.forEach(btn => btn?.addEventListener("click", e => {
-        e.preventDefault();
-        openModal(placedModal);
-    }));
-
-    placedCloseBtn?.addEventListener("click", e => {
-        e.preventDefault();
-        closeModal(placedModal);
-    });
-
     vacancyItemBtns.forEach(btn => btn?.addEventListener("click", e => {
         e.preventDefault();
         openModal(vacancyModal);
@@ -500,24 +572,38 @@ export function InitModals() {
         openModal(feedbackModal);
     }));
 
-    buyMarketplaceBtns.forEach(btn => btn?.addEventListener("click", e => {
+    /*buyMarketplaceBtns.forEach(btn => btn?.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
-        openModal(marketplaceModal);
-    }));
+        const currentMarketplaceModal = document.querySelectorAll(".modal-marketplace[data-id='" + btn.dataset.id + "']")
+
+        if (currentMarketplaceModal) {
+            currentMarketplaceModal.forEach((currentModal) => {
+                console.log(currentModal);
+                openModal(currentModal);
+
+                const currentMarketplaceCloseBtn = currentModal.querySelector(".modal-marketplace__close")
+                currentMarketplaceCloseBtn?.addEventListener("click", e => {
+                    e.preventDefault();
+                    closeModal(currentModal);
+                });
+            });
+        }
+    }));*/
 
     vacancyCloseBtn?.addEventListener("click", e => {
         e.preventDefault();
         closeModal(vacancyModal);
     });
 
-    marketplaceCloseBtn?.addEventListener("click", e => {
+    addedCartCloseBtn?.addEventListener("click", e => {
         e.preventDefault();
-        closeModal(marketplaceModal);
+        closeModal(addedCartModal);
     });
 
     filterButtons.forEach(btn => btn.addEventListener("click", openModalFilter));
     filterCloseButtons.forEach(btn => btn.addEventListener("click", closeModalFilter));
+    filterBtnClose.forEach(btn => btn.addEventListener("click", closeModalFilter));
 
     modalFilter?.addEventListener("click", e => {
         if (e.target === modalFilter) closeModalFilter();
@@ -525,8 +611,7 @@ export function InitModals() {
 
     overlay?.addEventListener("click", e => {
         if (e.target === overlay) {
-
-            [mobileMenu, feedbackModal, placedModal, vacancyModal, marketplaceModal].forEach(modal => {
+            [mobileMenu, feedbackModal, vacancyModal, marketplaceModal, addedCartModal].forEach(modal => {
                 if (modal?.classList.contains("opened")) closeModal(modal);
             });
             if (modalFilter?.classList.contains("active")) closeModalFilter();
@@ -535,8 +620,7 @@ export function InitModals() {
 
     document.addEventListener("keydown", e => {
         if (e.key === "Escape") {
-
-            [catalogModal, mobileMenu, feedbackModal, placedModal, vacancyModal, marketplaceModal].forEach(m => {
+            [catalogModal, mobileMenu, feedbackModal, vacancyModal, marketplaceModal, addedCartModal].forEach(m => {
                 if (m?.classList.contains("opened")) closeModal(m);
             });
             if (modalFilter?.classList.contains("active")) closeModalFilter();

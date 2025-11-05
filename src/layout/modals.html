@@ -720,7 +720,7 @@
         </form>
     </aside>
     </div>
-    <div class="modal-filter__btn">
+    <div class="modal-filter__btn modal-filter__btnClose" >
         <button class="clear-btn">
             <span>Показать товары</span>
             <include src="assets/svg/all-news-icon.html"></include>
@@ -842,7 +842,7 @@
         </div>
     </div>
 </div>
-<div class="modal-marketplace">
+<div class="modal-marketplace" data-id="123">
     <div class="modal-marketplace__inner">
         <div class="modal-marketplace__title">Купить через маркетплес</div>
         <p>Наши товары  доступны на следующих маркетплейсах:</p>
@@ -861,6 +861,22 @@
             </a>
         </div>
         <div class="modal-marketplace__close">
+            <img class="lazy" data-src="assets/images/form-close.svg" alt="">
+        </div>
+    </div>
+</div>
+<div class="added-cart">
+    <div class="added-cart__inner">
+        <div class="added-cart__title">Товар добавлен в корзину</div>
+        <div class="added-cart__item">
+           <img class="lazy" data-src="assets/images/product-slide.png" alt="">
+            <p>bp-100-001 Стержень заземления омедненный резьбовой (D=14мм; L=1200 мм)</p>
+            <button>
+                <include src="assets/svg/lightning3.html"></include>
+                <span>Перейти в корзину</span>
+            </button>
+        </div>
+        <div class="added-cart__close">
             <img class="lazy" data-src="assets/images/form-close.svg" alt="">
         </div>
     </div>

@@ -63,7 +63,12 @@ export class Tabs {
 
             if (!btn || !pane) return;
 
-            pane.style.display = 'none';
+
+            if (btn.classList.contains('active')) {
+                pane.style.display = 'block';
+            } else {
+                pane.style.display = 'none';
+            }
 
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -125,32 +130,24 @@ export class Tabs {
                 e.preventDefault();
 
                 if (this.container.classList.contains('tabs_mobile')) {
-
                     this.openSecuritySettingsAndScrollToGeneralInfo();
                 } else {
-
                     this.switchToTab('security-settings');
                 }
             });
         });
     }
 
-
     openSecuritySettingsAndScrollToGeneralInfo() {
-
         this.switchToAccordionTab('security-settings-mobile');
 
-
         setTimeout(() => {
-
             const generalInfo = this.container.querySelector('#security-settings-mobile .general-information');
             if (generalInfo) {
-
                 generalInfo.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
-
 
                 const yOffset = -20;
                 const y = generalInfo.getBoundingClientRect().top + window.pageYOffset + yOffset;
@@ -162,7 +159,6 @@ export class Tabs {
         }, 300);
     }
 
-
     switchToAccordionTab(tabId) {
         const tabItems = this.container.querySelectorAll('.tab__item');
 
@@ -172,7 +168,6 @@ export class Tabs {
 
             if (btn && pane) {
                 if (btn.dataset.tab === tabId) {
-
                     btn.classList.add('active');
                     pane.style.display = 'block';
                 }
@@ -184,9 +179,7 @@ export class Tabs {
 export function InitTabs() {
     const tabsContainers = document.querySelectorAll('.bestsellers__tabs, .product__tabs, .tabs-desktop, .placing-order__tabs, .personal-account__tabs, .tabs_mobile');
 
-
     tabsContainers.forEach(container => {
-
         if (container.offsetParent !== null) {
             new Tabs(container);
         }
@@ -212,7 +205,6 @@ function initGlobalJumpButtons() {
 }
 
 function switchAllTabsToSecuritySettings() {
-
     const desktopTabs = document.querySelectorAll('.personal-account__tabs, .tabs-desktop');
     desktopTabs.forEach(container => {
         const headerSelector = '.personal-account__tabs-header';
@@ -239,7 +231,6 @@ function switchAllTabsToSecuritySettings() {
         }
     });
 
-
     const mobileTabs = document.querySelectorAll('.tabs_mobile');
     mobileTabs.forEach(container => {
         const tabItems = container.querySelectorAll('.tab__item');
@@ -250,10 +241,8 @@ function switchAllTabsToSecuritySettings() {
 
             if (btn && pane) {
                 if (btn.dataset.tab === 'security-settings-mobile') {
-
                     btn.classList.add('active');
                     pane.style.display = 'block';
-
 
                     setTimeout(() => {
                         const generalInfo = pane.querySelector('.general-information');
@@ -262,7 +251,6 @@ function switchAllTabsToSecuritySettings() {
                                 behavior: 'smooth',
                                 block: 'start'
                             });
-
 
                             const yOffset = -20;
                             const y = generalInfo.getBoundingClientRect().top + window.pageYOffset + yOffset;

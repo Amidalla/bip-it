@@ -82,16 +82,17 @@ class App {
                 this.initSearch();
                 this.initFixedHeader();
                 this.initCheckboxes();
-                this.initPriceSlider();
-                this.initPriceFilterToggle();
-                this.initFilterVariants();
 
+                if (!document.querySelector('.modal-filter.active')) {
+                        this.initPriceSlider();
+                        this.initPriceFilterToggle();
+                        this.initFilterVariants();
 
-                document.querySelectorAll('.price-filter, .filter-variants__item').forEach(item => {
-                        item.classList.add('collapsed');
-                });
+                        document.querySelectorAll('.price-filter, .filter-variants__item').forEach(item => {
+                                item.classList.add('collapsed');
+                        });
+                }
         }
-
         initAnimations() {
 
                 // Баннерная анимация (только на главной)
@@ -359,16 +360,19 @@ class App {
                                 return;
                         }
 
-
                         const performSearch = () => {
                                 const searchValue = searchInput.value.trim();
                                 if (searchValue) {
-
                                         searchForm.submit();
-
                                 }
                         };
 
+                        // Обработчик фокуса - очищает поле если оно заполнено
+                        searchInput.addEventListener('focus', function() {
+                                if (this.value.trim() !== '') {
+                                        this.value = '';
+                                }
+                        });
 
                         if (searchIconDesc) {
                                 searchIconDesc.addEventListener('click', function(e) {
@@ -377,14 +381,12 @@ class App {
                                 });
                         }
 
-
                         if (searchIcon) {
                                 searchIcon.addEventListener('click', function(e) {
                                         e.stopPropagation();
                                         performSearch();
                                 });
                         }
-
 
                         searchInput.addEventListener('keydown', function(e) {
                                 if (e.key === 'Enter') {
@@ -532,48 +534,144 @@ class App {
                         minSlider.id = `min-slider-${uniqueId}`;
                         maxSlider.id = `max-slider-${uniqueId}`;
 
+                        let minVal = parseInt(minSlider.value);
+                        let maxVal = parseInt(maxSlider.value);
+                        const minAvailableValue = minInput.getAttribute('min')
+                        const maxAvailableValue = minInput.getAttribute('max')
+
+                        let isMinInputActive = false;
+                        let isMaxInputActive = false;
+
                         const updateTrack = () => {
-                                const minVal = parseInt(minSlider.value);
-                                const maxVal = parseInt(maxSlider.value);
-                                const minPercent = (minVal / 2700) * 100;
-                                const maxPercent = (maxVal / 2700) * 100;
-
+                                const minPercent = ((minVal - minAvailableValue) / (maxAvailableValue - minAvailableValue)) * 100;
+                                const maxPercent = ((maxVal - minAvailableValue) / (maxAvailableValue - minAvailableValue)) * 100;
                                 track.style.background = `linear-gradient(to right, 
-                    #FF7031 0%, 
-                    #FF7031 ${minPercent}%, 
-                    #F6F9FD ${minPercent}%, 
-                    #F6F9FD ${maxPercent}%, 
-                    #FF7031 ${maxPercent}%, 
-                    #FF7031 100%)`;
+                                        #FF7031 0%, 
+                                        #FF7031 ${minPercent}%, 
+                                        #F6F9FD ${minPercent}%, 
+                                        #F6F9FD ${maxPercent}%, 
+                                        #FF7031 ${maxPercent}%, 
+                                        #FF7031 100%)`;
                         };
 
-                        const updateMinInput = () => {
-                                minInput.value = minSlider.value;
-                                if (parseInt(minSlider.value) > parseInt(maxSlider.value)) {
-                                        maxSlider.value = minSlider.value;
-                                        maxInput.value = minSlider.value;
+                        const updateFromSliders = () => {
+                                minVal = parseInt(minSlider.value);
+                                maxVal = parseInt(maxSlider.value);
+
+                                if (minVal > maxVal) {
+                                        minVal = maxVal;
+                                        minSlider.value = minVal;
+                                }
+
+                                if (!isMinInputActive) minInput.value = minVal;
+                                if (!isMaxInputActive) maxInput.value = maxVal;
+
+                                // Добавляем dispatchEvent для инпутов
+                                if (!isMinInputActive) minInput.dispatchEvent(new Event('keyup'));
+                                if (!isMaxInputActive) maxInput.dispatchEvent(new Event('keyup'));
+
+                                updateTrack();
+                        };
+
+                        const updateSingleInput = (input, value, type) => {
+                                const numValue = parseInt(value);
+                                if (isNaN(numValue)) return false;
+
+                                const minLimit = parseInt(input.min);
+                                const maxLimit = parseInt(input.max);
+
+                                let finalValue = numValue;
+                                if (finalValue < minLimit) finalValue = minLimit;
+                                if (finalValue > maxLimit) finalValue = maxLimit;
+
+                                input.value = finalValue;
+
+                                if (type === 'min') {
+                                        minVal = finalValue;
+                                        minSlider.value = finalValue;
+                                } else {
+                                        maxVal = finalValue;
+                                        maxSlider.value = finalValue;
+                                }
+
+
+                                input.dispatchEvent(new Event('keyup'));
+
+                                updateTrack();
+                                return true;
+                        };
+
+                        const finalizeInput = (type) => {
+                                if (type === 'min') {
+                                        isMinInputActive = false;
+                                        if (minVal > maxVal) {
+                                                maxVal = minVal;
+                                                maxSlider.value = minVal;
+                                                maxInput.value = minVal;
+                                                maxInput.dispatchEvent(new Event('keyup'));
+                                        }
+                                } else {
+                                        isMaxInputActive = false;
+                                        if (maxVal < minVal) {
+                                                minVal = maxVal;
+                                                minSlider.value = maxVal;
+                                                minInput.value = maxVal;
+                                                minInput.dispatchEvent(new Event('keyup'));
+                                        }
                                 }
                                 updateTrack();
                         };
 
-                        const updateMaxInput = () => {
-                                maxInput.value = maxSlider.value;
-                                if (parseInt(maxSlider.value) < parseInt(minSlider.value)) {
-                                        minSlider.value = maxSlider.value;
-                                        minInput.value = maxSlider.value;
-                                }
-                                updateTrack();
-                        };
+                        // Обработчики фокуса
+                        minInput.addEventListener('focus', function() {
+                                isMinInputActive = true;
+                                return false;
+                        });
 
-                        minSlider.addEventListener('input', updateMinInput);
-                        maxSlider.addEventListener('input', updateMaxInput);
-                        minInput.addEventListener('input', updateMinInput);
-                        maxInput.addEventListener('input', updateMaxInput);
+                        maxInput.addEventListener('focus', function() {
+                                isMaxInputActive = true;
+                                return false;
+                        });
+
+                        // Обработчики ввода
+                        minInput.addEventListener('input', function() {
+                                updateSingleInput(this, this.value, 'min');
+                        });
+
+                        maxInput.addEventListener('input', function() {
+                                updateSingleInput(this, this.value, 'max');
+                        });
+
+                        // Обработчики потери фокуса
+                        minInput.addEventListener('blur', function() {
+                                let value = parseInt(this.value);
+                                if (isNaN(value)) {
+                                        value = parseInt(this.min);
+                                        this.value = value;
+                                        minVal = value;
+                                        minSlider.value = value;
+                                }
+                                finalizeInput('min');
+                        });
+
+                        maxInput.addEventListener('blur', function() {
+                                let value = parseInt(this.value);
+                                if (isNaN(value)) {
+                                        value = parseInt(this.min);
+                                        this.value = value;
+                                        maxVal = value;
+                                        maxSlider.value = value;
+                                }
+                                finalizeInput('max');
+                        });
+
+                        // Обработчики для слайдеров
+                        minSlider.addEventListener('input', updateFromSliders);
+                        maxSlider.addEventListener('input', updateFromSliders);
 
                         updateTrack();
                 });
         }
-
         // Переключение фильтра цен
         initPriceFilterToggle() {
                 const priceFilters = document.querySelectorAll('.price-filter');
