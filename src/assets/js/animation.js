@@ -2,7 +2,7 @@ import { gsap } from 'gsap';
 
 export class BannerAnimation {
     constructor() {
-        // Сначала проверяем, главная ли это страница
+        // Проверяем, главная ли это страница
         this.isMainPage = document.querySelector('.main-slider') !== null;
 
         // Если не главная страница - не создаем прелоадер и не запускаем анимацию
@@ -46,6 +46,7 @@ export class BannerAnimation {
             this.fourthLine = this.findFourthLine();
             this.fifthLine = this.findFifthLine();
             this.sixthLine = this.findSixthLine();
+            this.seventhLine = this.findSeventhLine();
         } else {
             this.specialElements = [];
             this.rectElements = [];
@@ -56,21 +57,32 @@ export class BannerAnimation {
             this.fourthLine = null;
             this.fifthLine = null;
             this.sixthLine = null;
+            this.seventhLine = null;
         }
 
         this.animationEnabled = true;
         this.mobileAnimationPlayed = false;
+        this.pageLoaded = false;
+        this.animationReady = false;
 
         this.initResizeHandler();
         this.initImageChangeHandler();
 
-        // Десктопная логика с прелоадером
-        if (this.lines.length > 0 && this.ball && this.specificLine && this.secondLine &&
-            this.thirdLine && this.fourthLine && this.fifthLine && this.sixthLine) {
-            window.addEventListener('load', () => {
-                this.initWithPreloader();
-            });
-        }
+
+        setTimeout(() => {
+            this.initWithPreloader();
+        }, 100);
+    }
+
+
+    findSeventhLine() {
+        if (!this.banner) return null;
+        const allLines = this.banner.querySelectorAll('.banner__lines .line');
+        const targetPath = "M955.129 319L951.886 328.729V337.377C951.886 346.458 951.886 348.728 943.779 352.512C936.752 355.791 931 358 926.482 360.619C922.953 362.666 917.5 367.5 917.5 378L916 509.5C916 519 918.5 521 926.483 526.5L946.5 537";
+        return Array.from(allLines).find(line => {
+            const d = line.getAttribute('d');
+            return d && d.replace(/\s+/g, ' ').trim() === targetPath.replace(/\s+/g, ' ').trim();
+        });
     }
 
     initForMobile() {
@@ -96,6 +108,7 @@ export class BannerAnimation {
         this.fourthLine = null;
         this.fifthLine = null;
         this.sixthLine = null;
+        this.seventhLine = null;
 
         this.animationEnabled = false;
         this.mobileAnimationPlayed = false;
@@ -172,9 +185,7 @@ export class BannerAnimation {
                 );
             }
         }
-
     }
-
 
     // Анимация контента слайда
     animateSlideContent() {
@@ -204,7 +215,6 @@ export class BannerAnimation {
             duration: 1.0,
             ease: "power2.out"
         });
-
 
         // Анимация внутренних элементов контента
         const title = content.querySelector('.main-slider__title');
@@ -596,12 +606,12 @@ export class BannerAnimation {
 
         // Даем небольшой timeout чтобы браузер успел отрендерить элемент
         setTimeout(() => {
-            // Анимация линий
+
             const lineAnimation = gsap.to(this.lines, {
                 strokeDashoffset: 0,
-                duration: 2,
+                duration: 1.8,
                 stagger: {
-                    each: 0.3,
+                    each: 0.25,
                     from: "start"
                 },
                 ease: "power2.out",
@@ -620,10 +630,10 @@ export class BannerAnimation {
                 duration: 1.0,
                 stagger: 0.1,
                 ease: "power2.out",
-                delay: 3.0,
+                delay: 2.5,
                 onComplete: () => {
                     if (this.ball && this.specificLine && this.secondLine && this.thirdLine &&
-                        this.fourthLine && this.fifthLine && this.sixthLine) {
+                        this.fourthLine && this.fifthLine && this.sixthLine && this.seventhLine) {
                         this.animateBall();
                     }
                 }
@@ -664,20 +674,30 @@ export class BannerAnimation {
 
         this.handleResize();
 
-        // Анимация кругового прогресс-бара
-        const progressCircle = this.preloader.querySelector('.preloader__circle-progress');
+        const progressCircle = this.preloader ? this.preloader.querySelector('.preloader__circle-progress') : null;
 
-        // Анимация заполнения круга
-        gsap.to(progressCircle, {
-            strokeDashoffset: 0,
-            duration: 2,
-            ease: 'power2.inOut',
-            onComplete: () => {
-                setTimeout(() => {
-                    this.hidePreloader();
-                }, 500);
-            }
-        });
+        if (progressCircle) {
+
+            gsap.to(progressCircle, {
+                strokeDashoffset: 0,
+                duration: 0.8,
+                ease: 'power2.inOut',
+                onComplete: () => {
+
+                    setTimeout(() => {
+                        this.hidePreloader();
+                    }, 100);
+                }
+            });
+        } else {
+
+            setTimeout(() => {
+                this.hidePreloader();
+            }, 600);
+        }
+
+        // Параллельно готовим анимацию
+        this.prepareAnimation();
     }
 
     hidePreloader() {
@@ -685,26 +705,41 @@ export class BannerAnimation {
             return;
         }
 
-        // Анимация скрытия прелоадера
-        gsap.to(this.preloader, {
-            opacity: 0,
-            duration: 0.5,
-            ease: 'power2.out',
-            onComplete: () => {
-                this.preloader.classList.add('preloader--hidden');
 
-                // Полностью скрываем прелоадер после анимации
-                setTimeout(() => {
-                    this.preloader.style.display = 'none';
-                }, 500);
+        if (this.preloader) {
+            gsap.to(this.preloader, {
+                opacity: 0,
+                duration: 0.2,
+                ease: 'power2.out',
+                onComplete: () => {
+                    this.preloader.classList.add('preloader--hidden');
 
-                if (this.bannerLines) {
-                    this.bannerLines.classList.add('banner__lines--visible');
+                    // Полностью скрываем прелоадер после анимации
+                    setTimeout(() => {
+                        if (this.preloader) {
+                            this.preloader.style.display = 'none';
+                        }
+                    }, 200);
+
+                    if (this.bannerLines) {
+                        this.bannerLines.classList.add('banner__lines--visible');
+                    }
+
+                    // Запускаем анимацию сразу после скрытия прелоадера
+                    this.init();
                 }
-
-                this.init();
-            }
-        });
+            });
+        } else {
+            // Если прелоадера нет, сразу запускаем анимацию
+            this.init();
+        }
+    }
+    prepareAnimation() {
+        // Параллельно с прелоадером готовим анимацию
+        if (this.banner && this.lines.length > 0) {
+            this.setupAnimation();
+            this.animationReady = true;
+        }
     }
 
     init() {
@@ -712,7 +747,11 @@ export class BannerAnimation {
             return;
         }
 
-        this.setupAnimation();
+        // Если анимация еще не готова, готовим ее
+        if (!this.animationReady) {
+            this.setupAnimation();
+        }
+
         this.startAnimation();
     }
 
@@ -750,6 +789,8 @@ export class BannerAnimation {
                 scale: 0
             });
         }
+
+        this.animationReady = true;
     }
 
     animateBall() {
@@ -773,7 +814,7 @@ export class BannerAnimation {
                         cx: startPoint.x,
                         cy: startPoint.y
                     },
-                    duration: 1.5,
+                    duration: 1.2,
                     ease: "power1.out",
                     onComplete: () => {
                         this.splitAndMoveBalls();
@@ -807,7 +848,10 @@ export class BannerAnimation {
         const secondLineStart = secondLine.getPointAtLength(0);
         const secondLineEnd = secondLine.getPointAtLength(secondLineLength);
 
+        // Первый шарик идет к началу второй линии и затем по третьей линии
         this.moveBallToThirdLine(ball1, secondLineStart);
+
+        // Второй шарик идет к концу второй линии и затем по четвертой линии
         this.moveBallToFourthLine(ball2, secondLineEnd);
     }
 
@@ -817,7 +861,7 @@ export class BannerAnimation {
                 cx: targetPoint.x,
                 cy: targetPoint.y
             },
-            duration: 1,
+            duration: 0.9,
             ease: "power1.out",
             onComplete: () => {
                 this.moveToThirdLine(ball, targetPoint);
@@ -826,15 +870,34 @@ export class BannerAnimation {
     }
 
     moveBallToFourthLine(ball, targetPoint) {
+        const fourthLine = this.fourthLine;
+        const fourthLineLength = fourthLine.getTotalLength();
+
+        const fourthLineStart = fourthLine.getPointAtLength(0);
+        const fourthLineEnd = fourthLine.getPointAtLength(fourthLineLength);
+
+        // Второй шарик идет к началу четвертой линии
         gsap.to(ball, {
             attr: {
-                cx: targetPoint.x,
-                cy: targetPoint.y
+                cx: fourthLineStart.x,
+                cy: fourthLineStart.y
             },
-            duration: 1,
+            duration: 0.5,
             ease: "power1.out",
             onComplete: () => {
-                this.moveToFourthLine(ball, targetPoint);
+                // Затем проходит по четвертой линии до конца
+                gsap.to(ball, {
+                    attr: {
+                        cx: fourthLineEnd.x,
+                        cy: fourthLineEnd.y
+                    },
+                    duration: 1.5,
+                    ease: "power1.out",
+                    onComplete: () => {
+                        // После четвертой линии переходит на седьмую линию
+                        this.moveToSeventhLine(ball, fourthLineEnd);
+                    }
+                });
             }
         });
     }
@@ -851,7 +914,7 @@ export class BannerAnimation {
                 cx: thirdLineStart.x,
                 cy: thirdLineStart.y
             },
-            duration: 0.5,
+            duration: 0.4,
             ease: "power1.out",
             onComplete: () => {
                 gsap.to(ball, {
@@ -859,40 +922,10 @@ export class BannerAnimation {
                         cx: thirdLineEnd.x,
                         cy: thirdLineEnd.y
                     },
-                    duration: 1.5,
+                    duration: 1.2,
                     ease: "power1.out",
                     onComplete: () => {
                         this.moveToFifthLineFromThird(ball, thirdLineEnd);
-                    }
-                });
-            }
-        });
-    }
-
-    moveToFourthLine(ball, currentPosition) {
-        const fourthLine = this.fourthLine;
-        const fourthLineLength = fourthLine.getTotalLength();
-
-        const fourthLineStart = fourthLine.getPointAtLength(0);
-        const fourthLineEnd = fourthLine.getPointAtLength(fourthLineLength);
-
-        gsap.to(ball, {
-            attr: {
-                cx: fourthLineStart.x,
-                cy: fourthLineStart.y
-            },
-            duration: 0.5,
-            ease: "power1.out",
-            onComplete: () => {
-                gsap.to(ball, {
-                    attr: {
-                        cx: fourthLineEnd.x,
-                        cy: fourthLineEnd.y
-                    },
-                    duration: 1.5,
-                    ease: "power1.out",
-                    onComplete: () => {
-                        this.moveToFifthLineFromFourth(ball, fourthLineEnd);
                     }
                 });
             }
@@ -906,72 +939,28 @@ export class BannerAnimation {
         const startPoint = fifthLine.getPointAtLength(0);
         const targetPoint = fifthLine.getPointAtLength(fifthLineLength * 0.05);
 
-        gsap.to(ball, {
-            attr: {
-                cx: startPoint.x,
-                cy: startPoint.y
-            },
-            duration: 0.3,
-            ease: "power1.out",
-            onComplete: () => {
-                gsap.to(ball, {
-                    attr: {
-                        cx: targetPoint.x,
-                        cy: targetPoint.y
-                    },
-                    duration: 0.8,
-                    ease: "power1.out",
-                    onComplete: () => {
-                        this.moveToSixthLine(ball, targetPoint);
-                    }
-                });
-            }
-        });
-    }
-
-    moveToFifthLineFromFourth(ball, currentPosition) {
-        const fifthLine = this.fifthLine;
-        const fifthLineLength = fifthLine.getTotalLength();
-
-        const fifthLineStart = fifthLine.getPointAtLength(0);
-        const fifthLineEnd = fifthLine.getPointAtLength(fifthLineLength);
-
-        const distanceToStart = Math.sqrt(
-            Math.pow(currentPosition.x - fifthLineStart.x, 2) +
-            Math.pow(currentPosition.y - fifthLineStart.y, 2)
-        );
-
-        const distanceToEnd = Math.sqrt(
-            Math.pow(currentPosition.x - fifthLineEnd.x, 2) +
-            Math.pow(currentPosition.y - fifthLineEnd.y, 2)
-        );
-
-        let targetPoint;
-
-        if (distanceToStart < distanceToEnd) {
-            targetPoint = fifthLine.getPointAtLength(fifthLineLength * 0.95);
-        } else {
-            targetPoint = fifthLine.getPointAtLength(fifthLineLength * 0.05);
-        }
 
         gsap.to(ball, {
             attr: {
                 cx: targetPoint.x,
                 cy: targetPoint.y
             },
-            duration: 1.8,
+            duration: 0.8,
             ease: "power1.out",
             onComplete: () => {
+
                 this.moveToSixthLine(ball, targetPoint);
             }
         });
     }
 
+    // Метод для движения первого шарика по шестой линии
     moveToSixthLine(ball, currentPosition) {
         const sixthLine = this.sixthLine;
         const sixthLineLength = sixthLine.getTotalLength();
         const sixthLineEnd = sixthLine.getPointAtLength(sixthLineLength);
 
+        // Создаем хвост кометы
         const cometTail = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         cometTail.setAttribute('cx', currentPosition.x);
         cometTail.setAttribute('cy', currentPosition.y);
@@ -980,21 +969,24 @@ export class BannerAnimation {
         cometTail.setAttribute('class', 'comet-tail');
         ball.parentNode.appendChild(cometTail);
 
+        // Двигаемся по шестой линии до конца
         gsap.to(ball, {
             attr: {
                 cx: sixthLineEnd.x,
                 cy: sixthLineEnd.y
             },
-            duration: 1.5,
+            duration: 1.2,
             ease: "power2.out",
             onUpdate: function() {
                 const progress = this.progress();
                 const currentX = parseFloat(ball.getAttribute('cx'));
                 const currentY = parseFloat(ball.getAttribute('cy'));
 
+                // Обновляем позицию хвоста
                 cometTail.setAttribute('cx', currentX);
                 cometTail.setAttribute('cy', currentY);
 
+                // Эффект увеличения и свечения на последнем участке
                 if (progress > 0.7) {
                     const scale = 1 + (progress - 0.7) * 1.5;
                     gsap.set(ball, { scale: scale });
@@ -1005,7 +997,80 @@ export class BannerAnimation {
                 }
             },
             onComplete: () => {
+                // Создаем взрыв в конечной точке
                 this.createPowerfulExplosion(sixthLineEnd, ball, cometTail);
+            }
+        });
+    }
+
+    // Метод для движения второго шарика по седьмой линии
+    moveToSeventhLine(ball, currentPosition) {
+        const seventhLine = this.seventhLine;
+        const seventhLineLength = seventhLine.getTotalLength();
+        const seventhLineEnd = seventhLine.getPointAtLength(seventhLineLength);
+
+        // Создаем хвост кометы
+        const cometTail = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        cometTail.setAttribute('cx', currentPosition.x);
+        cometTail.setAttribute('cy', currentPosition.y);
+        cometTail.setAttribute('r', '4');
+        cometTail.setAttribute('fill', 'rgba(255,255,255,0.6)');
+        cometTail.setAttribute('class', 'comet-tail');
+        ball.parentNode.appendChild(cometTail);
+
+        // Двигаемся по седьмой линии до конца
+        gsap.to(ball, {
+            attr: {
+                cx: seventhLineEnd.x,
+                cy: seventhLineEnd.y
+            },
+            duration: 1.2,
+            ease: "power2.out",
+            onUpdate: function() {
+                const progress = this.progress();
+                const currentX = parseFloat(ball.getAttribute('cx'));
+                const currentY = parseFloat(ball.getAttribute('cy'));
+
+                // Обновляем позицию хвоста
+                cometTail.setAttribute('cx', currentX);
+                cometTail.setAttribute('cy', currentY);
+
+                // Эффект увеличения и свечения на последнем участке
+                if (progress > 0.7) {
+                    const scale = 1 + (progress - 0.7) * 1.5;
+                    gsap.set(ball, { scale: scale });
+
+                    const tailSize = 4 + (progress - 0.7) * 8;
+                    cometTail.setAttribute('r', tailSize);
+                    cometTail.setAttribute('fill', `rgba(255,255,255,${0.8 - (progress - 0.7) * 0.8})`);
+                }
+            },
+            onComplete: () => {
+
+
+                const finalPoint = {
+                    x: seventhLineEnd.x + 100,
+                    y: seventhLineEnd.y + 50
+                };
+
+                gsap.to(ball, {
+                    attr: {
+                        cx: finalPoint.x,
+                        cy: finalPoint.y
+                    },
+                    duration: 0.3,
+                    ease: "power2.out",
+                    onUpdate: function() {
+                        const currentX = parseFloat(ball.getAttribute('cx'));
+                        const currentY = parseFloat(ball.getAttribute('cy'));
+                        cometTail.setAttribute('cx', currentX);
+                        cometTail.setAttribute('cy', currentY);
+                    },
+                    onComplete: () => {
+                        // Только после полного ухода за пределы экрана создаем взрыв
+                        this.createPowerfulExplosion(finalPoint, ball, cometTail);
+                    }
+                });
             }
         });
     }

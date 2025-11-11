@@ -3,7 +3,7 @@ import "../styles/styles.scss";
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';
 import 'swiper/swiper-bundle.css';
-import { Pagination, Navigation, Autoplay, Thumbs } from 'swiper/modules';
+import { Pagination, Navigation, Autoplay, Thumbs, EffectFade } from 'swiper/modules';
 import { SlidersInit } from "./sliders";
 import { InitModals } from "./modals";
 import { InitVideo } from "./video";
@@ -14,7 +14,8 @@ import { BannerAnimation } from "./animation.js";
 import { ScrollAnimations } from "./scroll-animations.js";
 import IMask from 'imask';
 
-Swiper.use([Pagination, Navigation, Autoplay, Thumbs]);
+Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
+
 
 // Инициализация всех модулей
 class App {

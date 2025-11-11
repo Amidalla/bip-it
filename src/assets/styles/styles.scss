@@ -6,6 +6,16 @@ html {
   scrollbar-gutter: stable;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
 body.has-fixed-header {
   transition: padding-top 0.5s ease;
 
@@ -1217,6 +1227,8 @@ body.no-scroll {
           @media (max-width: 1300px) {
             display: grid;
             grid-template-columns: 240px 1fr;
+            min-height: 415px;
+            column-gap: 20px;
           }
 
 
@@ -1226,6 +1238,8 @@ body.no-scroll {
             @media (max-width: 1300px) {
               display: block;
               grid-column: 1 / span 2;
+              margin-top: auto;
+
 
               .counter {
                 display: flex !important;
@@ -3408,6 +3422,8 @@ body.no-scroll {
 
   img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
   }
@@ -5008,6 +5024,12 @@ body.no-scroll {
     padding-top: 0;
     padding-bottom: 20px;
   }
+
+  .marketplaces {
+    @media (max-width: 650px) {
+      margin-bottom: 20px;
+    }
+  }
   
   &__wrapper {
     @media (max-width: 1300px) {
@@ -5193,6 +5215,10 @@ body.no-scroll {
     @media (max-width: 1300px) {
       min-width: 100%;
       position: static;
+    }
+
+    @media (max-width: 650px) {
+      max-height: none;
     }
 
     .counter__prise {
@@ -5458,6 +5484,7 @@ body.no-scroll {
            @media (max-width: 1300px) {
              display: block;
              grid-column: 1 / span 2;
+             margin-top: auto;
            }
          }
 
@@ -5615,6 +5642,7 @@ body.no-scroll {
            @media (max-width: 1300px) {
              display: grid;
              grid-template-columns: 240px 1fr;
+             min-height: 415px;
            }
          }
 
@@ -7606,7 +7634,7 @@ body.no-scroll {
         font-size: 18px;
         font-weight: 400;
         line-height: 150%;
-        color:  #C2C9D5;
+        color:  #000;
         padding-left: 20px;
         width: 100%;
         border-radius: 10px;
@@ -7631,7 +7659,7 @@ body.no-scroll {
         font-size: 18px;
         font-weight: 400;
         line-height: 150%;
-        color:  #C2C9D5;
+        color:  #000;
         padding-left: 20px;
         width: 100%;
         border-radius: 10px;
@@ -10419,6 +10447,10 @@ body.no-scroll {
     font-weight: 600;
     color: #2A3632;
     margin-bottom: 24px;
+
+    @media (max-width: 700px) {
+      margin-bottom: 20px;
+    }
   }
 
   &__mobile {

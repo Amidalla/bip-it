@@ -118,7 +118,11 @@ export function SlidersInit() {
 
     const productSlider = new Swiper(".slider-product", {
         autoplay: false,
-        speed: 1000,
+        speed: 500,
+        effect: 'fade',
+        fadeEffect: {
+            crossFade: true
+        },
         pagination: {
             el: ".slider-product .swiper-pagination",
             clickable: true
