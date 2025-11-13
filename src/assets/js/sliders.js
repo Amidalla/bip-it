@@ -7,18 +7,24 @@ export function SlidersInit() {
         pagination: {
             el: ".slider-main .swiper-pagination",
             clickable: true
-        },
-        navigation: {
-            nextEl: '.slider-main .swiper-button-next',
-            prevEl: '.slider-main .swiper-button-prev'
-        },
-        breakpoints: {
-            450: {
-                navigation: false
-            }
         }
-
     });
+
+
+    const nextButton = document.querySelector('.main-slider .swiper-button-next');
+    const prevButton = document.querySelector('.main-slider .swiper-button-prev');
+
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            mainSlider.slideNext();
+        });
+    }
+
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            mainSlider.slidePrev();
+        });
+    }
 
     const bestsellersSlider = new Swiper(".slider-bestsellers", {
         autoplay: false,
