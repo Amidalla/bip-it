@@ -100,7 +100,7 @@ export function InitModals() {
 
         function toggleImageVisibility(showImage) {
             if (!isMobileView()) {
-                imageSection.style.display = 'block';
+                imageSection.style.display = 'flex';
                 return;
             }
 
@@ -188,7 +188,7 @@ export function InitModals() {
                     }
                     catalogImage.style.display = 'inline';
                 } else {
-                    catalogImage.style.display = 'none';
+                    catalogImage.style.display = 'inline-block';
                 }
             });
         });

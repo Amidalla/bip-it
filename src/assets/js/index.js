@@ -16,6 +16,48 @@ import IMask from 'imask';
 
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
 
+// Класс кнопки "Наверх"
+class ToTopButton {
+        constructor() {
+                this.button = document.getElementById('toTopBtn');
+                this.footer = document.querySelector('footer');
+                this.init();
+        }
+
+        init() {
+                if (!this.button) return;
+
+                this.button.addEventListener('click', () => this.scrollToTop());
+                window.addEventListener('scroll', () => this.toggleVisibility());
+
+                this.toggleVisibility();
+        }
+
+        toggleVisibility() {
+                const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+
+                // Проверяем, есть ли вообще возможность прокрутки
+                const canScroll = documentHeight > windowHeight;
+
+                // Показываем кнопку только если:
+                // 1. Прокрутка больше 300px
+                // 2. И вообще есть что прокручивать
+                if (scrollPosition > 500 && canScroll) {
+                        this.button.classList.add('show');
+                } else {
+                        this.button.classList.remove('show');
+                }
+        }
+
+        scrollToTop() {
+                window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                });
+        }
+}
 
 // Инициализация всех модулей
 class App {
@@ -35,22 +77,15 @@ class App {
         }
 
         initAll() {
-
                 this.initCoreModules();
-
-
                 this.initForms();
                 this.initUIComponents();
-
-
                 this.initAnimations();
-
-
                 this.initHMR();
+
         }
 
         initCoreModules() {
-
                 // Слайдеры
                 SlidersInit();
 
@@ -83,6 +118,8 @@ class App {
                 this.initSearch();
                 this.initFixedHeader();
                 this.initCheckboxes();
+                this.initToTopButton();
+                this.initDropdownMenu();
 
                 if (!document.querySelector('.modal-filter.active')) {
                         this.initPriceSlider();
@@ -94,13 +131,16 @@ class App {
                         });
                 }
         }
-        initAnimations() {
 
+        initToTopButton() {
+                this.toTopButton = new ToTopButton();
+        }
+
+        initAnimations() {
                 // Баннерная анимация (только на главной)
                 this.bannerAnimation = new BannerAnimation();
 
                 this.scrollAnimations = new ScrollAnimations();
-
 
                 setTimeout(() => {
                         if (this.scrollAnimations && typeof this.scrollAnimations.refresh === 'function') {
@@ -215,6 +255,68 @@ class App {
                         }
                 });
         }
+
+        initDropdownMenu() {
+
+                const desktopDropdowns = document.querySelectorAll('.header__item.drop-down');
+                let hideTimeout;
+
+                desktopDropdowns.forEach(dropdown => {
+
+                        dropdown.addEventListener('mouseenter', () => {
+                                clearTimeout(hideTimeout);
+                                dropdown.classList.add('active');
+                        });
+
+                        dropdown.addEventListener('mouseleave', () => {
+                                hideTimeout = setTimeout(() => {
+                                        dropdown.classList.remove('active');
+                                }, 500);
+                        });
+
+
+                        const sublist = dropdown.querySelector('.header__sublist');
+                        if (sublist) {
+                                sublist.addEventListener('mouseenter', () => {
+                                        clearTimeout(hideTimeout);
+                                });
+
+                                sublist.addEventListener('mouseleave', () => {
+                                        dropdown.classList.remove('active');
+                                });
+                        }
+                });
+
+
+                const mobileDropdowns = document.querySelectorAll('.mobile-menu__item.drop-down');
+
+                mobileDropdowns.forEach(mobileDropdown => {
+                        mobileDropdown.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+
+                                mobileDropdowns.forEach(otherDropdown => {
+                                        if (otherDropdown !== mobileDropdown) {
+                                                otherDropdown.classList.remove('active');
+                                        }
+                                });
+
+
+                                mobileDropdown.classList.toggle('active');
+                        });
+                });
+
+
+                document.addEventListener('click', (e) => {
+                        if (!e.target.closest('.mobile-menu__item.drop-down')) {
+                                mobileDropdowns.forEach(dropdown => {
+                                        dropdown.classList.remove('active');
+                                });
+                        }
+                });
+        }
+
 
         // Валидация ИНН
         initINNValidation() {
@@ -342,7 +444,6 @@ class App {
 
                 return 'Неверный ИНН. Проверьте контрольную сумму';
         }
-
 
         // Поиск
         initSearch() {
@@ -497,7 +598,6 @@ class App {
                 });
         }
 
-
         // Чекбоксы
         initCheckboxes() {
                 const checkboxes = document.querySelectorAll('.checkbox-label input[type="checkbox"]');
@@ -547,12 +647,12 @@ class App {
                                 const minPercent = ((minVal - minAvailableValue) / (maxAvailableValue - minAvailableValue)) * 100;
                                 const maxPercent = ((maxVal - minAvailableValue) / (maxAvailableValue - minAvailableValue)) * 100;
                                 track.style.background = `linear-gradient(to right, 
-                                        #FF7031 0%, 
-                                        #FF7031 ${minPercent}%, 
-                                        #F6F9FD ${minPercent}%, 
-                                        #F6F9FD ${maxPercent}%, 
-                                        #FF7031 ${maxPercent}%, 
-                                        #FF7031 100%)`;
+                        #FF7031 0%, 
+                        #FF7031 ${minPercent}%, 
+                        #F6F9FD ${minPercent}%, 
+                        #F6F9FD ${maxPercent}%, 
+                        #FF7031 ${maxPercent}%, 
+                        #FF7031 100%)`;
                         };
 
                         const updateFromSliders = () => {
@@ -594,7 +694,6 @@ class App {
                                         maxVal = finalValue;
                                         maxSlider.value = finalValue;
                                 }
-
 
                                 input.dispatchEvent(new Event('keyup'));
 
@@ -673,6 +772,7 @@ class App {
                         updateTrack();
                 });
         }
+
         // Переключение фильтра цен
         initPriceFilterToggle() {
                 const priceFilters = document.querySelectorAll('.price-filter');
@@ -725,6 +825,4 @@ class App {
 }
 
 const app = new App();
-
-
 window.app = app;
