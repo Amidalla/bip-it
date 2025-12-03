@@ -33,9 +33,9 @@ export function InitModals() {
     const filterBtnClose = document.querySelectorAll(".modal-filter__btnClose");
 
     const overlay = document.querySelector(".overlay");
-    const menuFixed = document.querySelector(".menu_fixed"); // Добавляем элемент menu_fixed
+    const menuFixed = document.querySelector(".menu_fixed");
 
-    // Функция для обновления состояния fixed класса у catalog-modal
+
     function updateCatalogModalFixedState() {
         if (!catalogModal) return;
 
@@ -46,14 +46,14 @@ export function InitModals() {
         }
     }
 
-    // Наблюдатель за изменениями класса menu_fixed
+
     function initFixedMenuObserver() {
         if (!menuFixed || !catalogModal) return;
 
-        // Инициализируем начальное состояние
+
         updateCatalogModalFixedState();
 
-        // Создаем наблюдатель за изменениями атрибутов
+
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
@@ -62,7 +62,7 @@ export function InitModals() {
             });
         });
 
-        // Начинаем наблюдение за изменениями класса
+
         observer.observe(menuFixed, {
             attributes: true,
             attributeFilter: ['class']
@@ -361,7 +361,7 @@ export function InitModals() {
             setToggleAccessible(maxSlider);
         });
 
-        // Обработчики для полей ввода
+
         minPriceInput.addEventListener("input", function() {
             let value = this.value.replace(/\D/g, '');
             if (value === '') {
@@ -404,7 +404,7 @@ export function InitModals() {
             setToggleAccessible(maxSlider);
         });
 
-        // Обработчики для потери фокуса
+
         minPriceInput.addEventListener("blur", function() {
             let value = this.value.replace(/\D/g, '');
             if (value === '') {
@@ -447,13 +447,13 @@ export function InitModals() {
             setToggleAccessible(maxSlider);
         });
 
-        // Инициализация начальных значений
+
         updatePriceInputs();
         fillSlider();
         setToggleAccessible(maxSlider);
     }
 
-    // ПЕРЕМЕЩЕНА ФУНКЦИЯ ВНУТРЬ InitModals
+
     function initModalFilter() {
         initFilterToggles();
         initModalPriceFilter();
@@ -501,7 +501,7 @@ export function InitModals() {
             document.body.classList.add("no-scroll");
 
             setTimeout(() => {
-                initModalFilter(); // Теперь функция доступна
+                initModalFilter();
             }, 100);
         }
     }
@@ -515,10 +515,10 @@ export function InitModals() {
         }
     }
 
-    // Инициализация наблюдателя за menu_fixed
+
     initFixedMenuObserver();
 
-    // Остальные обработчики событий...
+
     catalogBtns.forEach(btn => btn?.addEventListener("click", e => {
         e.preventDefault();
         toggleModal(catalogModal);

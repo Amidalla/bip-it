@@ -14,7 +14,31 @@ import { BannerAnimation } from "./animation.js";
 import { ScrollAnimations } from "./scroll-animations.js";
 import IMask from 'imask';
 
+
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
+
+let productSlider = null;
+
+function initProductFancybox() {
+        Fancybox.bind("[data-fancybox='product-gallery']", {
+                Thumbs: {
+                        type: "classic",
+                },
+                Toolbar: {
+                        display: {
+                                left: ["infobar"],
+                                middle: [],
+                                right: ["close"],
+                        },
+                },
+                Images: {
+                        zoom: true,
+                },
+                Carousel: {
+                        infinite: false,
+                },
+        });
+}
 
 // Класс кнопки "Наверх"
 class ToTopButton {
@@ -38,12 +62,10 @@ class ToTopButton {
                 const windowHeight = window.innerHeight;
                 const documentHeight = document.documentElement.scrollHeight;
 
-                // Проверяем, есть ли вообще возможность прокрутки
+
                 const canScroll = documentHeight > windowHeight;
 
-                // Показываем кнопку только если:
-                // 1. Прокрутка больше 300px
-                // 2. И вообще есть что прокручивать
+
                 if (scrollPosition > 500 && canScroll) {
                         this.button.classList.add('show');
                 } else {
@@ -82,7 +104,20 @@ class App {
                 this.initUIComponents();
                 this.initAnimations();
                 this.initHMR();
+        }
 
+        initFancybox() {
+
+                Fancybox.bind("[data-fancybox]", {
+                        Thumbs: false,
+                        Toolbar: {
+                                display: {
+                                        left: [],
+                                        middle: [],
+                                        right: ["close"],
+                                },
+                        },
+                });
         }
 
         initCoreModules() {
@@ -646,13 +681,14 @@ class App {
                         const updateTrack = () => {
                                 const minPercent = ((minVal - minAvailableValue) / (maxAvailableValue - minAvailableValue)) * 100;
                                 const maxPercent = ((maxVal - minAvailableValue) / (maxAvailableValue - minAvailableValue)) * 100;
+
                                 track.style.background = `linear-gradient(to right, 
-                        #FF7031 0%, 
-                        #FF7031 ${minPercent}%, 
-                        #F6F9FD ${minPercent}%, 
-                        #F6F9FD ${maxPercent}%, 
-                        #FF7031 ${maxPercent}%, 
-                        #FF7031 100%)`;
+                                #F6F9FD 0%, 
+                                #F6F9FD ${minPercent}%, 
+                                #FF7031 ${minPercent}%, 
+                                #FF7031 ${maxPercent}%, 
+                                #F6F9FD ${maxPercent}%, 
+                                #F6F9FD 100%)`;
                         };
 
                         const updateFromSliders = () => {
