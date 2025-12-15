@@ -21,6 +21,10 @@
 
   &:hover {
     color: c.$white;
+
+    svg {
+      filter: brightness(0) invert(1);
+    }
   }
 
   &::before {
@@ -196,16 +200,17 @@
     height: $mobile-height;
   }
 
+  svg {
+    filter: none;
+    transition: filter 0.3s 0.1s ease;
+  }
+
   &:hover {
     color: $hover-text-color;
     border: 2px solid $hover-bg;
 
-    .hover {
-      display: block;
-    }
-
-    .not-hover {
-      display: none;
+    svg {
+      filter: brightness(0) invert(1);
     }
   }
 

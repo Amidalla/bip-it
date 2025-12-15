@@ -18,7 +18,6 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
     const oldLightbox = document.getElementById('custom-lightbox');
     if (oldLightbox) oldLightbox.remove();
 
-
     const closeIcon = `
         <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M6.56641 5.56641L33.4365 32.4365" stroke="white" stroke-width="3" stroke-linecap="round"/>
@@ -26,17 +25,15 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
         </svg>
     `;
 
-
     const prevArrow = `
-        <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M23 9L13 19L23 29" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg width="8" height="15" viewBox="0 0 8 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 1L1 7.5L7 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     `;
 
-
     const nextArrow = `
-        <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 9L25 19L15 29" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg width="8" height="15" viewBox="0 0 8 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L7 7.5L1 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     `;
 
@@ -47,8 +44,18 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 <button class="lightbox-close" aria-label="Закрыть">
                     ${closeIcon}
                 </button>
-                <div class="lightbox-content">
-                    <img src="${images[startIndex]}" alt="" class="lightbox-image">
+                <div class="lightbox-swiper-container">
+                    <div class="lightbox-swiper">
+                        <div class="swiper-wrapper">
+                            ${images.map((img, idx) => `
+                                <div class="swiper-slide">
+                                    <div class="slide-image-container">
+                                        <img src="${img}" alt="" class="lightbox-image" data-index="${idx}">
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
                 </div>
                 ${images.length > 1 ? `
                     <button class="lightbox-nav lightbox-prev" aria-label="Предыдущее изображение">
@@ -68,54 +75,81 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
     const lightbox = document.getElementById('custom-lightbox');
     const backdrop = lightbox.querySelector('.lightbox-backdrop');
     const closeBtn = lightbox.querySelector('.lightbox-close');
-    const image = lightbox.querySelector('.lightbox-image');
     const prevBtn = lightbox.querySelector('.lightbox-prev');
     const nextBtn = lightbox.querySelector('.lightbox-next');
     const counter = lightbox.querySelector('.lightbox-counter');
 
-    let currentIndex = startIndex;
     document.body.style.overflow = 'hidden';
 
-    function updateImage() {
-        image.src = images[currentIndex];
-        if (counter) {
-            counter.textContent = `${currentIndex + 1} / ${images.length}`;
+
+    setTimeout(() => {
+
+        let lightboxSwiper = null;
+        if (images.length > 1) {
+            lightboxSwiper = new Swiper('.lightbox-swiper', {
+                initialSlide: startIndex,
+                slidesPerView: 1,
+                spaceBetween: 0,
+                centeredSlides: true,
+                speed: 300,
+                grabCursor: true,
+                simulateTouch: true,
+                touchRatio: 1,
+                touchAngle: 45,
+                shortSwipes: true,
+                longSwipesRatio: 0.5,
+                followFinger: true,
+                loop: false,
+                navigation: {
+                    nextEl: '.lightbox-next',
+                    prevEl: '.lightbox-prev',
+                },
+                on: {
+                    slideChange: function() {
+                        if (counter) {
+                            counter.textContent = `${this.activeIndex + 1} / ${images.length}`;
+                        }
+
+                        if (sliderInstance && !sliderInstance.destroyed) {
+                            sliderInstance.slideTo(this.activeIndex);
+                        }
+                    },
+                    init: function() {
+                        if (counter) {
+                            counter.textContent = `${this.activeIndex + 1} / ${images.length}`;
+                        }
+                    }
+                }
+            });
+        } else {
+
+            if (counter) {
+                counter.textContent = `1 / 1`;
+            }
         }
 
-        if (sliderInstance && !sliderInstance.destroyed) {
-            sliderInstance.slideTo(currentIndex);
+        function closeLightbox() {
+            document.body.style.overflow = '';
+            if (lightboxSwiper) {
+                lightboxSwiper.destroy(true, true);
+            }
+            lightbox.remove();
         }
-    }
 
-    function closeLightbox() {
-        document.body.style.overflow = '';
-        lightbox.remove();
-    }
 
-    backdrop.addEventListener('click', closeLightbox);
-    closeBtn.addEventListener('click', closeLightbox);
+        backdrop.addEventListener('click', closeLightbox);
+        closeBtn.addEventListener('click', closeLightbox);
 
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-            updateImage();
-        });
-    }
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('custom-lightbox')) return;
 
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex + 1) % images.length;
-            updateImage();
-        });
-    }
-
-    document.addEventListener('keydown', function(e) {
-        if (document.getElementById('custom-lightbox')) {
             if (e.key === 'Escape') closeLightbox();
             if (e.key === 'ArrowRight' && nextBtn) nextBtn.click();
             if (e.key === 'ArrowLeft' && prevBtn) prevBtn.click();
-        }
-    });
+        });
+
+    }, 10);
+
 
     if (!document.querySelector('#custom-lightbox-styles')) {
         const style = document.createElement('style');
@@ -128,7 +162,9 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 width: 100%;
                 height: 100%;
                 z-index: 99999;
+                overflow: hidden;
             }
+            
             
             .lightbox-backdrop {
                 position: fixed;
@@ -136,7 +172,9 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.95);
+                background-color: rgba(157, 162, 170, 0.7);
+                backdrop-filter: blur(25.8px);
+                -webkit-backdrop-filter: blur(25.8px);
                 animation: fadeIn 0.3s ease;
             }
             
@@ -149,19 +187,73 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 40px;
+                padding: 20px;
                 box-sizing: border-box;
                 z-index: 100000;
+                overflow: hidden;
             }
+            
+            .lightbox-swiper-container {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+            
+            .lightbox-swiper {
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+            
+            .lightbox-swiper .swiper-wrapper {
+                height: 100%;
+                align-items: center;
+            }
+            
+            .lightbox-swiper .swiper-slide {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+            
+            .slide-image-container {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+            
+            .lightbox-image {
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
+                object-fit: contain;
+                display: block;
+                margin: 0 auto;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                background: white;
+            }
+            
             
             .lightbox-close {
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                background: rgba(255, 255, 255, 0.1);
-                border: none;
-                width: 50px;
-                height: 50px;
+                background: rgba(15, 16, 25, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                width: 38px;
+                height: 38px;
                 border-radius: 50%;
                 cursor: pointer;
                 z-index: 100001;
@@ -170,10 +262,13 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 justify-content: center;
                 transition: all 0.3s ease;
                 padding: 0;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
             }
             
             .lightbox-close:hover {
-                background: rgba(255, 255, 255, 0.2);
+                background: rgba(15, 16, 25, 0.9);
+                border-color: rgba(255, 255, 255, 0.3);
                 transform: scale(1.1);
             }
             
@@ -186,31 +281,16 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 height: 20px;
             }
             
-            .lightbox-content {
-                max-width: 90vw;
-                max-height: 90vh;
-                animation: zoomIn 0.3s ease;
-                position: relative;
-                z-index: 10000;
-            }
-            
-            .lightbox-image {
-                max-width: 100%;
-                max-height: 80vh;
-                object-fit: contain;
-                border-radius: 8px;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            }
-            
+          
             .lightbox-nav {
                 position: fixed;
                 top: 50%;
                 transform: translateY(-50%);
-                background: rgba(255, 255, 255, 0.1);
-                border: none;
-                width: 60px;
-                height: 60px;
+                width: 38px;
+                height: 38px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 50%;
+                background: rgba(15, 16, 25, 0.5);
                 cursor: pointer;
                 z-index: 100001;
                 display: flex;
@@ -218,38 +298,37 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 justify-content: center;
                 transition: all 0.3s ease;
                 padding: 0;
+                opacity: 1;
+                visibility: visible;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
             }
             
             .lightbox-nav:hover {
-                background: rgba(255, 255, 255, 0.2);
-                transform: translateY(-50%) scale(1.1);
+                background: rgba(15, 16, 25, 0.9);
+                border-color: rgba(255, 255, 255, 0.3);
+                transform: translateY(-50%) scale(1.05);
             }
             
             .lightbox-nav:active {
                 transform: translateY(-50%) scale(0.95);
             }
             
+            /* Стили SVG внутри стрелок */
             .lightbox-nav svg {
-                width: 24px;
-                height: 24px;
+                width: 7.6px;
+                height: 15.2px;
             }
             
             .lightbox-prev { 
                 left: 20px; 
             }
             
-            .lightbox-prev svg {
-                margin-left: -2px;
-            }
-            
             .lightbox-next { 
                 right: 20px; 
             }
             
-            .lightbox-next svg {
-                margin-right: -2px;
-            }
-            
+          
             .lightbox-counter {
                 position: fixed;
                 bottom: 20px;
@@ -260,7 +339,7 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 font-size: 16px;
                 font-weight: 500;
                 z-index: 100001;
-                background: rgba(0, 0, 0, 0.5);
+                background: rgba(15, 16, 25, 0.5);
                 padding: 8px 16px;
                 border-radius: 20px;
                 display: inline-block;
@@ -268,28 +347,51 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 left: 50%;
                 transform: translateX(-50%);
                 backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
             }
             
             @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-            
-            @keyframes zoomIn {
                 from { 
                     opacity: 0;
-                    transform: scale(0.9);
+                    backdrop-filter: blur(0px);
+                    -webkit-backdrop-filter: blur(0px);
                 }
                 to { 
+                    opacity: 1;
+                    backdrop-filter: blur(25.8px);
+                    -webkit-backdrop-filter: blur(25.8px);
+                }
+            }
+            
+          
+            @keyframes imageAppear {
+                from {
+                    opacity: 0;
+                    transform: scale(0.95);
+                }
+                to {
                     opacity: 1;
                     transform: scale(1);
                 }
             }
             
-            /* Для мобильных устройств */
+            .lightbox-image {
+                animation: imageAppear 0.3s ease;
+            }
+            
+           
             @media (max-width: 768px) {
                 .lightbox-container {
-                    padding: 50px;
+                    padding: 10px;
+                }
+                
+                .lightbox-swiper-container {
+                    padding: 0;
+                }
+                
+                .slide-image-container {
+                    padding: 10px;
                 }
                 
                 .lightbox-close {
@@ -300,45 +402,77 @@ function createCustomLightbox(images, startIndex, sliderInstance) {
                 }
                 
                 .lightbox-close svg {
-                  width: 15px;
-                  height: 15px;
+                    width: 16px;
+                    height: 16px;
                 }
                 
                 .lightbox-nav {
-                    width: 40px;
-                    height: 40px;
+                    width: 34px;
+                    height: 34px;
                 }
                 
                 .lightbox-nav svg {
-                    width: 20px;
-                    height: 20px;
+                    width: 6.8px;
+                    height: 13.6px;
                 }
                 
                 .lightbox-prev {
-                    left: 5px;
+                    left: 10px;
                 }
                 
                 .lightbox-next {
-                    right: 5px;
+                    right: 10px;
                 }
                 
                 .lightbox-counter {
                     font-size: 14px;
                     padding: 6px 12px;
-                    bottom: 10px;
+                    bottom: 15px;
                 }
             }
             
-            /* Для очень маленьких экранов */
+           
             @media (max-width: 480px) {
+                .lightbox-nav {
+                    width: 32px;
+                    height: 32px;
+                }
+                
+                .lightbox-nav svg {
+                    width: 6.4px;
+                    height: 12.8px;
+                }
+                
                 .lightbox-counter {
                     font-size: 13px;
+                    padding: 5px 10px;
+                    bottom: 15px;
                 }
+                
+               
+                .lightbox-backdrop {
+                    backdrop-filter: blur(15px);
+                    -webkit-backdrop-filter: blur(15px);
+                }
+            }
+            
+        
+            .lightbox-swiper .swiper-slide {
+                -webkit-transform: translate3d(0,0,0);
+                transform: translate3d(0,0,0);
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+            
+           
+            .lightbox-swiper * {
+                -webkit-tap-highlight-color: transparent;
             }
         `;
         document.head.appendChild(style);
     }
 }
+
 function initSliderHover(swiperInstance) {
     const sliderElement = swiperInstance.el;
     const arrows = {

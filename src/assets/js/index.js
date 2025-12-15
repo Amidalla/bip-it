@@ -13,6 +13,8 @@ import { InitTabs } from "./tabs";
 import { BannerAnimation } from "./animation.js";
 import { ScrollAnimations } from "./scroll-animations.js";
 import IMask from 'imask';
+import { initSVGAnimation } from "./form-animation.js";
+
 
 
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
@@ -155,6 +157,7 @@ class App {
                 this.initCheckboxes();
                 this.initToTopButton();
                 this.initDropdownMenu();
+                this.initSVGAnimation();
 
                 if (!document.querySelector('.modal-filter.active')) {
                         this.initPriceSlider();
@@ -164,6 +167,15 @@ class App {
                         document.querySelectorAll('.price-filter, .filter-variants__item').forEach(item => {
                                 item.classList.add('collapsed');
                         });
+                }
+        }
+
+        initSVGAnimation() {
+
+                const svgContainer = document.querySelector('.main-form__animation');
+                if (svgContainer) {
+
+                        initSVGAnimation();
                 }
         }
 
@@ -292,67 +304,85 @@ class App {
         }
 
         initDropdownMenu() {
-
                 const desktopDropdowns = document.querySelectorAll('.header__item.drop-down');
                 let hideTimeout;
 
                 desktopDropdowns.forEach(dropdown => {
+                        const sublist = dropdown.querySelector('.header__sublist');
+                        let isAnimating = false;
 
-                        dropdown.addEventListener('mouseenter', () => {
+                        // Показать меню
+                        const showMenu = () => {
+                                if (isAnimating) return;
+
                                 clearTimeout(hideTimeout);
+                                dropdown.classList.remove('closing');
                                 dropdown.classList.add('active');
+                        };
+
+                        // Скрыть меню
+                        const hideMenu = () => {
+                                if (isAnimating) return;
+
+                                isAnimating = true;
+                                dropdown.classList.remove('active');
+                                dropdown.classList.add('closing');
+
+
+                                setTimeout(() => {
+                                        dropdown.classList.remove('closing');
+                                        isAnimating = false;
+                                }, 300);
+                        };
+
+                        // Обработчики
+                        dropdown.addEventListener('mouseenter', () => {
+                                showMenu();
                         });
 
                         dropdown.addEventListener('mouseleave', () => {
-                                hideTimeout = setTimeout(() => {
-                                        dropdown.classList.remove('active');
-                                }, 500);
+                                hideTimeout = setTimeout(hideMenu, 100);
                         });
 
-
-                        const sublist = dropdown.querySelector('.header__sublist');
                         if (sublist) {
                                 sublist.addEventListener('mouseenter', () => {
                                         clearTimeout(hideTimeout);
                                 });
 
                                 sublist.addEventListener('mouseleave', () => {
-                                        dropdown.classList.remove('active');
+                                        hideMenu();
                                 });
                         }
                 });
 
+                // Мобильное меню
+                document.addEventListener('click', (e) => {
+                        const mobileDropdown = e.target.closest('.mobile-menu__item.drop-down');
 
-                const mobileDropdowns = document.querySelectorAll('.mobile-menu__item.drop-down');
+                        if (!mobileDropdown) {
+                                document.querySelectorAll('.mobile-menu__item.drop-down.active').forEach(dropdown => {
+                                        dropdown.classList.remove('active');
+                                });
+                                return;
+                        }
 
-                mobileDropdowns.forEach(mobileDropdown => {
-                        mobileDropdown.addEventListener('click', (e) => {
+                        const allLinks = mobileDropdown.querySelectorAll('a');
+                        const clickedLink = e.target.closest('a');
+
+                        if (allLinks.length > 0 && clickedLink === allLinks[0]) {
                                 e.preventDefault();
                                 e.stopPropagation();
 
-
-                                mobileDropdowns.forEach(otherDropdown => {
-                                        if (otherDropdown !== mobileDropdown) {
-                                                otherDropdown.classList.remove('active');
+                                document.querySelectorAll('.mobile-menu__item.drop-down.active').forEach(dropdown => {
+                                        if (dropdown !== mobileDropdown) {
+                                                dropdown.classList.remove('active');
                                         }
                                 });
 
-
                                 mobileDropdown.classList.toggle('active');
-                        });
-                });
-
-
-                document.addEventListener('click', (e) => {
-                        if (!e.target.closest('.mobile-menu__item.drop-down')) {
-                                mobileDropdowns.forEach(dropdown => {
-                                        dropdown.classList.remove('active');
-                                });
                         }
                 });
         }
-
-
         // Валидация ИНН
         initINNValidation() {
                 const innInputs = document.querySelectorAll('input[data-mask="inn-legal"], #input-inn, #inn-nput');

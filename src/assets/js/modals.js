@@ -6,7 +6,6 @@ export function InitModals() {
     const mobileMenu = document.querySelector(".mobile-menu");
     const burgerBtn = document.querySelector(".header__burger");
     const closeMobileMenuBtn = document.querySelector(".mobile-menu__close");
-    const catalogImage = catalogModal?.querySelector("#catalogImage");
 
     const feedbackModal = document.querySelector(".feedback-form");
     const feedbackBtns = document.querySelectorAll(".feedback-btn");
@@ -465,7 +464,20 @@ export function InitModals() {
         });
         if (modalElement !== modalFilter && modalFilter?.classList.contains("active")) closeModalFilter();
 
-        modalElement?.classList.add("opened");
+        // Специальная обработка для каталога с анимацией
+        if (modalElement === catalogModal) {
+            modalElement.classList.add("opened");
+
+            // Принудительный reflow для запуска CSS анимации
+            requestAnimationFrame(() => {
+                void modalElement.offsetWidth;
+            });
+
+            initCatalogModal();
+            loadCatalogImages();
+        } else {
+            modalElement?.classList.add("opened");
+        }
 
         if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === vacancyModal || modalElement === marketplaceModal || modalElement === addedCartModal) && overlay) {
             overlay.classList.add("opened");
@@ -473,26 +485,39 @@ export function InitModals() {
 
         document.body.style.overflow = "hidden";
         document.body.classList.add("modal-opened");
-
-        if (modalElement === catalogModal) {
-            initCatalogModal();
-            loadCatalogImages();
-        }
     }
 
     function closeModal(modalElement) {
-        modalElement?.classList.remove("opened");
+        // Для каталога - плавная анимация закрытия
+        if (modalElement === catalogModal) {
+            modalElement.classList.remove("opened");
 
-        if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === vacancyModal || modalElement === marketplaceModal || modalElement === addedCartModal) && overlay) {
-            overlay.classList.remove("opened");
+            // Ждем завершения CSS анимации перед сбросом стилей body
+            setTimeout(() => {
+                if (!modalElement.classList.contains("opened")) {
+                    document.body.style.overflow = "";
+                    document.body.classList.remove("modal-opened");
+                }
+            }, 400); // Время должно совпадать с CSS transition времени (0.4s)
+        } else {
+            modalElement?.classList.remove("opened");
+
+            if ((modalElement === feedbackModal || modalElement === mobileMenu || modalElement === vacancyModal || modalElement === marketplaceModal || modalElement === addedCartModal) && overlay) {
+                overlay.classList.remove("opened");
+            }
+
+            document.body.style.overflow = "";
+            document.body.classList.remove("modal-opened");
         }
-
-        document.body.style.overflow = "";
-        document.body.classList.remove("modal-opened");
     }
 
     function toggleModal(modalElement) {
-        modalElement?.classList.contains("opened") ? closeModal(modalElement) : openModal(modalElement);
+        if (modalElement === catalogModal && modalElement?.classList.contains("opened")) {
+            // Для каталога - плавное закрытие
+            closeModal(modalElement);
+        } else {
+            modalElement?.classList.contains("opened") ? closeModal(modalElement) : openModal(modalElement);
+        }
     }
 
     function openModalFilter() {
@@ -526,10 +551,11 @@ export function InitModals() {
 
     document.addEventListener("click", e => {
         if (catalogModal?.classList.contains("opened")) {
-            const isClickInsideCatalog = catalogModal.contains(e.target);
+            const catalogContainer = catalogModal.querySelector(".catalog-container");
+            const isClickInsideContainer = catalogContainer?.contains(e.target);
             const isClickOnCatalogBtn = e.target.closest(".catalog-btn");
 
-            if (!isClickInsideCatalog && !isClickOnCatalogBtn) {
+            if (!isClickInsideContainer && !isClickOnCatalogBtn) {
                 closeModal(catalogModal);
             }
         }
@@ -620,9 +646,13 @@ export function InitModals() {
 
     document.addEventListener("keydown", e => {
         if (e.key === "Escape") {
-            [catalogModal, mobileMenu, feedbackModal, vacancyModal, marketplaceModal, addedCartModal].forEach(m => {
-                if (m?.classList.contains("opened")) closeModal(m);
-            });
+            if (catalogModal?.classList.contains("opened")) {
+                closeModal(catalogModal);
+            } else {
+                [mobileMenu, feedbackModal, vacancyModal, marketplaceModal, addedCartModal].forEach(m => {
+                    if (m?.classList.contains("opened")) closeModal(m);
+                });
+            }
             if (modalFilter?.classList.contains("active")) closeModalFilter();
         }
     });
