@@ -1,4 +1,974 @@
+// form-animation-final-version.js
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+function shouldRunAnimations() {
+    return window.innerWidth >= 1301;
+}
+
+// ========== КЛАСС ДЛЯ РАДИАЛЬНЫХ ЛИНИЙ С ГРАДИЕНТАМИ ==========
+class RadialLinesRenderer {
+    constructor(ctx, svgElement) {
+        this.ctx = ctx;
+        this.svgElement = svgElement;
+        this.lines = [];
+        this.animatedLines = [];
+        this.gradientsCache = new Map();
+        this.isAnimating = false;
+        this.animationFrameId = null;
+        this.animationTime = 0;
+        this.lastTime = 0;
+    }
+
+    // Парсинг всех радиальных линий из SVG
+    parseAllLinesFromSVG() {
+        const allPaths = Array.from(this.svgElement.querySelectorAll('path'));
+
+        const excludedPaths = [
+            'M686 399.915V335.085C686 331.651 684.166 328.42 681.108 326.703L624.341 294.288',
+            'M621.376 327V359.822H635L614.684 406V372.939H601L621.376 327Z',
+            'M687 369.5H1119.5',
+            'M552.537 371.641L-414.463 371.641'
+        ];
+
+        const lines = [];
+
+        allPaths.forEach((path, index) => {
+            const d = path.getAttribute('d') || '';
+            const stroke = path.getAttribute('stroke') || '';
+
+            if (!d || d.length < 20) return;
+
+            let isExcluded = false;
+            for (const excludedPath of excludedPaths) {
+                if (d.startsWith(excludedPath.substring(0, 30))) {
+                    isExcluded = true;
+                    break;
+                }
+            }
+
+            if (isExcluded) return;
+
+            const isCurve = d.includes('C');
+            if (isCurve) {
+                const hasGradient = stroke.includes('url(#');
+
+                let gradientId = '';
+                let gradientData = null;
+
+                if (hasGradient) {
+                    const match = stroke.match(/url\(#([^)]+)\)/);
+                    if (match) {
+                        gradientId = match[1];
+                        gradientData = this.parseGradient(gradientId);
+                    }
+                }
+
+                lines.push({
+                    id: `line-${index}`,
+                    d,
+                    stroke: '#FF7031',
+                    strokeWidth: 1,
+                    gradientId,
+                    gradientData,
+                    element: path,
+                    originalStroke: stroke,
+                    index: index
+                });
+            }
+        });
+
+        return lines;
+    }
+
+    // Парсинг данных градиента
+    parseGradient(gradientId) {
+        if (this.gradientsCache.has(gradientId)) {
+            return this.gradientsCache.get(gradientId);
+        }
+
+        const gradientElement = this.svgElement.querySelector(`#${gradientId}`);
+        if (!gradientElement) return null;
+
+        const stops = Array.from(gradientElement.querySelectorAll('stop'));
+        const gradientStops = stops.map(stop => ({
+            offset: parseFloat(stop.getAttribute('offset')) || 0,
+            color: stop.getAttribute('stop-color') || '#FF7031',
+            opacity: parseFloat(stop.getAttribute('stop-opacity')) || 1
+        }));
+
+        const x1 = gradientElement.getAttribute('x1');
+        const y1 = gradientElement.getAttribute('y1');
+        const x2 = gradientElement.getAttribute('x2');
+        const y2 = gradientElement.getAttribute('y2');
+
+        const gradientData = {
+            id: gradientId,
+            x1: x1 ? parseFloat(x1) : 0,
+            y1: y1 ? parseFloat(y1) : 0,
+            x2: x2 ? parseFloat(x2) : 1,
+            y2: y2 ? parseFloat(y2) : 0,
+            stops: gradientStops,
+            element: gradientElement
+        };
+
+        this.gradientsCache.set(gradientId, gradientData);
+        return gradientData;
+    }
+
+    // Инициализация линий
+    init(linesData) {
+        this.lines = linesData;
+
+        this.lines.forEach((line, index) => {
+            line.points = this.parsePathToPoints(line.d);
+            line.length = this.calculatePathLength(line.points);
+
+            if (line.points.length >= 2) {
+                line.startPoint = line.points[0];
+                line.endPoint = line.points[line.points.length - 1];
+
+                const centerX = 619.5;
+                const centerY = 367.5;
+
+                line.startDist = Math.sqrt(
+                    Math.pow(line.startPoint.x - centerX, 2) +
+                    Math.pow(line.startPoint.y - centerY, 2)
+                );
+                line.endDist = Math.sqrt(
+                    Math.pow(line.endPoint.x - centerX, 2) +
+                    Math.pow(line.endPoint.y - centerY, 2)
+                );
+
+                line.closerToCenter = line.startDist < line.endDist ? 'start' : 'end';
+            }
+
+            const shouldAnimate = index % 3 === 0 || index % 4 === 0;
+
+            if (shouldAnimate && line.length > 60) {
+                line.hasAnimation = true;
+                const lengths = [20, 30];
+                line.animationLength = lengths[Math.floor(Math.random() * lengths.length)];
+                this.animatedLines.push(line);
+            } else {
+                line.hasAnimation = false;
+            }
+        });
+
+        this.initLineAnimations();
+    }
+
+    // Преобразование SVG path в массив точек
+    parsePathToPoints(d) {
+        const points = [];
+        const commands = d.match(/[MCL][^MCL]*/g) || [];
+
+        let currentX = 0;
+        let currentY = 0;
+        let isFirstPoint = true;
+
+        commands.forEach(cmd => {
+            if (!cmd.trim()) return;
+
+            const type = cmd[0];
+            const coords = cmd.slice(1).trim().split(/[\s,]+/).map(Number);
+
+            if (type === 'M') {
+                currentX = coords[0];
+                currentY = coords[1];
+                if (isFirstPoint) {
+                    points.push({ x: currentX, y: currentY, type: 'move' });
+                    isFirstPoint = false;
+                }
+            } else if (type === 'L') {
+                currentX = coords[0];
+                currentY = coords[1];
+                points.push({ x: currentX, y: currentY, type: 'line' });
+            } else if (type === 'C') {
+                currentX = coords[4];
+                currentY = coords[5];
+                points.push({
+                    x: currentX,
+                    y: currentY,
+                    type: 'curve',
+                    cp1x: coords[0], cp1y: coords[1],
+                    cp2x: coords[2], cp2y: coords[3]
+                });
+            }
+        });
+
+        return points;
+    }
+
+    // Вычисление длины пути
+    calculatePathLength(points) {
+        if (points.length < 2) return 0;
+
+        let length = 0;
+        for (let i = 1; i < points.length; i++) {
+            const dx = points[i].x - points[i-1].x;
+            const dy = points[i].y - points[i-1].y;
+            length += Math.sqrt(dx * dx + dy * dy);
+        }
+        return length;
+    }
+
+    // Отрисовка всех статических линий с градиентами
+    drawAllLines() {
+        if (this.lines.length === 0) return;
+
+        const centerX = 619.5;
+        const centerY = 367.5;
+
+        const sortedLines = this.lines.map(line => {
+            const firstPoint = line.points[0];
+            const distance = Math.sqrt(
+                Math.pow(firstPoint.x - centerX, 2) +
+                Math.pow(firstPoint.y - centerY, 2)
+            );
+            return { line, distance };
+        }).sort((a, b) => b.distance - a.distance);
+
+        sortedLines.forEach(({ line }, index) => {
+            this.drawStaticLineWithGradient(line, index);
+        });
+    }
+
+    // Отрисовка одной статической линии с градиентом
+    drawStaticLineWithGradient(line, index) {
+        if (!line.points || line.points.length < 2) return;
+
+        this.ctx.save();
+
+        try {
+            if (line.startPoint && line.endPoint) {
+                let gradient;
+                if (line.startDist < line.endDist) {
+                    gradient = this.ctx.createLinearGradient(
+                        line.startPoint.x, line.startPoint.y,
+                        line.endPoint.x, line.endPoint.y
+                    );
+                } else {
+                    gradient = this.ctx.createLinearGradient(
+                        line.endPoint.x, line.endPoint.y,
+                        line.startPoint.x, line.startPoint.y
+                    );
+                }
+
+                gradient.addColorStop(0, 'rgba(255, 112, 49, 0.9)');
+                gradient.addColorStop(0.3, 'rgba(255, 112, 49, 0.6)');
+                gradient.addColorStop(0.6, 'rgba(255, 112, 49, 0.3)');
+                gradient.addColorStop(0.9, 'rgba(255, 112, 49, 0.1)');
+                gradient.addColorStop(1, 'rgba(255, 112, 49, 0)');
+
+                this.ctx.strokeStyle = gradient;
+            } else {
+                this.ctx.strokeStyle = 'rgba(255, 112, 49, 0.8)';
+            }
+        } catch (error) {
+            this.ctx.strokeStyle = 'rgba(255, 112, 49, 0.8)';
+        }
+
+        this.ctx.lineWidth = 1.1;
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+
+        this.ctx.beginPath();
+
+        const firstPoint = line.points[0];
+        if (firstPoint) {
+            this.ctx.moveTo(firstPoint.x, firstPoint.y);
+        }
+
+        for (let i = 1; i < line.points.length; i++) {
+            const prevPoint = line.points[i-1];
+            const currentPoint = line.points[i];
+
+            if (currentPoint.type === 'curve') {
+                this.ctx.bezierCurveTo(
+                    currentPoint.cp1x, currentPoint.cp1y,
+                    currentPoint.cp2x, currentPoint.cp2y,
+                    currentPoint.x, currentPoint.y
+                );
+            } else {
+                this.ctx.lineTo(currentPoint.x, currentPoint.y);
+            }
+        }
+
+        this.ctx.stroke();
+        this.ctx.restore();
+    }
+
+    // Инициализация анимаций на линиях
+    initLineAnimations() {
+        this.animationCanvas = document.createElement('canvas');
+        this.animationCanvas.width = this.ctx.canvas.width;
+        this.animationCanvas.height = this.ctx.canvas.height;
+        this.animationCanvas.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            pointer-events: none;
+            z-index: 15;
+            background: transparent;
+        `;
+
+        this.animationCtx = this.animationCanvas.getContext('2d');
+
+        if (this.ctx.canvas.parentNode) {
+            this.ctx.canvas.parentNode.appendChild(this.animationCanvas);
+        }
+
+        this.startLineAnimations();
+    }
+
+    // Запуск анимаций линий
+    startLineAnimations() {
+        this.isAnimating = true;
+        this.animationTime = 0;
+        this.lastTime = 0;
+
+        const animate = (timestamp) => {
+            if (!this.isAnimating) return;
+
+            if (!this.lastTime) this.lastTime = timestamp;
+            const delta = timestamp - this.lastTime;
+            this.lastTime = timestamp;
+
+            this.animationTime += delta * 0.001;
+
+            if (this.animationTime > 3600) {
+                this.animationTime = this.animationTime % 3600;
+            }
+
+            this.animationCtx.clearRect(0, 0, this.animationCanvas.width, this.animationCanvas.height);
+            this.drawMovingElements();
+            this.animationFrameId = requestAnimationFrame(animate);
+        };
+
+        this.animationFrameId = requestAnimationFrame(animate);
+    }
+
+    // Отрисовка всех движущихся элементов
+    drawMovingElements() {
+        this.animatedLines.forEach((line, index) => {
+            this.drawMovingLineOnPath(line, index);
+        });
+    }
+
+    // Отрисовка движущегося элемента на линии
+    drawMovingLineOnPath(line, lineIndex) {
+        if (!line.points || line.points.length < 2) return;
+
+        this.animationCtx.save();
+
+        this.animationCtx.strokeStyle = '#FF7031';
+        this.animationCtx.lineWidth = 1.5;
+        this.animationCtx.lineCap = 'round';
+        this.animationCtx.lineJoin = 'round';
+        this.animationCtx.globalAlpha = 0.8;
+
+        const totalLength = line.length;
+        const segmentLength = line.animationLength || 25;
+        const gapLength = totalLength * 0.8;
+
+        const cycleDuration = 8 + (lineIndex % 6) * 1.5;
+        const pixelsPerSecond = totalLength / cycleDuration;
+        const offset = (this.animationTime * pixelsPerSecond) % (segmentLength + gapLength);
+
+        this.animationCtx.setLineDash([segmentLength, gapLength]);
+
+        if (line.closerToCenter === 'start') {
+            this.animationCtx.lineDashOffset = -offset;
+        } else {
+            this.animationCtx.lineDashOffset = offset;
+        }
+
+        this.animationCtx.beginPath();
+
+        const firstPoint = line.points[0];
+        if (firstPoint) {
+            this.animationCtx.moveTo(firstPoint.x, firstPoint.y);
+        }
+
+        for (let i = 1; i < line.points.length; i++) {
+            const prevPoint = line.points[i-1];
+            const currentPoint = line.points[i];
+
+            if (currentPoint.type === 'curve') {
+                this.animationCtx.bezierCurveTo(
+                    currentPoint.cp1x, currentPoint.cp1y,
+                    currentPoint.cp2x, currentPoint.cp2y,
+                    currentPoint.x, currentPoint.y
+                );
+            } else {
+                this.animationCtx.lineTo(currentPoint.x, currentPoint.y);
+            }
+        }
+
+        this.animationCtx.stroke();
+        this.animationCtx.setLineDash([]);
+        this.animationCtx.restore();
+    }
+
+    // Получение точки на линии по параметру t
+    getPointOnLine(points, t) {
+        if (points.length < 2 || t < 0 || t > 1) return null;
+
+        const totalLength = this.calculatePathLength(points);
+        const targetLength = totalLength * t;
+
+        let accumulatedLength = 0;
+
+        for (let i = 1; i < points.length; i++) {
+            const p0 = points[i-1];
+            const p1 = points[i];
+
+            const segmentLength = Math.sqrt(
+                Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2)
+            );
+
+            if (accumulatedLength + segmentLength >= targetLength) {
+                const segmentT = (targetLength - accumulatedLength) / segmentLength;
+
+                if (p1.type === 'curve') {
+                    const mt = 1 - segmentT;
+                    return {
+                        x: mt*mt*mt*p0.x + 3*mt*mt*segmentT*p1.cp1x + 3*mt*segmentT*segmentT*p1.cp2x + segmentT*segmentT*segmentT*p1.x,
+                        y: mt*mt*mt*p0.y + 3*mt*mt*segmentT*p1.cp1y + 3*mt*segmentT*segmentT*p1.cp2y + segmentT*segmentT*segmentT*p1.y
+                    };
+                } else {
+                    return {
+                        x: p0.x + (p1.x - p0.x) * segmentT,
+                        y: p0.y + (p1.y - p0.y) * segmentT
+                    };
+                }
+            }
+
+            accumulatedLength += segmentLength;
+        }
+
+        return points[points.length - 1];
+    }
+
+    // Остановка анимаций
+    stopAnimations() {
+        this.isAnimating = false;
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+    }
+
+    // Полная очистка
+    cleanup() {
+        this.stopAnimations();
+        this.lines = [];
+        this.animatedLines = [];
+        this.gradientsCache.clear();
+
+        if (this.animationCanvas && this.animationCanvas.parentNode) {
+            this.animationCanvas.parentNode.removeChild(this.animationCanvas);
+        }
+    }
+}
+
+// ========== КЛАСС АНИМАЦИИ ШАРИКОВ ==========
+class InfiniteBallAnimation {
+    constructor(canvas, hexagonRightEdgeX, y, lineEndX) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.hexagonRightEdge = 686;
+        this.y = y;
+        this.endX = lineEndX;
+        this.balls = [];
+        this.isRunning = false;
+        this.animationId = null;
+        this.lastTime = 0;
+
+        this.targetBallCount = 4;
+        this.dotRadius = 6;
+        this.glowRadius = 9;
+        this.minSpeed = 0.8;
+        this.maxSpeed = 1.2;
+        this.minSpawnInterval = 1500;
+        this.maxSpawnInterval = 4000;
+        this.pulseSpeed = 2.0;
+        this.pulseIntensity = 0.15;
+        this.spawnTimer = null;
+    }
+
+    // Запуск анимации шариков
+    start() {
+        if (this.isRunning) return;
+        this.isRunning = true;
+        this.lastTime = performance.now();
+
+        this.startSpawningBalls();
+        this.animate();
+    }
+
+    // Остановка анимации шариков
+    stop() {
+        this.isRunning = false;
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+        }
+        if (this.spawnTimer) {
+            clearTimeout(this.spawnTimer);
+        }
+        this.balls = [];
+    }
+
+    // Запуск спавна шариков
+    startSpawningBalls() {
+        const spawnNextBall = () => {
+            if (!this.isRunning) return;
+
+            const ballsOnLine = this.balls.filter(ball =>
+                ball.x >= this.hexagonRightEdge && ball.x <= this.endX
+            ).length;
+
+            if (ballsOnLine < this.targetBallCount) {
+                const newBall = {
+                    id: `ball-${Date.now()}`,
+                    x: this.hexagonRightEdge,
+                    y: this.y,
+                    radius: this.dotRadius,
+                    currentRadius: this.dotRadius,
+                    speed: this.minSpeed + Math.random() * (this.maxSpeed - this.minSpeed),
+                    pulseTime: Math.random() * Math.PI * 2,
+                    opacity: 0.9 + Math.random() * 0.1,
+                    isActive: true
+                };
+                this.balls.push(newBall);
+            }
+
+            if (this.isRunning) {
+                const nextSpawnTime = this.minSpawnInterval + Math.random() * (this.maxSpawnInterval - this.minSpawnInterval);
+                this.spawnTimer = setTimeout(spawnNextBall, nextSpawnTime);
+            }
+        };
+
+        const firstSpawnTime = this.minSpawnInterval + Math.random() * (this.maxSpawnInterval - this.minSpawnInterval);
+        this.spawnTimer = setTimeout(spawnNextBall, firstSpawnTime);
+    }
+
+    // Основной цикл анимации шариков
+    animate(currentTime = 0) {
+        if (!this.isRunning) return;
+
+        const delta = Math.min(currentTime - this.lastTime, 32);
+        this.lastTime = currentTime;
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (let i = 0; i < this.balls.length; i++) {
+            const ball = this.balls[i];
+            if (!ball.isActive) continue;
+
+            ball.pulseTime += 0.03 * (delta / 16);
+            const pulse = 1 + Math.sin(ball.pulseTime * this.pulseSpeed) * this.pulseIntensity;
+            ball.currentRadius = ball.radius * pulse;
+
+            ball.x += ball.speed * (delta / 16);
+
+            if (ball.x > this.endX + 50) {
+                this.balls.splice(i, 1);
+                i--;
+                continue;
+            }
+
+            if (ball.x >= this.hexagonRightEdge) {
+                this.drawBallLikeInSVG(ball.x, ball.y, ball.currentRadius, ball.opacity);
+            }
+        }
+
+        this.animationId = requestAnimationFrame((time) => this.animate(time));
+    }
+
+    // Отрисовка шарика как в SVG
+    drawBallLikeInSVG(x, y, radius, opacity) {
+        this.ctx.save();
+
+        this.ctx.globalAlpha = opacity * 0.28;
+        this.ctx.fillStyle = '#FF7031';
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, this.glowRadius, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.globalAlpha = opacity;
+        this.ctx.fillStyle = '#FF7031';
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.restore();
+    }
+}
+
+// ========== ФУНКЦИИ ОТРИСОВКИ СТАТИЧЕСКИХ ЭЛЕМЕНТОВ ==========
+
+// Отрисовка шестиугольника
+function drawHexagon(ctx, opacity = 1, rotation = 0) {
+    ctx.save();
+    ctx.globalAlpha = opacity;
+
+    if (rotation !== 0) {
+        ctx.translate(619.5, 367.5);
+        ctx.rotate(rotation * Math.PI / 180);
+        ctx.translate(-619.5, -367.5);
+    }
+
+    const gradient = ctx.createRadialGradient(
+        619.5, 367.5, 0,
+        619.5, 367.5, 200
+    );
+    gradient.addColorStop(0, 'rgba(255, 112, 49, 0)');
+    gradient.addColorStop(1, `rgba(255, 112, 49, ${opacity})`);
+
+    ctx.beginPath();
+    ctx.moveTo(686, 399.915);
+    ctx.lineTo(686, 335.085);
+    ctx.bezierCurveTo(686, 331.651, 684.166, 328.42, 681.108, 326.703);
+    ctx.lineTo(624.341, 294.288);
+    ctx.bezierCurveTo(621.284, 292.571, 617.615, 292.571, 614.557, 294.288);
+    ctx.lineTo(557.892, 326.703);
+    ctx.bezierCurveTo(554.834, 328.42, 553, 331.651, 553, 335.085);
+    ctx.lineTo(553, 399.915);
+    ctx.bezierCurveTo(553, 403.349, 554.834, 406.58, 557.892, 408.297);
+    ctx.lineTo(614.557, 440.712);
+    ctx.bezierCurveTo(617.615, 442.429, 621.284, 442.429, 624.341, 440.712);
+    ctx.lineTo(681.006, 408.297);
+    ctx.bezierCurveTo(684.064, 406.58, 685.898, 403.349, 685.898, 399.915);
+    ctx.closePath();
+
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    ctx.strokeStyle = `rgba(229, 83, 10, ${opacity})`;
+    ctx.lineWidth = 1.84282;
+    ctx.lineJoin = 'miter';
+    ctx.miterLimit = 10;
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+// Отрисовка логотипа
+function drawLogo(ctx, opacity = 1) {
+    ctx.save();
+    ctx.globalAlpha = opacity;
+
+    ctx.beginPath();
+    ctx.moveTo(621.376, 327);
+    ctx.lineTo(621.376, 359.822);
+    ctx.lineTo(635, 359.822);
+    ctx.lineTo(614.684, 406);
+    ctx.lineTo(614.684, 372.939);
+    ctx.lineTo(601, 372.939);
+    ctx.lineTo(621.376, 327);
+    ctx.closePath();
+
+    ctx.fillStyle = `rgba(255, 159, 49, ${opacity})`;
+    ctx.fill();
+
+    ctx.restore();
+}
+
+// Отрисовка анимированной основной линии
+function drawAnimatedMainLine(ctx, startX, y, endX, progress, opacity = 1) {
+    ctx.save();
+    ctx.globalAlpha = opacity;
+
+    const lineLength = endX - startX;
+    const dashLength = lineLength * progress;
+    const remainingLength = lineLength - dashLength;
+
+    ctx.beginPath();
+    ctx.moveTo(startX, y);
+    ctx.lineTo(endX, y);
+
+    ctx.strokeStyle = '#FF7031';
+    ctx.lineWidth = 1;
+    ctx.lineCap = 'round';
+
+    ctx.setLineDash([dashLength, remainingLength]);
+    ctx.lineDashOffset = 0;
+
+    ctx.stroke();
+    ctx.restore();
+}
+
+// ========== ОСНОВНАЯ ФУНКЦИЯ ИНИЦИАЛИЗАЦИИ ==========
+export function initSVGAnimation() {
+    if (!shouldRunAnimations()) {
+        return null;
+    }
+
+    const mainForm = document.querySelector('.main-form');
+    if (!mainForm) return null;
+
+    try {
+        const svgElement = document.querySelector('#main-animated-svg');
+        if (!svgElement) return null;
+
+        const svgWidth = parseInt(svgElement.getAttribute('width')) || 1120;
+        const svgHeight = parseInt(svgElement.getAttribute('height')) || 573;
+
+        const container = document.createElement('div');
+        container.style.cssText = `
+            position: relative;
+            width: 100%;
+            max-width: ${svgWidth}px;
+            margin: 0 auto;
+        `;
+
+        const mainCanvas = document.createElement('canvas');
+        mainCanvas.className = 'main-canvas';
+        mainCanvas.width = svgWidth;
+        mainCanvas.height = svgHeight;
+        mainCanvas.style.cssText = `
+            width: 100%;
+            height: auto;
+            display: block;
+            max-width: ${svgWidth}px;
+            background: transparent;
+        `;
+
+        const ballsCanvas = document.createElement('canvas');
+        ballsCanvas.className = 'balls-canvas';
+        ballsCanvas.width = svgWidth;
+        ballsCanvas.height = svgHeight;
+        ballsCanvas.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            max-width: ${svgWidth}px;
+            z-index: 20;
+            pointer-events: none;
+            background: transparent;
+        `;
+
+        container.appendChild(mainCanvas);
+        container.appendChild(ballsCanvas);
+        svgElement.parentNode.insertBefore(container, svgElement);
+
+        svgElement.style.display = 'none';
+
+        const mainCtx = mainCanvas.getContext('2d');
+        const ballsCtx = ballsCanvas.getContext('2d');
+
+        const hexagonRightEdgeX = 686;
+        const lineEndX = 1119.5;
+        const lineY = 369.5;
+
+        const linesRenderer = new RadialLinesRenderer(mainCtx, svgElement);
+        const linesData = linesRenderer.parseAllLinesFromSVG();
+        let hasLines = linesData.length > 0;
+
+        if (hasLines) {
+            linesRenderer.init(linesData);
+        }
+
+        let ballAnimation = new InfiniteBallAnimation(ballsCanvas, hexagonRightEdgeX, lineY, lineEndX);
+        let ballsStarted = false;
+
+        const state = {
+            hexagonRotation: 0,
+            hexagonOpacity: 0,
+            logoOpacity: 0,
+            lineProgress: 0,
+            isComplete: false
+        };
+
+        function drawStaticElements() {
+            mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+
+            if (hasLines) {
+                linesRenderer.drawAllLines();
+            }
+
+            if (state.hexagonOpacity > 0) {
+                drawHexagon(mainCtx, state.hexagonOpacity, state.hexagonRotation);
+            }
+
+            if (state.logoOpacity > 0) {
+                drawLogo(mainCtx, state.logoOpacity);
+            }
+
+            if (state.lineProgress > 0) {
+                drawAnimatedMainLine(mainCtx, hexagonRightEdgeX, lineY, lineEndX, state.lineProgress, 1);
+            }
+        }
+
+        drawStaticElements();
+
+        const masterTimeline = gsap.timeline({
+            paused: true,
+            onUpdate: () => {
+                mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+
+                if (hasLines) {
+                    linesRenderer.drawAllLines();
+                }
+
+                if (state.hexagonOpacity > 0) {
+                    drawHexagon(mainCtx, state.hexagonOpacity, state.hexagonRotation);
+                }
+
+                if (state.logoOpacity > 0) {
+                    drawLogo(mainCtx, state.logoOpacity);
+                }
+
+                if (state.lineProgress > 0) {
+                    drawAnimatedMainLine(mainCtx, hexagonRightEdgeX, lineY, lineEndX, state.lineProgress, 1);
+                }
+
+                if (state.lineProgress > 0 && !ballsStarted) {
+                    ballsStarted = true;
+                    ballAnimation.start();
+                }
+            }
+        });
+
+        masterTimeline.to(state, {
+            hexagonOpacity: 1,
+            duration: 0.4,
+            ease: "power2.out"
+        }, 0);
+
+        masterTimeline.to(state, {
+            logoOpacity: 1,
+            duration: 0.3,
+            ease: "power2.out"
+        }, 0);
+
+        masterTimeline.to(state, {
+            hexagonRotation: 360,
+            duration: 1.8,
+            ease: "power2.inOut"
+        }, 0);
+
+        masterTimeline.to(state, {
+            lineProgress: 1,
+            duration: 1.2,
+            ease: "power2.inOut"
+        }, 0);
+
+        const staticDots = [
+            svgElement.querySelector('circle[cx="775.5"]'),
+            svgElement.querySelector('circle[cx="870.5"]'),
+            svgElement.querySelector('circle[cx="965.5"]')
+        ].filter(Boolean);
+
+        staticDots.forEach((dot, index) => {
+            if (!dot) return;
+
+            const originalR = parseFloat(dot.getAttribute('r')) || 2.5;
+            const pulseDelay = 1.8 + (index * 0.5);
+
+            masterTimeline.to(dot, {
+                attr: { r: originalR * 1.4 },
+                duration: 0.5,
+                ease: "sine.out",
+                repeat: -1,
+                yoyo: true,
+                repeatDelay: 1.0
+            }, pulseDelay);
+        });
+
+        ScrollTrigger.create({
+            trigger: mainForm,
+            start: "top 80%",
+            end: "bottom 20%",
+            once: true,
+            onEnter: () => {
+                masterTimeline.play();
+            },
+            onEnterBack: () => {
+                if (masterTimeline.progress() === 0) {
+                    masterTimeline.play();
+                }
+            }
+        });
+
+        return {
+            container,
+            timeline: masterTimeline,
+            cleanup: () => {
+                if (ballAnimation) {
+                    ballAnimation.stop();
+                }
+
+                if (linesRenderer) {
+                    linesRenderer.cleanup();
+                }
+
+                masterTimeline.kill();
+                gsap.killTweensOf('*');
+
+                staticDots.forEach(dot => {
+                    if (dot) {
+                        gsap.killTweensOf(dot);
+                        const originalR = parseFloat(dot.getAttribute('data-original-r')) || 2.5;
+                        dot.setAttribute('r', originalR);
+                    }
+                });
+
+                if (container && container.parentNode) {
+                    container.parentNode.removeChild(container);
+                }
+
+                if (svgElement) {
+                    svgElement.style.display = 'block';
+                }
+            }
+        };
+
+    } catch (error) {
+        return null;
+    }
+}
+
+// Функция очистки анимаций
+export function cleanupSVGAnimations() {
+    const container = document.querySelector('div[style*="position: relative"]');
+    const svgElement = document.querySelector('#main-animated-svg');
+    const mainCanvas = document.querySelector('.main-canvas');
+    const ballsCanvas = document.querySelector('.balls-canvas');
+
+    if (mainCanvas && mainCanvas.parentNode) {
+        mainCanvas.parentNode.removeChild(mainCanvas);
+    }
+
+    if (ballsCanvas && ballsCanvas.parentNode) {
+        ballsCanvas.parentNode.removeChild(ballsCanvas);
+    }
+
+    if (container && container.parentNode) {
+        container.parentNode.removeChild(container);
+    }
+
+    if (svgElement) {
+        svgElement.style.display = 'block';
+    }
+
+    gsap.killTweensOf('*');
+
+    document.querySelectorAll('circle[cx="775.5"], circle[cx="870.5"], circle[cx="965.5"]').forEach(dot => {
+        const originalR = parseFloat(dot.getAttribute('data-original-r')) || 2.5;
+        dot.setAttribute('r', originalR);
+        dot.removeAttribute('data-original-r');
+    });
+}
+/*import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -700,4 +1670,4 @@ window.addEventListener('resize', () => {
             cleanupSVGAnimations();
         }
     }, 250);
-});
+});*/

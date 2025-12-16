@@ -190,6 +190,8 @@ body.no-scroll {
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
+      border: none;
+      outline: none;
 
       @media(max-width: 1640px) {
         font-size: 18px;
@@ -2068,57 +2070,52 @@ body.no-scroll {
     left: 0;
     z-index: 3;
     max-width: 1000px;
-    bottom: -16px;
+    bottom: 18px;
 
     @media (max-width: 1840px) {
       max-width: 1100px;
-      bottom: -9px;
+      bottom: 0;
     }
 
     @media(max-width: 1750px){
       max-width: 1030px;
-      bottom: -16px;
+      bottom: 11px;
     }
 
     @media(max-width: 1650px){
       max-width: 1000px;
-      bottom: -18px;
+      bottom: 18px;
     }
 
     @media(max-width: 1600px){
       max-width: 970px;
-      bottom: -18px;
+      bottom: 23px;
     }
 
     @media(max-width: 1550px){
       max-width: 925px;
-      bottom: -23px;
+      bottom: 31px;
     }
 
     @media(max-width: 1500px){
       max-width: 865px;
-      bottom: -28px;
+      bottom: 41px;
     }
 
 
     @media(max-width: 1460px){
       max-width: 783px;
-      bottom: -34px;
-    }
-
-    @media(max-width: 1460px){
-      max-width: 805px;
-      bottom: -31px;
+      bottom: 57px;
     }
 
     @media(max-width: 1400px){
       max-width: 725px;
-      bottom: -36px;
+      bottom: 67px;
     }
 
     @media (max-width: 1366px) {
       max-width: 685px;
-      bottom: -41px;
+      bottom: 75px;
     }
     @media(max-width: 1300px){
       display: none;

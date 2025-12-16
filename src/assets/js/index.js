@@ -13,9 +13,7 @@ import { InitTabs } from "./tabs";
 import { BannerAnimation } from "./animation.js";
 import { ScrollAnimations } from "./scroll-animations.js";
 import IMask from 'imask';
-import { initSVGAnimation } from "./form-animation.js";
-
-
+import { initSVGAnimation, cleanupSVGAnimations } from './form-animation.js';
 
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
 
@@ -64,9 +62,7 @@ class ToTopButton {
                 const windowHeight = window.innerHeight;
                 const documentHeight = document.documentElement.scrollHeight;
 
-
                 const canScroll = documentHeight > windowHeight;
-
 
                 if (scrollPosition > 500 && canScroll) {
                         this.button.classList.add('show');
@@ -89,6 +85,7 @@ class App {
                 this.lazyLoadInstance = null;
                 this.bannerAnimation = null;
                 this.scrollAnimations = null;
+                this.svgAnimation = null;
                 this.init();
         }
 
@@ -109,7 +106,6 @@ class App {
         }
 
         initFancybox() {
-
                 Fancybox.bind("[data-fancybox]", {
                         Thumbs: false,
                         Toolbar: {
@@ -157,7 +153,9 @@ class App {
                 this.initCheckboxes();
                 this.initToTopButton();
                 this.initDropdownMenu();
-                this.initSVGAnimation();
+
+                // Инициализация SVG/Canvas анимации
+                this.initCanvasAnimation();
 
                 if (!document.querySelector('.modal-filter.active')) {
                         this.initPriceSlider();
@@ -170,13 +168,91 @@ class App {
                 }
         }
 
-        initSVGAnimation() {
-
+        // НОВЫЙ МЕТОД: Инициализация Canvas анимации
+        initCanvasAnimation() {
+                // Проверяем, есть ли контейнер для анимации
                 const svgContainer = document.querySelector('.main-form__animation');
-                if (svgContainer) {
-
-                        initSVGAnimation();
+                if (!svgContainer) {
+                        console.log('Контейнер для анимации не найден');
+                        return;
                 }
+
+                // Проверяем, есть ли сам SVG элемент
+                const svgElement = document.querySelector('#main-animated-svg');
+                if (!svgElement) {
+                        console.log('SVG элемент не найден');
+                        return;
+                }
+
+                // На десктопе инициализируем Canvas анимацию
+                if (window.innerWidth >= 1301) {
+                        console.log('Инициализация Canvas анимации для десктопа');
+                        this.svgAnimation = initSVGAnimation();
+                } else {
+                        // На мобильных устройствах оставляем SVG как есть
+                        console.log('Мобильное устройство - оставляем SVG');
+                        svgElement.style.display = 'block';
+                }
+
+                // Добавляем обработчик ресайза для Canvas анимации
+                this.addCanvasAnimationResizeHandler();
+        }
+
+        // НОВЫЙ МЕТОД: Обработчик ресайза для Canvas анимации
+        addCanvasAnimationResizeHandler() {
+                let resizeTimeout;
+
+                window.addEventListener('resize', () => {
+                        clearTimeout(resizeTimeout);
+                        resizeTimeout = setTimeout(() => {
+                                const svgContainer = document.querySelector('.main-form__animation');
+                                if (!svgContainer) return;
+
+                                const svgElement = document.querySelector('#main-animated-svg');
+                                if (!svgElement) return;
+
+                                console.log('Ресайз окна, проверяем Canvas анимацию:', {
+                                        width: window.innerWidth,
+                                        hasAnimation: !!this.svgAnimation
+                                });
+
+                                // Если перешли с десктопа на мобилку
+                                if (window.innerWidth < 1301) {
+                                        console.log('Переход на мобилку - очищаем Canvas анимацию');
+                                        if (this.svgAnimation) {
+                                                cleanupSVGAnimations();
+                                                this.svgAnimation = null;
+                                        }
+                                        svgElement.style.display = 'block';
+
+                                        // Удаляем canvas элементы если они остались
+                                        const canvasElements = document.querySelectorAll('.main-canvas-animation, .hexagon-animation-canvas');
+                                        canvasElements.forEach(canvas => {
+                                                if (canvas.parentNode) {
+                                                        canvas.parentNode.removeChild(canvas);
+                                                }
+                                        });
+                                }
+                                // Если перешли с мобилки на десктоп
+                                else if (window.innerWidth >= 1301 && !this.svgAnimation) {
+                                        console.log('Переход на десктоп - инициализируем Canvas анимацию');
+
+                                        // Убедимся, что SVG скрыт
+                                        svgElement.style.display = 'none';
+
+                                        // Удаляем старые canvas элементы если есть
+                                        const oldCanvasElements = document.querySelectorAll('.main-canvas-animation, .hexagon-animation-canvas');
+                                        oldCanvasElements.forEach(canvas => {
+                                                if (canvas.parentNode) {
+                                                        canvas.parentNode.removeChild(canvas);
+                                                }
+                                        });
+
+                                        // Инициализируем новую анимацию
+                                        this.svgAnimation = initSVGAnimation();
+                                }
+                        }, 250);
+                });
         }
 
         initToTopButton() {
@@ -328,7 +404,6 @@ class App {
                                 dropdown.classList.remove('active');
                                 dropdown.classList.add('closing');
 
-
                                 setTimeout(() => {
                                         dropdown.classList.remove('closing');
                                         isAnimating = false;
@@ -383,6 +458,7 @@ class App {
                         }
                 });
         }
+
         // Валидация ИНН
         initINNValidation() {
                 const innInputs = document.querySelectorAll('input[data-mask="inn-legal"], #input-inn, #inn-nput');
@@ -713,12 +789,12 @@ class App {
                                 const maxPercent = ((maxVal - minAvailableValue) / (maxAvailableValue - minAvailableValue)) * 100;
 
                                 track.style.background = `linear-gradient(to right, 
-                                #F6F9FD 0%, 
-                                #F6F9FD ${minPercent}%, 
-                                #FF7031 ${minPercent}%, 
-                                #FF7031 ${maxPercent}%, 
-                                #F6F9FD ${maxPercent}%, 
-                                #F6F9FD 100%)`;
+                    #F6F9FD 0%, 
+                    #F6F9FD ${minPercent}%, 
+                    #FF7031 ${minPercent}%, 
+                    #FF7031 ${maxPercent}%, 
+                    #F6F9FD ${maxPercent}%, 
+                    #F6F9FD 100%)`;
                         };
 
                         const updateFromSliders = () => {
