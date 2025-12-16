@@ -381,56 +381,102 @@ class App {
 
         initDropdownMenu() {
                 const desktopDropdowns = document.querySelectorAll('.header__item.drop-down');
-                let hideTimeout;
 
                 desktopDropdowns.forEach(dropdown => {
                         const sublist = dropdown.querySelector('.header__sublist');
-                        let isAnimating = false;
+                        let hideTimeout = null;
+                        let isClosing = false;
+                        let isOpening = false;
 
-                        // Показать меню
-                        const showMenu = () => {
-                                if (isAnimating) return;
+                        // Функция для открытия меню
+                        const openMenu = () => {
+                                if (isClosing) return; // Если закрывается - не открываем
 
                                 clearTimeout(hideTimeout);
+                                isOpening = true;
+
                                 dropdown.classList.remove('closing');
                                 dropdown.classList.add('active');
-                        };
 
-                        // Скрыть меню
-                        const hideMenu = () => {
-                                if (isAnimating) return;
-
-                                isAnimating = true;
-                                dropdown.classList.remove('active');
-                                dropdown.classList.add('closing');
-
+                                // Сбрасываем флаг после завершения анимации
                                 setTimeout(() => {
-                                        dropdown.classList.remove('closing');
-                                        isAnimating = false;
+                                        isOpening = false;
                                 }, 300);
                         };
 
-                        // Обработчики
+                        // Функция для закрытия меню
+                        const closeMenu = () => {
+                                if (isOpening) return; // Если открывается - не закрываем
+
+                                clearTimeout(hideTimeout);
+                                isClosing = true;
+
+                                dropdown.classList.remove('active');
+                                dropdown.classList.add('closing');
+
+                                // Убираем класс closing после завершения анимации
+                                setTimeout(() => {
+                                        dropdown.classList.remove('closing');
+                                        isClosing = false;
+                                }, 300);
+                        };
+
+                        // Обработчики для родительского элемента
                         dropdown.addEventListener('mouseenter', () => {
-                                showMenu();
+                                openMenu();
                         });
 
-                        dropdown.addEventListener('mouseleave', () => {
-                                hideTimeout = setTimeout(hideMenu, 100);
+                        dropdown.addEventListener('mouseleave', (e) => {
+                                // Проверяем, перешел ли курсор в саблист
+                                const relatedTarget = e.relatedTarget;
+                                if (sublist && sublist.contains(relatedTarget)) {
+                                        return; // Не закрываем если курсор перешел в саблист
+                                }
+
+                                // Если курсор не в саблисте, начинаем закрытие
+                                hideTimeout = setTimeout(() => {
+                                        closeMenu();
+                                }, 150);
                         });
 
+                        // Обработчики для саблиста
                         if (sublist) {
                                 sublist.addEventListener('mouseenter', () => {
                                         clearTimeout(hideTimeout);
+
+                                        // Если меню в процессе закрытия, отменяем закрытие
+                                        if (dropdown.classList.contains('closing')) {
+                                                dropdown.classList.remove('closing');
+                                                dropdown.classList.add('active');
+                                                isClosing = false;
+                                        }
                                 });
 
-                                sublist.addEventListener('mouseleave', () => {
-                                        hideMenu();
+                                sublist.addEventListener('mouseleave', (e) => {
+                                        // Проверяем, вернулся ли курсор в родительский элемент
+                                        const relatedTarget = e.relatedTarget;
+                                        if (dropdown.contains(relatedTarget)) {
+                                                return; // Не закрываем если курсор вернулся в родительский элемент
+                                        }
+
+                                        // Начинаем закрытие с задержкой
+                                        hideTimeout = setTimeout(() => {
+                                                closeMenu();
+                                        }, 150);
+                                });
+
+                                // При клике на пункт меню закрываем с небольшой задержкой
+                                sublist.addEventListener('click', (e) => {
+                                        if (e.target.closest('.header__subitem')) {
+                                                setTimeout(() => {
+                                                        closeMenu();
+                                                }, 100);
+                                        }
                                 });
                         }
                 });
 
-                // Мобильное меню
+                // Мобильное меню (оставляем как было)
                 document.addEventListener('click', (e) => {
                         const mobileDropdown = e.target.closest('.mobile-menu__item.drop-down');
 
@@ -458,7 +504,6 @@ class App {
                         }
                 });
         }
-
         // Валидация ИНН
         initINNValidation() {
                 const innInputs = document.querySelectorAll('input[data-mask="inn-legal"], #input-inn, #inn-nput');

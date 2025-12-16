@@ -462,6 +462,17 @@ body.no-scroll {
         transition: transform 0.3s ease;
       }
 
+      &::before {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        height: 35px;
+        background: transparent;
+        z-index: 1001;
+      }
+
 
       .header__sublist {
         opacity: 0;
@@ -471,6 +482,7 @@ body.no-scroll {
                 opacity 0.3s ease,
                 transform 0.3s ease,
                 visibility 0s 0.3s;
+        pointer-events: none;
       }
 
 
@@ -483,6 +495,7 @@ body.no-scroll {
                   opacity 0.3s ease,
                   transform 0.3s ease,
                   visibility 0s 0s;
+          pointer-events: auto;
         }
 
         &::after {
@@ -492,24 +505,20 @@ body.no-scroll {
 
 
       &.closing {
-        pointer-events: none;
-
 
         .header__sublist {
-          animation: menuClose 0.3s ease forwards;
+          opacity: 0;
+          transform: translateY(-10px);
+          transition:
+                  opacity 0.3s ease,
+                  transform 0.3s ease,
+                  visibility 0s 0.3s;
           pointer-events: none;
         }
 
         &::after {
           transform: rotate(180deg);
           transition: transform 0.3s ease;
-        }
-      }
-
-
-      &:not(.active):not(.closing) {
-        .header__sublist {
-          visibility: hidden;
         }
       }
     }
@@ -523,6 +532,8 @@ body.no-scroll {
       transform: translateY(0);
     }
     99% {
+      opacity: 0;
+      transform: translateY(-10px);
       visibility: visible;
     }
     100% {
@@ -545,11 +556,10 @@ body.no-scroll {
     transform: translateY(-10px);
     z-index: 100;
     gap: 8px;
-    top: 61px;
+    top: calc(100% + 35px);
     left: 0;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
   }
 
   &__sublink {
@@ -1477,7 +1487,7 @@ body.no-scroll {
                 margin-left: 10px;
                 transition: all 0.3s ease;
                 filter: none;
-                transition: filter 0.3s ease 0.1s;
+                transition: filter 0.5s ease;
                 will-change: filter;
 
                 @media(max-width: 1640px) {
@@ -2960,28 +2970,41 @@ body.no-scroll {
 
 .catalog-modal {
   position: fixed;
-  top: 0;
+  top: 200px;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1000;
+  z-index: -1;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   pointer-events: none;
-  
+
+  @media (max-width: 1640px) {
+    top: 150px;
+  }
+
+  @media (max-width: 1000px) {
+    top: 150px;
+  }
+  @media (max-width: 760px) {
+    top: 0;
+  }
+
+
   &.opened {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    z-index: 1000;
   }
 
   &.fixed {
     .catalog-container {
-      top: 50%;
+      top: 200px;
 
       @media (max-width: 1640px) {
-        top: 50%;
+        top: 150px;
       }
 
       @media (max-width: 1000px) {
@@ -3001,11 +3024,11 @@ body.no-scroll {
   margin: 0 auto;
   max-width: 1840px;
   height: 600px;
-  background: white;
+  background: transparent;
   border-radius: 30px;
   overflow: hidden;
   position: absolute;
-  top: 50%;
+  top: 280px;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.8);
   pointer-events: auto;
@@ -3021,6 +3044,7 @@ body.no-scroll {
 
   @media (max-width: 1640px) {
     height: 550px;
+    top: 230px;
   }
 
   @media (max-width: 1000px) {
@@ -3035,6 +3059,7 @@ body.no-scroll {
     transform: translate(-50%, -50%) scale(0.2);
     border-radius: 20px;
     flex-direction: column;
+    background: white;
 
     .catalog-modal.opened & {
       transform: translate(-50%, -50%) scale(1);
@@ -3049,10 +3074,10 @@ body.no-scroll {
 }
 
 .categories-section {
-  flex: 1;
-  border: 1px solid #C2C9D5;
+  border-right: 1px solid #C2C9D5;
   overflow-y: auto;
   min-width: 300px;
+  background: white;
 
   @media (max-width: 1000px) {
     border: none;
@@ -3071,6 +3096,9 @@ body.no-scroll {
   flex: 1;
   overflow-y: auto;
   min-width: 300px;
+  background: white;
+  border: none;
+  margin-left: -1px;
 
   @media (max-width: 760px) {
     flex: 1;
@@ -3091,6 +3119,7 @@ body.no-scroll {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: -2px;
 
   @media (max-width: 1800px) {
     background: url("../images/fon-2.jpg") no-repeat center;
@@ -3213,6 +3242,7 @@ body.no-scroll {
 
 .category-list {
   padding: 22.5px 30px;
+  border: none;
 
   @media (max-width: 1500px) {
     padding: 22.5px 18px;
@@ -3236,6 +3266,28 @@ body.no-scroll {
   align-items: center;
   gap: 8px;
   transition: all 0.3s ease;
+
+  a {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: 0.02em;
+    color: #0F1019;
+    transition: all 0.3s ease;
+
+    @media (max-width: 1700px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: 760px) {
+      font-size: 16px;
+    }
+
+    &:hover {
+      color: #F07000;
+    }
+
+  }
 
   @media (max-width: 1700px) {
     font-size: 16px;
@@ -3264,6 +3316,10 @@ body.no-scroll {
 
   &:hover {
     color: #F07000;
+
+    a {
+      color: #F07000;
+    }
 
     svg {
       opacity: 1;
@@ -3297,6 +3353,7 @@ body.no-scroll {
 
 .subcategory-list {
   padding: 22.5px 30px;
+  border: none;
 
   @media (max-width: 1500px) {
     padding: 22.5px 18px;
@@ -6145,7 +6202,7 @@ body.no-scroll {
            svg {
              margin-left: 10px;
              filter: none;
-             transition: filter 0.3s ease 0.1s;
+             transition: filter 0.5s ease;
              will-change: filter;
              
              @media (max-width: 1640px) {
