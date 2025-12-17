@@ -3032,19 +3032,23 @@ body.no-scroll {
   left: 50%;
   transform: translate(-50%, -50%) scale(0.8);
   pointer-events: auto;
-  box-shadow: 0px 25px 80px rgba(240, 112, 0, 0.15);
+  //box-shadow: 0px 25px 80px rgba(240, 112, 0, 0.15);
   opacity: 0;
   transition: all 0.4s ease-out;
 
   .catalog-modal.opened & {
     transform: translate(-50%, -50%) scale(1) rotate(0);
     opacity: 1;
-    box-shadow: 0px 25px 80px rgba(0, 0, 0, 0.25);
+    //box-shadow: 0px 25px 80px rgba(0, 0, 0, 0.25);
   }
 
   @media (max-width: 1640px) {
     height: 550px;
     top: 230px;
+  }
+
+  @media (max-width: 1200px) {
+    background: white;
   }
 
   @media (max-width: 1000px) {
@@ -3078,6 +3082,10 @@ body.no-scroll {
   overflow-y: auto;
   min-width: 300px;
   background: white;
+
+  @media (max-width: 1200px) {
+    flex: 1;
+  }
 
   @media (max-width: 1000px) {
     border: none;
@@ -3140,6 +3148,11 @@ body.no-scroll {
     @media (max-width: 1800px) {
        max-width: 300px;
     }
+
+    @media (max-width: 1300px) {
+      max-width: 250px;
+    }
+
 
     @media (max-width: 1000px) {
       max-width: 190px;

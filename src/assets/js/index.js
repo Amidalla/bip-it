@@ -86,6 +86,7 @@ class App {
                 this.bannerAnimation = null;
                 this.scrollAnimations = null;
                 this.svgAnimation = null;
+                this.dropdownStates = new WeakMap();
                 this.init();
         }
 
@@ -382,101 +383,98 @@ class App {
         initDropdownMenu() {
                 const desktopDropdowns = document.querySelectorAll('.header__item.drop-down');
 
+                // Закрываем все открытые дропдауны при клике вне
+                document.addEventListener('click', (e) => {
+                        const isDropdownClick = e.target.closest('.header__item.drop-down');
+                        if (!isDropdownClick) {
+                                desktopDropdowns.forEach(dropdown => {
+                                        const state = this.dropdownStates.get(dropdown);
+                                        if (state && dropdown.classList.contains('active')) {
+                                                this.closeDropdown(dropdown);
+                                        }
+                                });
+                        }
+                });
+
                 desktopDropdowns.forEach(dropdown => {
                         const sublist = dropdown.querySelector('.header__sublist');
-                        let hideTimeout = null;
-                        let isClosing = false;
-                        let isOpening = false;
 
-                        // Функция для открытия меню
-                        const openMenu = () => {
-                                if (isClosing) return; // Если закрывается - не открываем
-
-                                clearTimeout(hideTimeout);
-                                isOpening = true;
-
-                                dropdown.classList.remove('closing');
-                                dropdown.classList.add('active');
-
-                                // Сбрасываем флаг после завершения анимации
-                                setTimeout(() => {
-                                        isOpening = false;
-                                }, 300);
-                        };
-
-                        // Функция для закрытия меню
-                        const closeMenu = () => {
-                                if (isOpening) return; // Если открывается - не закрываем
-
-                                clearTimeout(hideTimeout);
-                                isClosing = true;
-
-                                dropdown.classList.remove('active');
-                                dropdown.classList.add('closing');
-
-                                // Убираем класс closing после завершения анимации
-                                setTimeout(() => {
-                                        dropdown.classList.remove('closing');
-                                        isClosing = false;
-                                }, 300);
-                        };
+                        // Инициализируем состояние для дропдауна
+                        this.dropdownStates.set(dropdown, {
+                                hideTimeout: null,
+                                isHovered: false,
+                                isAnimating: false
+                        });
 
                         // Обработчики для родительского элемента
                         dropdown.addEventListener('mouseenter', () => {
-                                openMenu();
+                                const state = this.dropdownStates.get(dropdown);
+                                state.isHovered = true;
+                                clearTimeout(state.hideTimeout);
+
+                                if (!dropdown.classList.contains('active')) {
+                                        this.openDropdown(dropdown);
+                                }
                         });
 
                         dropdown.addEventListener('mouseleave', (e) => {
-                                // Проверяем, перешел ли курсор в саблист
-                                const relatedTarget = e.relatedTarget;
-                                if (sublist && sublist.contains(relatedTarget)) {
-                                        return; // Не закрываем если курсор перешел в саблист
+                                const state = this.dropdownStates.get(dropdown);
+                                state.isHovered = false;
+
+                                // Проверяем, не перешел ли курсор в саблист
+                                if (sublist && e.relatedTarget && sublist.contains(e.relatedTarget)) {
+                                        return;
                                 }
 
-                                // Если курсор не в саблисте, начинаем закрытие
-                                hideTimeout = setTimeout(() => {
-                                        closeMenu();
+                                state.hideTimeout = setTimeout(() => {
+                                        if (dropdown.classList.contains('active') && !state.isHovered) {
+                                                this.closeDropdown(dropdown);
+                                        }
                                 }, 150);
                         });
 
                         // Обработчики для саблиста
                         if (sublist) {
                                 sublist.addEventListener('mouseenter', () => {
-                                        clearTimeout(hideTimeout);
+                                        const state = this.dropdownStates.get(dropdown);
+                                        state.isHovered = true;
+                                        clearTimeout(state.hideTimeout);
 
-                                        // Если меню в процессе закрытия, отменяем закрытие
+                                        // Если дропдаун закрывается, отменяем закрытие
                                         if (dropdown.classList.contains('closing')) {
                                                 dropdown.classList.remove('closing');
                                                 dropdown.classList.add('active');
-                                                isClosing = false;
                                         }
                                 });
 
                                 sublist.addEventListener('mouseleave', (e) => {
-                                        // Проверяем, вернулся ли курсор в родительский элемент
-                                        const relatedTarget = e.relatedTarget;
-                                        if (dropdown.contains(relatedTarget)) {
-                                                return; // Не закрываем если курсор вернулся в родительский элемент
+                                        const state = this.dropdownStates.get(dropdown);
+                                        state.isHovered = false;
+
+                                        // Проверяем, не вернулся ли курсор в родительский элемент
+                                        if (e.relatedTarget && dropdown.contains(e.relatedTarget)) {
+                                                return;
                                         }
 
-                                        // Начинаем закрытие с задержкой
-                                        hideTimeout = setTimeout(() => {
-                                                closeMenu();
-                                        }, 150);
+                                        state.hideTimeout = setTimeout(() => {
+                                                if (dropdown.classList.contains('active') && !state.isHovered) {
+                                                        this.closeDropdown(dropdown);
+                                                }
+                                        }, 200);
                                 });
 
-                                // При клике на пункт меню закрываем с небольшой задержкой
+                                // При клике на пункт меню закрываем дропдаун
                                 sublist.addEventListener('click', (e) => {
                                         if (e.target.closest('.header__subitem')) {
                                                 setTimeout(() => {
-                                                        closeMenu();
-                                                }, 100);
+                                                        this.closeDropdown(dropdown);
+                                                }, 50);
                                         }
                                 });
                         }
                 });
 
-                // Мобильное меню (оставляем как было)
+                // Мобильное меню
                 document.addEventListener('click', (e) => {
                         const mobileDropdown = e.target.closest('.mobile-menu__item.drop-down');
 
@@ -504,6 +502,36 @@ class App {
                         }
                 });
         }
+
+        openDropdown(dropdown) {
+                const state = this.dropdownStates.get(dropdown);
+                if (!state) return;
+
+                state.isAnimating = true;
+                dropdown.classList.remove('closing');
+                dropdown.classList.add('active');
+
+                // Сбрасываем анимацию
+                setTimeout(() => {
+                        state.isAnimating = false;
+                }, 300);
+        }
+
+        closeDropdown(dropdown) {
+                const state = this.dropdownStates.get(dropdown);
+                if (!state || state.isAnimating) return;
+
+                state.isAnimating = true;
+                dropdown.classList.remove('active');
+                dropdown.classList.add('closing');
+
+                // Убираем класс closing после завершения анимации
+                setTimeout(() => {
+                        dropdown.classList.remove('closing');
+                        state.isAnimating = false;
+                }, 300);
+        }
+
         // Валидация ИНН
         initINNValidation() {
                 const innInputs = document.querySelectorAll('input[data-mask="inn-legal"], #input-inn, #inn-nput');
