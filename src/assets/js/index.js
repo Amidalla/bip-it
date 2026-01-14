@@ -477,28 +477,31 @@ class App {
                 // Мобильное меню
                 document.addEventListener('click', (e) => {
                         const mobileDropdown = e.target.closest('.mobile-menu__item.drop-down');
+                        const isDropdownLink = e.target.closest('.mobile-menu__link'); // Основная ссылка dropdown
+                        const isSubmenuLink = e.target.closest('.mobile-menu__sublink'); // Ссылка в подменю
+                        const isInsideDropdown = e.target.closest('.mobile-menu__sublist'); // Внутри открытого подменю
 
-                        if (!mobileDropdown) {
-                                document.querySelectorAll('.mobile-menu__item.drop-down.active').forEach(dropdown => {
-                                        dropdown.classList.remove('active');
-                                });
+                        // Если кликнули по ссылке в подменю - просто разрешаем переход
+                        if (isSubmenuLink) {
+                                // Разрешаем стандартное поведение (переход по ссылке)
                                 return;
                         }
 
-                        const allLinks = mobileDropdown.querySelectorAll('a');
-                        const clickedLink = e.target.closest('a');
-
-                        if (allLinks.length > 0 && clickedLink === allLinks[0]) {
+                        // Если кликнули по всему элементу dropdown (не только по ссылке)
+                        if (mobileDropdown) {
                                 e.preventDefault();
                                 e.stopPropagation();
 
-                                document.querySelectorAll('.mobile-menu__item.drop-down.active').forEach(dropdown => {
-                                        if (dropdown !== mobileDropdown) {
-                                                dropdown.classList.remove('active');
-                                        }
-                                });
-
                                 mobileDropdown.classList.toggle('active');
+                                return;
+                        }
+
+                        // Если кликнули вне dropdown - закрываем его
+                        if (!mobileDropdown && !isInsideDropdown) {
+                                const activeDropdown = document.querySelector('.mobile-menu__item.drop-down.active');
+                                if (activeDropdown) {
+                                        activeDropdown.classList.remove('active');
+                                }
                         }
                 });
         }

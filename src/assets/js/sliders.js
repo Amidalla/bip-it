@@ -569,30 +569,76 @@ function initProductSlider() {
 
 
 export function SlidersInit() {
+    // Инициализация mainSlider
+    const mainSliderElement = document.querySelector('.slider-main');
+    const mainSlides = mainSliderElement ? mainSliderElement.querySelectorAll('.swiper-slide') : [];
+    const hasMultipleSlides = mainSlides.length > 1;
+    const isLargeScreen = window.innerWidth > 1300;
+
+    // Определяем, нужна ли навигация
+    const shouldHaveNavigation = hasMultipleSlides && isLargeScreen;
+
     const mainSlider = new Swiper(".slider-main", {
         autoplay: false,
         speed: 1000,
         pagination: {
             el: ".slider-main .swiper-pagination",
             clickable: true
-        }
+        },
+        navigation: shouldHaveNavigation ? {
+            nextEl: '.main-slider .swiper-button-next',
+            prevEl: '.main-slider .swiper-button-prev',
+        } : false
     });
 
-
+    // Получаем кнопки навигации
     const nextButton = document.querySelector('.main-slider .swiper-button-next');
     const prevButton = document.querySelector('.main-slider .swiper-button-prev');
 
-    if (nextButton) {
-        nextButton.addEventListener('click', () => {
-            mainSlider.slideNext();
-        });
+    // Скрываем кнопки если они не нужны
+    if (!shouldHaveNavigation) {
+        if (nextButton) nextButton.style.display = 'none';
+        if (prevButton) prevButton.style.display = 'none';
     }
 
-    if (prevButton) {
-        prevButton.addEventListener('click', () => {
-            mainSlider.slidePrev();
-        });
+    // Назначаем обработчики кликов только если кнопки видимы
+    if (shouldHaveNavigation) {
+        if (nextButton) {
+            nextButton.addEventListener('click', () => {
+                mainSlider.slideNext();
+            });
+        }
+
+        if (prevButton) {
+            prevButton.addEventListener('click', () => {
+                mainSlider.slidePrev();
+            });
+        }
     }
+
+    // Обработка изменения размера окна
+
+    const handleMainSliderResize = () => {
+        const isLargeScreenNow = window.innerWidth > 1300;
+        const shouldHaveNavigationNow = hasMultipleSlides && isLargeScreenNow;
+
+        // Просто показываем/скрываем кнопки, не меняя конфигурацию Swiper
+        if (nextButton) {
+            nextButton.style.display = shouldHaveNavigationNow ? '' : 'none';
+            nextButton.style.visibility = shouldHaveNavigationNow ? 'visible' : 'hidden';
+            nextButton.style.opacity = shouldHaveNavigationNow ? '1' : '0';
+            nextButton.style.pointerEvents = shouldHaveNavigationNow ? 'auto' : 'none';
+        }
+
+        if (prevButton) {
+            prevButton.style.display = shouldHaveNavigationNow ? '' : 'none';
+            prevButton.style.visibility = shouldHaveNavigationNow ? 'visible' : 'hidden';
+            prevButton.style.opacity = shouldHaveNavigationNow ? '1' : '0';
+            prevButton.style.pointerEvents = shouldHaveNavigationNow ? 'auto' : 'none';
+        }
+    };
+
+    window.addEventListener('resize', handleMainSliderResize);
 
     const bestsellersSlider = new Swiper(".slider-bestsellers", {
         autoplay: false,
@@ -635,6 +681,12 @@ export function SlidersInit() {
         initialSlide: 0,
         breakpoints: {
             0: {
+                slidesPerView: 1.5
+            },
+            420: {
+                slidesPerView: 2.5
+            },
+            650: {
                 slidesPerView: 5
             },
             1365: {

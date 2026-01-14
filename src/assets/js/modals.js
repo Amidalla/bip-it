@@ -173,6 +173,43 @@ export function InitModals() {
             return window.innerWidth <= 1200; // Мобильные и планшеты 1200px и ниже
         }
 
+        function isTabletView() {
+            return window.innerWidth >= 761 && window.innerWidth <= 1200; // Планшеты 761px - 1200px
+        }
+
+        // Функция для активации первой категории
+        function activateFirstCategory() {
+            if (categoryItems.length === 0) return;
+
+            // Снимаем все активные классы
+            categoryItems.forEach(item => item.classList.remove('active'));
+
+            // Активируем первую категорию
+            const firstCategory = categoryItems[0];
+            firstCategory.classList.add('active');
+            activeCategoryItem = firstCategory;
+
+            const categoryId = firstCategory.dataset.category;
+            const imageSrc = firstCategory.dataset.image;
+            const imageAlt = firstCategory.textContent.trim();
+
+            // Обновляем изображение
+            if (catalogImage && imageSrc) {
+                catalogImage.src = imageSrc;
+                catalogImage.alt = imageAlt;
+                if (catalogImage.classList.contains('lazy')) {
+                    catalogImage.dataset.src = imageSrc;
+                }
+            }
+
+            // Активируем соответствующую группу подкатегорий
+            subcategoryGroups.forEach(group => group.classList.remove('active'));
+            const targetGroup = catalogModal?.querySelector(`.subcategory-group[data-category="${categoryId}"]`);
+            if (targetGroup) {
+                targetGroup.classList.add('active');
+            }
+        }
+
         function toggleImageVisibility(showImage) {
             if (!isMobileView()) {
                 imageSection.style.display = 'flex';
@@ -312,6 +349,24 @@ export function InitModals() {
             subcategoryGroups.forEach(group => group.classList.remove('active'));
             const targetGroup = catalogModal?.querySelector(`.subcategory-group[data-category="${categoryId}"]`);
 
+            // ВАЖНО: Устанавливаем visibility и display СРАЗУ, перед анимацией
+            if (!hasNoSubcategories && targetGroup) {
+                targetGroup.classList.add('active');
+
+                // Если subcategoriesSection скрыт - показываем его ДО анимации
+                if (subcategoriesSection.style.display === 'none' || subcategoriesSection.style.visibility === 'hidden') {
+                    subcategoriesSection.style.visibility = 'visible';
+                    subcategoriesSection.style.display = 'block';
+                    subcategoriesSection.style.opacity = '0';
+                    subcategoriesSection.style.transform = 'translateX(20px)';
+                    subcategoriesSection.style.left = '33.333%';
+                    subcategoriesSection.style.top = '0';
+                    subcategoriesSection.style.width = '33.333%';
+                    subcategoriesSection.style.height = '100%';
+                    subcategoriesSection.style.zIndex = '10';
+                }
+            }
+
             // Обновляем изображение
             updateImage(categoryId, imageSrc, imageAlt);
 
@@ -321,12 +376,6 @@ export function InitModals() {
             }
 
             catalogState.currentTimeline = gsap.timeline({
-                onStart: () => {
-                    // Если у текущей категории есть подкатегории - добавляем активный класс
-                    if (targetGroup && !hasNoSubcategories) {
-                        targetGroup.classList.add('active');
-                    }
-                },
                 onComplete: () => {
                     catalogState.isAnimating = false;
                     catalogState.currentTimeline = null;
@@ -359,18 +408,19 @@ export function InitModals() {
                 // Если у новой категории нет подкатегорий:
                 // 1. Плавно скрываем subcategories-section
                 // 2. Плавно двигаем image-section на его место
+
                 catalogState.currentTimeline.to(subcategoriesSection, {
                     opacity: 0,
                     x: 20,
                     duration: 0.3,
                     ease: "power2.in",
                     onComplete: () => {
+                        // После завершения анимации скрываем элемент
                         subcategoriesSection.style.display = 'none';
                     }
                 }, 0);
 
                 if (needMoveImage) {
-                    // анимация перемещения
                     catalogState.currentTimeline.to(imageSection, {
                         left: '33.333%',
                         duration: 0.6,
@@ -392,13 +442,14 @@ export function InitModals() {
                 }, 0.2);
             } else {
                 // Если у новой категории есть подкатегории:
-                // 1. Показываем subcategories-section
+                // 1. Показываем subcategories-section (он уже visible и display: block)
                 // 2. Плавно двигаем image-section обратно на третью позицию
-                if (subcategoriesSection.style.display === 'none') {
-                    subcategoriesSection.style.display = 'block';
-                    subcategoriesSection.style.opacity = '0';
-                    subcategoriesSection.style.transform = 'translateX(20px)';
-                }
+
+                // Гарантируем, что элемент видим
+                catalogState.currentTimeline.set(subcategoriesSection, {
+                    visibility: 'visible',
+                    display: 'block'
+                }, 0);
 
                 catalogState.currentTimeline.to(subcategoriesSection, {
                     opacity: 1,
@@ -408,7 +459,6 @@ export function InitModals() {
                 }, 0.1);
 
                 if (needMoveImage) {
-                    // анимация перемещения
                     catalogState.currentTimeline.to(imageSection, {
                         left: '66.666%',
                         duration: 0.6,
@@ -453,75 +503,58 @@ export function InitModals() {
 
             const hasNoSubcategories = categoryItem.classList.contains('subcategory-not');
 
-            // Обновляем активные классы
             categoryItems.forEach(cat => cat.classList.remove('active'));
             categoryItem.classList.add('active');
 
-            // Обновляем подкатегории
             subcategoryGroups.forEach(group => group.classList.remove('active'));
             const targetGroup = catalogModal?.querySelector(`.subcategory-group[data-category="${categoryId}"]`);
 
+            // ВАЖНО: Устанавливаем visibility ДО создания timeline
+            if (!hasNoSubcategories) {
+                // Устанавливаем visibility СРАЗУ, а не в onStart
+                subcategoriesSection.style.visibility = 'visible';
+                subcategoriesSection.style.display = 'block';
+                subcategoriesSection.style.opacity = '0';
+                subcategoriesSection.style.transform = 'translateX(20px)';
+                subcategoriesSection.style.left = '33.333%';
+                subcategoriesSection.style.top = '0';
+                subcategoriesSection.style.width = '33.333%';
+                subcategoriesSection.style.height = '100%';
+
+                if (targetGroup) {
+                    targetGroup.classList.add('active');
+                }
+            } else {
+                subcategoriesSection.style.display = 'none';
+                subcategoriesSection.style.opacity = '0';
+            }
+
+            // Настраиваем image-section
+            imageSection.style.display = 'flex';
+            imageSection.style.visibility = 'visible';
+            imageSection.style.opacity = '0';
+            imageSection.style.transform = 'translateX(20px)';
+            imageSection.style.left = hasNoSubcategories ? '33.333%' : '66.666%';
+            imageSection.style.borderRadius = '0 30px 30px 0';
+
             // Обновляем изображение
             updateImage(categoryId, imageSrc, imageAlt);
+
+            // Убираем border-radius с правых углов у categories-section
+            categoriesSection.style.borderRadius = '30px 0 0 30px';
 
             // Убиваем текущую анимацию если есть
             if (catalogState.currentTimeline) {
                 catalogState.currentTimeline.kill();
             }
 
+            // Теперь в onStart только управляем анимацией
             catalogState.currentTimeline = gsap.timeline({
-                onStart: () => {
-                    // Настраиваем начальные позиции в зависимости от наличия подкатегорий
-                    if (hasNoSubcategories) {
-                        // Для элементов без подкатегорий:
-                        // subcategories-section скрыт, image-section на второй позиции
-                        subcategoriesSection.style.display = 'none';
-                        subcategoriesSection.style.opacity = '0';
-                        imageSection.style.left = '33.333%';
-                        imageSection.style.borderRadius = '0 30px 30px 0';
-                    } else {
-                        // Для элементов с подкатегориями:
-                        // subcategories-section на второй позиции, image-section на третьей
-                        if (targetGroup) {
-                            targetGroup.classList.add('active');
-                        }
-                        subcategoriesSection.style.display = 'block';
-                        subcategoriesSection.style.visibility = 'visible';
-                        subcategoriesSection.style.opacity = '0';
-                        subcategoriesSection.style.transform = 'translateX(20px)';
-                        imageSection.style.left = '66.666%';
-                        imageSection.style.borderRadius = '0 30px 30px 0';
-                    }
-
-                    // Настраиваем image-section
-                    imageSection.style.display = 'flex';
-                    imageSection.style.visibility = 'visible';
-                    imageSection.style.opacity = '0';
-                    imageSection.style.transform = 'translateX(20px)';
-
-                    // Убираем border-radius с правых углов у categories-section
-                    gsap.to(categoriesSection, {
-                        borderRadius: '30px 0 0 30px',
-                        duration: 0.3,
-                        ease: "power2.out"
-                    });
-
-                    // Показываем изображение если оно скрыто
-                    if (catalogImage && imageSrc && catalogImage.style.opacity === '0') {
-                        gsap.to(catalogImage, {
-                            opacity: 1,
-                            duration: 0.4,
-                            ease: "power2.out",
-                            delay: 0.2
-                        });
-                    }
-                },
                 onComplete: () => {
                     catalogState.isAnimating = false;
                     catalogState.sectionsVisible = true;
                     catalogState.currentTimeline = null;
 
-                    // Обработка ожидающей категории
                     if (catalogState.pendingCategory) {
                         const pending = catalogState.pendingCategory;
                         catalogState.pendingCategory = null;
@@ -540,13 +573,15 @@ export function InitModals() {
                 }
             });
 
-            // Анимация subcategories-section (только если есть подкатегории)
+            // Анимация subcategories-section
             if (!hasNoSubcategories) {
                 catalogState.currentTimeline.to(subcategoriesSection, {
                     opacity: 1,
                     x: 0,
                     duration: 0.5,
-                    ease: "power2.out"
+                    ease: "power2.out",
+                    // ИСПРАВЛЕНИЕ: GSAP не управляет visibility напрямую
+                    // Правильно: GSAP автоматически установит visibility: visible при opacity > 0
                 }, 0.1);
             }
 
@@ -557,6 +592,16 @@ export function InitModals() {
                 duration: 0.6,
                 ease: "power2.out"
             }, 0.2);
+
+            // Показываем изображение
+            if (catalogImage && imageSrc && catalogImage.style.opacity === '0') {
+                gsap.to(catalogImage, {
+                    opacity: 1,
+                    duration: 0.4,
+                    ease: "power2.out",
+                    delay: 0.2
+                });
+            }
         }
 
         // Анимация скрытия всех секций (ТОЛЬКО ДЛЯ ДЕСКТОПА)
@@ -785,7 +830,9 @@ export function InitModals() {
 
         // Обработка кликов для мобильных и планшетов (1200px и ниже)
         function setupClickHandlers() {
-            function handleCategoryClick() {
+            function handleCategoryClick(e) {
+                e.preventDefault(); // Предотвращаем переход по ссылке
+
                 const categoryId = this.dataset.category;
                 const imageSrc = this.dataset.image;
                 const imageAlt = this.textContent.trim();
@@ -822,7 +869,16 @@ export function InitModals() {
 
             categoryItems.forEach(item => {
                 item.removeEventListener('click', handleCategoryClick);
-                item.addEventListener('click', handleCategoryClick);
+
+                // Для мобильных и планшетов добавляем обработчик
+                if (!isDesktopView()) {
+                    item.addEventListener('click', handleCategoryClick);
+                }
+
+                // Для десктопа удаляем обработчик клика
+                if (isDesktopView()) {
+                    item.removeEventListener('click', handleCategoryClick);
+                }
             });
         }
 
@@ -886,6 +942,12 @@ export function InitModals() {
                     catalogImage.style.opacity = '0';
                 }
 
+                // Удаляем обработчики кликов для десктопа
+                categoryItems.forEach(item => {
+                    const clonedItem = item.cloneNode(true);
+                    item.parentNode.replaceChild(clonedItem, item);
+                });
+
                 // Инициализируем десктопную логику
                 initDesktopHoverLogic();
             } else {
@@ -919,6 +981,11 @@ export function InitModals() {
                 imageSection.style.zIndex = '';
                 imageSection.style.borderRadius = '';
 
+                // Активируем первую категорию для планшетов (761px - 1200px)
+                if (isTabletView()) {
+                    activateFirstCategory();
+                }
+
                 // Для мобильных (1200px и ниже)
                 if (isMobileView()) {
                     if (subcategoriesSection?.classList.contains('mobile-active')) {
@@ -942,6 +1009,11 @@ export function InitModals() {
                 initDesktopHoverLogic();
             }
             setupClickHandlers();
+
+            // Активируем первую категорию для планшетов при открытии модалки
+            if (isTabletView()) {
+                activateFirstCategory();
+            }
         }
 
         // Обработчики событий
@@ -958,6 +1030,11 @@ export function InitModals() {
             // Для планшетов (до 1200px) - показываем image-section
             imageSection.style.display = 'flex';
             toggleImageVisibility(true);
+
+            // Активируем первую категорию для планшетов при инициализации
+            if (isTabletView()) {
+                activateFirstCategory();
+            }
         }
 
         if (isDesktopView()) {
