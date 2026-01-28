@@ -9817,7 +9817,7 @@ body.no-scroll {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top;
+    object-position: center;
   }
 }
 
@@ -10073,6 +10073,13 @@ body.no-scroll {
 
     &__slider {
       max-width: 693px;
+      position: sticky;
+      align-self: start;
+      top: 20px;
+      
+      @media (max-width: 1200px) {
+        position: static;
+      }
 
       .swiper-button-next {
         width: 38px;
