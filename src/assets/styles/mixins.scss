@@ -13,17 +13,33 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  will-change: transform;
 
   span {
     position: relative;
     z-index: 2;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  svg {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
+
+    path {
+
+    }
   }
 
   &:hover {
     color: c.$white;
 
     svg {
-      filter: brightness(0) invert(1);
+      path {
+        fill: #FFFFFF;
+      }
     }
   }
 
@@ -39,6 +55,7 @@
     border-radius: 50%;
     transition: all 0.5s ease;
     z-index: 1;
+    will-change: transform, width, height;
   }
 
   &:hover::before {
@@ -193,7 +210,8 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
+  will-change: transform;
 
   @media (max-width: 1000px) {
     font-size: $mobile-font-size;
@@ -202,7 +220,14 @@
 
   svg {
     filter: none;
-    transition: filter 0.5s ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
+    //transition: all 0.5s ease;
+
+    path {
+      transition: all 0.5s ease;
+    }
   }
 
   &:hover {
@@ -210,7 +235,9 @@
     border: 2px solid $hover-bg;
 
     svg {
-      filter: brightness(0) invert(1);
+      path {
+        fill: #ffffff;
+      }
     }
   }
 
@@ -226,6 +253,7 @@
     border-radius: 50%;
     transition: all 0.5s ease;
     z-index: 1;
+    will-change: transform, width, height;
   }
 
   &:hover::before {
@@ -238,6 +266,9 @@
   span {
     position: relative;
     z-index: 2;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
   }
 
   svg {

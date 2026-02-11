@@ -1115,8 +1115,8 @@ body.no-scroll {
 
 
         @media(max-width: 768px) {
-          width: 11px;
-          height: 27px;
+          width: 25px;
+          height: 37px;
         }
 
         path {
@@ -1179,7 +1179,7 @@ body.no-scroll {
     }
 
     .all-product-link {
-      display: inline-block;
+      display: flex;
       padding-bottom: 6px;
       font-size: 18px;
       font-weight: 500;
@@ -1509,10 +1509,12 @@ body.no-scroll {
 
               svg {
                 margin-left: 10px;
-                transition: all 0.3s ease;
+                transition: all 0.5s ease;
                 filter: none;
-                transition: filter 0.5s ease;
-                will-change: filter;
+
+                path {
+                  transition: all 0.5s ease;
+                }
 
                 @media(max-width: 1640px) {
                   width: 25px;
@@ -1528,7 +1530,10 @@ body.no-scroll {
                 display: block;
                 position: relative;
                 z-index: 2;
-                filter: brightness(0) invert(1);
+
+                path {
+                  fill: #ffffff;
+                }
               }
 
             }
@@ -1925,7 +1930,7 @@ body.no-scroll {
       }
 
       .all-product-link {
-        display: inline-block;
+        display: flex;
         padding-bottom: 6px;
         font-size: 18px;
         font-weight: 500;
@@ -3877,25 +3882,25 @@ body.no-scroll {
   overflow: hidden;
   
   @media (max-width: 620px) {
-    height: 485px;
+    height: 485px !important;
   }
   @media (max-width: 550px) {
-    height: 455px;
+    height: 455px !important;
   }
   @media (max-width: 500px) {
-    height: 435px;
+    height: 435px !important;
   }
   @media (max-width: 450px) {
-    height: 435px;
+    height: 410px !important;
   }
   @media (max-width: 420px) {
-    height: 390px;
+    height: 390px !important;
   }
   @media (max-width: 390px) {
-    height: 370px;
+    height: 370px !important;
   }
   @media (max-width: 360px) {
-    height: 340px;
+    height: 340px !important;
   }
 
 
@@ -6636,6 +6641,7 @@ body.no-scroll {
 
   @media (max-width: 650px) {
     display: block;
+    width: 100%;
   }
   .tabs__header {
     flex-direction: column;
@@ -6735,18 +6741,33 @@ body.no-scroll {
 }
 
 .bestsellers__mobile {
+
   .purchase__btn {
+    position: relative;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
     svg.hover {
       display: none;
     }
+    svg.not-hover {
+      display: block;
+    }
 
     &:hover {
-      svg.hover {
+
+      svg.not-hover {
         display: block;
         z-index: 2;
-      }
-      svg.not-hover {
-        display: none;
+        flex-shrink: 0;
+        display: block;
+        width: 25px;
+        height: 25px;
+        margin-left: 10px;
+
+        path {
+          fill: c.$white;
+        }
       }
     }
   }
@@ -12565,4 +12586,10 @@ main {
 
 .main-color .header__telegram svg * {
   stroke: #41475C;
+}
+
+.cookies__button {
+  svg {
+    z-index: 2;
+  }
 }
